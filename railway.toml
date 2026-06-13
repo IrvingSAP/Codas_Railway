@@ -1,0 +1,11 @@
+# CODAS — despliegue en Railway (config as code).
+# Doc: docs/CODAS_DEPLOYMENT_RAILWAY_CHECKLIST.md
+# Requiere variables de producción en el servicio Web (incl. DATABASE_URL, CSRF_TRUSTED_ORIGINS).
+
+[build]
+buildCommand = "pip install -r requirements.txt && npm ci && npm run build:css:min && python manage.py collectstatic --noinput"
+
+[deploy]
+preDeployCommand = "python manage.py migrate --noinput"
+startCommand = "gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
+restartPolicyType = "ON_FAILURE"
