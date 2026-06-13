@@ -9,9 +9,8 @@ from .base import *  # noqa: F403
 
 DEBUG = False
 
-SECRET_KEY = os.environ.get(  # noqa: F405
-    "DJANGO_SECRET_KEY",
-    "collectstatic-build-only-no-usar-en-runtime",
+SECRET_KEY = (os.environ.get("DJANGO_SECRET_KEY") or "").strip() or (  # noqa: F405
+    "collectstatic-build-only-no-usar-en-runtime"
 )
 
 ALLOWED_HOSTS = ["*"]
