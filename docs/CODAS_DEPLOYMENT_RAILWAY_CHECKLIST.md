@@ -88,10 +88,10 @@ Plantilla orientativa:
 
 ```toml
 [build]
-buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+buildCommand = "pip install -r requirements.txt && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput"
 
 [deploy]
-preDeployCommand = "python manage.py migrate --noinput"
+preDeployCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput"
 startCommand = "gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
 restartPolicyType = "ON_FAILURE"
 ```
@@ -262,8 +262,7 @@ Por defecto el disco del contenedor es **efímero**; `media/` se pierde al redep
 | `ImproperlyConfigured` al arrancar | SMTP incompleto o `EMAIL_BACKEND` en env |
 | Estáticos 404 | WhiteNoise + `collectstatic` en build |
 | BD no conecta | `DATABASE_URL=${{Postgres.DATABASE_URL}}` + Deploy aplicado |
-| Build falla en `collectstatic` | `STATIC_ROOT` en `production.py` |
-| `collectstatic` antes de settings | `DJANGO_SETTINGS_MODULE` en variables Railway |
+| Build falla en `collectstatic` / PostgreSQL no configurada | Usar `codas.settings.collectstatic_build` en build (ver [`collectstatic_build.py`](../codas/settings/collectstatic_build.py)); `production` solo en migrate/runtime |
 
 ---
 

@@ -4,9 +4,9 @@
 # Tailwind: static/css/tailwind.css va versionado en Git; compilar en local (npm run build:css:min) antes del push.
 
 [build]
-buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+buildCommand = "pip install -r requirements.txt && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput"
 
 [deploy]
-preDeployCommand = "python manage.py migrate --noinput"
+preDeployCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput"
 startCommand = "gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
 restartPolicyType = "ON_FAILURE"
