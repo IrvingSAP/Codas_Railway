@@ -1,0 +1,46 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · ADD · Paso 1{% endblock %}
+{% block header_title %}SP Asistido · ADD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-emerald-400/90">Nuevo procedimiento · INSERT</p>
+            <h2 class="mt-1 text-lg font-semibold text-white">Identificación de la rutina</h2>
+        </div>
+        <a href="{% url 'sp_asistido:list' %}" class="text-sm text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+    </div>
+    {% include "sp_asistido/includes/add_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5">
+        {% csrf_token %}
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_schema_name">Esquema / librería (máx. 10) *</label>
+            <input id="id_schema_name" name="schema_name" maxlength="10" required value="{{ schema_name }}" class="h-10 w-full max-w-sm rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-codas-blue-accent outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_name_short">Nombre corto SP (máx. 10) *</label>
+            <input id="id_procedure_name_short" name="procedure_name_short" maxlength="10" required value="{{ procedure_name_short }}" class="h-10 w-full max-w-xs rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-codas-blue-accent outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_name_long">Nombre largo (máx. 50) *</label>
+            <input id="id_procedure_name_long" name="procedure_name_long" maxlength="50" required value="{{ procedure_name_long }}" class="h-10 w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_comment">Comentario descriptivo (opcional)</label>
+            <input id="id_procedure_comment" name="procedure_comment" maxlength="200" value="{{ procedure_comment }}" class="h-10 w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+        </div>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <button type="submit" formmethod="post" formaction="{% url 'sp_asistido:wizard_cancel' 'add' %}" formnovalidate class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 hover:bg-white/5">Cancelar y limpiar</button>
+            <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white hover:opacity-95">Siguiente · Tabla</button>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

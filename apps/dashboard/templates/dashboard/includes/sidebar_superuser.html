@@ -1,0 +1,26 @@
+{# Menú lateral — Super usuario (SU). Incluido desde dashboard_base. #}
+<p class="codas-dashboard-nav-section">Administración</p>
+<a href="{% url 'company:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'companies' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'companies' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">🏢</span>
+    <span>Compañías</span>
+</a>
+<a href="{% url 'billing:hub' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'billing' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'billing' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">💳</span>
+    <span>Facturación</span>
+</a>
+<a href="{% url 'userprofile:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'userprofiles' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'userprofiles' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">👥</span>
+    <span>Usuarios</span>
+</a>
+<a href="{% url 'sp_asistido:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'sp_asistido' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'sp_asistido' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">⚡</span>
+    <span>SP Asistido</span>
+</a>
+<a href="/admin/" class="codas-dashboard-nav-item codas-dashboard-nav-item--inactive">
+    <span class="codas-dashboard-nav-icon-box codas-dashboard-nav-icon-box--inactive" aria-hidden="true">🔧</span>
+    <span>Django admin</span>
+</a>
+<a href="#" class="codas-dashboard-nav-item codas-dashboard-nav-item--inactive">
+    <span class="codas-dashboard-nav-icon-box codas-dashboard-nav-icon-box--inactive" aria-hidden="true">📊</span>
+    <span>Auditoría</span>
+</a>

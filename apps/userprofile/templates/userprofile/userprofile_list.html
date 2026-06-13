@@ -1,0 +1,131 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Perfiles de usuario{% endblock %}
+{% block header_title %}Perfiles de usuario{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h2 class="text-base font-semibold text-white">Listado de perfiles</h2>
+    </div>
+    <a href="{% url 'userprofile:create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">
+        + Nuevo perfil
+    </a>
+</div>
+
+<form method="get" class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 sm:flex-row sm:flex-wrap sm:items-end">
+    <input type="hidden" name="ordering" value="{{ ordering }}">
+    <div class="min-w-[12rem] flex-1 basis-full sm:basis-auto">
+        <label for="id_q" class="mb-1 block text-xs font-medium text-gray-400">Buscar por nombre</label>
+        <input id="id_q" name="q" type="search" value="{{ request.GET.q|default:'' }}" placeholder="Ej. jperez…" autocomplete="off"
+            class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white placeholder:text-gray-500 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+    </div>
+    <div class="min-w-[12rem]">
+        <label for="id_user_type" class="mb-1 block text-xs font-medium text-gray-400">Tipo</label>
+        <select id="id_user_type" name="user_type" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            <option value="">Todos</option>
+            {% for val, label in user_type_choices %}
+            <option value="{{ val }}" {% if request.GET.user_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="min-w-[9rem]">
+        <label for="id_status" class="mb-1 block text-xs font-medium text-gray-400">Estado</label>
+        <select id="id_status" name="status" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            <option value="">Todos</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="min-w-[9rem]">
+        <label for="id_per_page" class="mb-1 block text-xs font-medium text-gray-400">Registros por página</label>
+        <select id="id_per_page" name="per_page" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            {% for n in allowed_per_page %}
+            <option value="{{ n }}" {% if current_per_page == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="h-[38px] rounded-md bg-codas-blue-accent px-4 text-sm font-medium text-white hover:bg-codas-accent-hover">Aplicar</button>
+    </div>
+</form>
+
+<div class="mb-3 flex flex-col gap-2 text-sm text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+    <p><span class="text-gray-500">Total de registros:</span> <strong class="font-semibold text-white">{{ page_obj.paginator.count }}</strong></p>
+    <p class="text-gray-500">
+        {% if page_obj.paginator.count %}
+        Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }}
+        {% else %}
+        Mostrando 0 de 0
+        {% endif %}
+    </p>
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[900px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">
+                        <a href="{{ sort_url_username }}" class="inline-flex cursor-pointer items-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por nombre">Nombre<span class="text-xs {% if sort_cols.username.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.username.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Correo</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">
+                        <a href="{{ sort_url_tipo }}" class="inline-flex cursor-pointer items-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por tipo">Tipo<span class="text-xs {% if sort_cols.tipo.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.tipo.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 text-center font-semibold text-gray-300">
+                        <a href="{{ sort_url_estado }}" class="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por estado">Estado<span class="text-xs {% if sort_cols.estado.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.estado.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Teléfono</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for p in profiles %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3 font-medium text-white">{{ p.user.get_username }}</td>
+                    <td class="px-4 py-3 text-codas-blue-accent">{{ p.user.email|default:"—" }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ p.get_user_type_display }}</td>
+                    <td class="px-4 py-3 text-center">
+                        {% if p.status == 'A' %}
+                        <span class="inline-flex min-w-[74px] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium" style="background-color: rgba(16, 185, 129, 0.22); color: #6ee7b7;">Activo</span>
+                        {% else %}
+                        <span class="inline-flex min-w-[74px] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium" style="background-color: rgba(71, 85, 105, 0.45); color: #cbd5e1;">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-400">{{ p.phone|default:"—" }}</td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <a href="{% url 'userprofile:detail' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'userprofile:update' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'userprofile:delete' p.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500">No hay perfiles que coincidan con los filtros</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="mt-4 flex flex-wrap items-center justify-center gap-2 border-t border-white/10 pt-4">
+    {% if page_obj.has_previous %}
+    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.previous_page_number }}" class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+    {% else %}
+    <span class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-500 opacity-40">Anterior</span>
+    {% endif %}
+    <span class="text-sm text-gray-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.next_page_number }}" class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Siguiente</a>
+    {% else %}
+    <span class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-500 opacity-40">Siguiente</span>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

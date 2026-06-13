@@ -1,0 +1,57 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · DLT · Paso 5{% endblock %}
+{% block header_title %}SP Asistido · DLT{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-rose-400/90">Confirmación de riesgo (D.5)</p>
+        <h2 class="mt-1 text-lg font-semibold text-white">Revise y confirme</h2>
+        <p class="mt-1 text-sm text-gray-500">El procedimiento afectará filas que cumplan el WHERE. Marque la casilla y escriba ELIMINAR para continuar.</p>
+    </div>
+    {% include "sp_asistido/includes/dlt_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="w-full space-y-3 rounded-xl border border-rose-500/20 bg-rose-950/10 p-4 text-sm text-gray-200">
+        <p><span class="text-gray-500">Tabla:</span> <span class="font-mono text-codas-blue-accent">{{ definition.header_table.schema }}.{{ definition.header_table.table_name_short }}</span></p>
+        {% if where_conditions %}
+        <p class="text-gray-500">WHERE <span class="text-gray-400">(AND):</span></p>
+        <ul class="mt-1 list-inside list-disc space-y-1 text-sm text-gray-200">
+            {% for wc in where_conditions %}
+            <li>
+                <span class="font-mono text-white">{{ wc.detail_field.field_name_short }}</span>
+                {{ wc.operator }}
+                {% if wc.value_origin == 'IN' %}<span class="font-mono text-rose-200">{{ wc.value_text }}</span>{% else %}literal{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p><span class="text-gray-500">Modo:</span> {% if mode_payload.mode == 'logico' %}Lógico (UPDATE){% else %}Físico (DELETE){% endif %}
+            {% if mode_payload.mode == 'logico' %}
+            — <span class="font-mono">{{ mode_payload.logical_field }}</span> = <span class="font-mono">{{ mode_payload.logical_value }}</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <form method="post" class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5">
+        {% csrf_token %}
+        <label class="flex cursor-pointer items-start gap-3 text-sm text-gray-200">
+            <input type="checkbox" name="confirm_risk" value="1" class="mt-1 h-4 w-4 shrink-0 accent-rose-500" required>
+            <span>Entiendo que esta operación es destructiva o altera datos de negocio y que debo validar el WHERE en entornos de prueba antes de producción.</span>
+        </label>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_confirm_phrase">Escriba <span class="font-mono text-rose-300">ELIMINAR</span> para confirmar</label>
+            <input id="id_confirm_phrase" name="confirm_phrase" autocomplete="off" class="h-10 w-full max-w-xs rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm uppercase text-white outline-none focus:border-rose-500">
+        </div>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:dlt_step' definition.pk 4 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <button type="submit" class="rounded-md bg-rose-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-rose-500">Siguiente · Vista previa SQL</button>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

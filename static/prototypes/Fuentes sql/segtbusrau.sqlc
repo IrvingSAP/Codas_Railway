@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBUSRAU                                      --
+-- Descripcion.........: Tabla de registro de usuarios para consultar    --
+--                       autorizaciones de usuarios                      --
+-- Tipo Objeto.........: TABLE                                           --
+-- Subdominio..........: Transversales Iseries                           --
+-- Fecha De Creacion...: Mayo 2022                                    --
+-- Autor...............: Andrés Cuartas Pérez - Bancolombia              --
+-- Base de datos relacional:  DB2 for i                                  --
+---------------------------------------------------------------------------
+-- MODIFICACIONES:                                                       --
+-- Fecha de Modificacion :                                               --
+-- Autor...............  :                                               --
+-- Descripcion ......... :                                               --
+-- Requerimiento.........:                                               --
+---------------------------------------------------------------------------
+
+-- Registro de llaves para evitar duplicacion
+CREATE OR REPLACE TABLE &LIB.SEGTBUSRAU(
+   USUARIO char(10) UNIQUE,
+   Rfecha timestamp NOT NULL IMPLICITLY HIDDEN
+   GENERATED ALWAYS FOR EACH ROW ON UPDATE AS ROW CHANGE TIMESTAMP)
+   RCDFMT TBCTLKV;
+
+-- Estableciendo el texto de etiqueta para SEGTBUSRAU
+LABEL ON TABLE &LIB/SEGTBUSRAU
+ IS 'Usuarios a consultar';
+
+-- Estableciendo las etiquetas de columna para SEGTBUSRAU
+LABEL ON COLUMN &LIB/SEGTBUSRAU(
+   USUARIO text is 'Usuario a consultar',
+   Rfecha text is 'Fecha registro');
+
+-- Estableciendo las cabeceras de columna para SEGTBUSRAU
+LABEL ON COLUMN &LIB/SEGTBUSRAU(
+  USUARIO IS 'Usuario a consultar',
+  Rfecha IS 'Fecha Registrada');
+

@@ -1,0 +1,133 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Plantillas Sources{% endblock %}
+{% block header_title %}Plantillas Sources{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h2 class="text-base font-semibold text-white">Listado de plantillas fuente</h2>
+    </div>
+    <a href="{% url 'sources:create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">
+        + Nueva plantilla
+    </a>
+</div>
+
+<form method="get" class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 sm:flex-row sm:flex-wrap sm:items-end">
+    <input type="hidden" name="ordering" value="{{ ordering }}">
+    <div class="min-w-[12rem] flex-1 basis-full sm:basis-auto">
+        <label for="id_q" class="mb-1 block text-xs font-medium text-gray-400">Buscar por nombre/archivo</label>
+        <input id="id_q" name="q" type="search" value="{{ request.GET.q|default:'' }}" placeholder="Ej. CUSTMST, cabecera..." autocomplete="off"
+            class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white placeholder:text-gray-500 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+    </div>
+    <div class="min-w-[12rem]">
+        <label for="id_source_type" class="mb-1 block text-xs font-medium text-gray-400">Tipo</label>
+        <select id="id_source_type" name="source_type" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            <option value="">Todos</option>
+            {% for val, label in source_type_choices %}
+            <option value="{{ val }}" {% if request.GET.source_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="min-w-[9rem]">
+        <label for="id_status" class="mb-1 block text-xs font-medium text-gray-400">Estado</label>
+        <select id="id_status" name="status" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            <option value="">Todos</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="min-w-[9rem]">
+        <label for="id_per_page" class="mb-1 block text-xs font-medium text-gray-400">Registros por página</label>
+        <select id="id_per_page" name="per_page" class="h-[38px] w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            {% for n in allowed_per_page %}
+            <option value="{{ n }}" {% if current_per_page == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="h-[38px] rounded-md bg-codas-blue-accent px-4 text-sm font-medium text-white hover:bg-codas-accent-hover">Aplicar</button>
+    </div>
+</form>
+
+<div class="mb-3 flex flex-col gap-2 text-sm text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+    <p><span class="text-gray-500">Total de registros:</span> <strong class="font-semibold text-white">{{ page_obj.paginator.count }}</strong></p>
+    <p class="text-gray-500">
+        {% if page_obj.paginator.count %}
+        Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }}
+        {% else %}
+        Mostrando 0 de 0
+        {% endif %}
+    </p>
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[920px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">
+                        <a href="{{ sort_url_name }}" class="inline-flex cursor-pointer items-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por nombre">Nombre<span class="text-xs {% if sort_cols.name.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.name.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Archivo</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">
+                        <a href="{{ sort_url_type }}" class="inline-flex cursor-pointer items-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por tipo">Tipo<span class="text-xs {% if sort_cols.type.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.type.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 text-center font-semibold text-gray-300">
+                        <a href="{{ sort_url_version }}" class="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por versión">Versión<span class="text-xs {% if sort_cols.version.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.version.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 text-center font-semibold text-gray-300">
+                        <a href="{{ sort_url_status }}" class="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 text-gray-300 no-underline hover:text-white" title="Ordenar por estado">Estado<span class="text-xs {% if sort_cols.status.active %}text-codas-blue-accent{% else %}text-gray-600 opacity-80{% endif %}" aria-hidden="true">{{ sort_cols.status.glyph }}</span></a>
+                    </th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for s in sources %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3 font-medium text-white">{{ s.name }}</td>
+                    <td class="px-4 py-3 text-codas-blue-accent">{{ s.filename|default:"—" }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ s.get_source_type_display }}</td>
+                    <td class="px-4 py-3 text-center text-gray-300">{{ s.version }}</td>
+                    <td class="px-4 py-3 text-center">
+                        {% if s.status == 'A' %}
+                        <span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-gray-600/40 px-2 py-0.5 text-xs text-gray-400">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <a href="{% url 'sources:detail' s.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'sources:update' s.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'sources:delete' s.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500">No hay plantillas que coincidan con los filtros</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="mt-4 flex flex-wrap items-center justify-center gap-2 border-t border-white/10 pt-4">
+    {% if page_obj.has_previous %}
+    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.previous_page_number }}" class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+    {% else %}
+    <span class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-500 opacity-40">Anterior</span>
+    {% endif %}
+    <span class="text-sm text-gray-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.next_page_number }}" class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Siguiente</a>
+    {% else %}
+    <span class="rounded-md border border-gray-600 px-3 py-2 text-sm text-gray-500 opacity-40">Siguiente</span>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

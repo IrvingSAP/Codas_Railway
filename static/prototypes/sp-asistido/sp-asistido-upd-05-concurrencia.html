@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · UPD · Paso 5 de 6 · Concurrencia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400"><span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-amber-300">Cambiar (UPD)</span></span></div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a><h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · UPDATE</h1></header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> SET</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> WHERE</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-amber-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/30 text-white">5</span> Concurrencia</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">5 · Control de concurrencia (opcional)</h2>
+      <p class="mt-1 text-sm text-slate-500">Active esta opción para exigir que la fila no haya cambiado entre lectura y actualización.</p>
+      <div class="mt-5 rounded-xl border border-amber-500/20 bg-amber-950/10 p-4">
+        <label class="flex items-center gap-2 text-sm text-slate-200"><input id="upd05-enable" type="checkbox" class="h-4 w-4 rounded border-slate-600 bg-slate-800">Habilitar validación optimista de concurrencia</label>
+        <div id="upd05-box" class="mt-3 hidden grid gap-3 sm:grid-cols-2">
+          <div><label class="mb-1 block text-xs text-slate-400">Campo versión / timestamp *</label><input id="upd05-field" value="UPDTS" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm"></div>
+          <div><label class="mb-1 block text-xs text-slate-400">Parámetro IN esperado *</label><input id="upd05-param" value="P_UPDTS_ORIG" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm"></div>
+        </div>
+      </div>
+      <p id="upd05-error" class="mt-3 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-upd-04-where.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><button id="upd05-btn-next" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · Firma/SQL</button></div></footer>
+  <script>(function(){var en=document.getElementById("upd05-enable"),box=document.getElementById("upd05-box"),err=document.getElementById("upd05-error");function ui(){box.classList.toggle("hidden",!en.checked);}en.addEventListener("change",ui);ui();document.getElementById("upd05-btn-next").addEventListener("click",function(){if(en.checked){var f=document.getElementById("upd05-field").value.trim(),p=document.getElementById("upd05-param").value.trim();if(!f||!p){err.textContent="Concurrencia activa: campo y parámetro son obligatorios.";err.classList.remove("hidden");return;}}err.classList.add("hidden");window.location.href="sp-asistido-upd-06-firma-vista-previa.html";});})();</script>
+</body>
+</html>

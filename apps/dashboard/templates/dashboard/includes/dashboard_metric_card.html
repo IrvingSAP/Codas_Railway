@@ -1,0 +1,8 @@
+{# Tarjeta de métrica del panel. Variables: metric_label, metric_value, metric_hint (opcional). #}
+<div class="codas-dashboard-card-metric">
+    <h3 class="m-0 text-sm font-medium text-gray-400">{{ metric_label }}</h3>
+    <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ metric_value }}</p>
+    {% if metric_hint %}
+    <p class="mt-2 text-xs text-gray-500">{{ metric_hint }}</p>
+    {% endif %}
+</div>

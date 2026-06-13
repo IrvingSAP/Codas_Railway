@@ -1,0 +1,66 @@
+---------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBUSRLG                                      --
+-- Descripcion.........: Reglas Log de Mantenimiento.                    --
+-- Tipo Objeto.........: TABLE                                           --
+-- Requerimiento.......: PMO31385-Creacion de usuario                    --
+-- Subdominio..........: Transversales Iseries                           --
+-- Fecha De Creacion...: Enero 20-2022                                   --
+-- Autor...............: Carlos Rojas - Bancolombia                      --
+-- Base de datos relacional:  DB2 for i                                  --
+---------------------------------------------------------------------------
+-- MODIFICACIONES:                                                       --
+-- Fecha de Modificacion :                                               --
+-- Autor...............  :                                               --
+-- Descripcion ......... :                                               --
+-- Requerimiento.........:                                               --
+---------------------------------------------------------------------------
+
+-- Reglas Log de Mantenimiento
+CREATE OR REPLACE TABLE &LIB.REGLASLOGMANTENIMIENTO
+                        FOR SYSTEM NAME SEGTBUSRLG(
+ Id_Reglas_Log           FOR COLUMN IDREGLALOG NUMERIC(10) NOT NULL
+                        primary key
+                        GENERATED ALWAYS AS IDENTITY(START WITH 1,
+                        INCREMENT BY 1, NO MINVALUE,
+                        CYCLE, NO ORDER,  NO CACHE),
+ Id_Reglas_Usuario      FOR COLUMN IDREGLAS NUMERIC(10) NOT NULL,
+ Codigo_Regla           FOR COLUMN CODREGLA    Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Nombre_Usuario         FOR COLUMN NOMBREUSR   Char(20)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Maquina_Lg             FOR COLUMN MAQUINALg   Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ TipoUsuario_Lg         FOR COLUMN TIPOUSRLG   Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Descripcion_Lg         FOR COLUMN DESCRIPLG   Char(100)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Nombre_Proceso_LG      FOR COLUMN NOMPROCESO  Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Estado_Lg              FOR COLUMN ESTADOLG    Char(1)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+
+ Fecha_Creacion  FOR COLUMN FECHORACRE TIMESTAMP NOT NULL IMPLICITLY
+                         HIDDEN GENERATED ALWAYS FOR EACH ROW ON
+                     UPDATE AS ROW CHANGE TIMESTAMP,
+
+ CONSTRAINT &LIB.PK_Id_Reglas_Usuario
+ foreign key(Id_Reglas_Usuario)
+ references &LIB.REGLASCREACIONUSUARIO(Id_Reglas_Usuario))
+  RCDFMT   RSEGTBUSRL;
+
+LABEL ON TABLE &LIB.SEGTBUSRLG Is
+'Reglas Log de Mantenimiento';
+
+LABEL ON  &LIB.SEGTBUSRLG(
+Id_Reglas_Log              Text Is 'ID Reglas Log. ..............',
+Id_Reglas_Usuario          Text Is 'ID Reglas usuarios...........',
+Codigo_Regla               Text Is 'Codigo de la Regla...........',
+Nombre_Usuario             Text Is 'Nombre de Usuario............',
+Maquina_Lg                 Text Is 'Maquina......................',
+TipoUsuario_Lg             Text Is 'Tipo de Usuario..............',
+Descripcion_Lg             Text Is 'Detalles.....................',
+Estado_Lg                  Text Is 'Estado.......................',
+Fecha_Creacion             Text Is 'Fecha Creacio................'
+
+);
+

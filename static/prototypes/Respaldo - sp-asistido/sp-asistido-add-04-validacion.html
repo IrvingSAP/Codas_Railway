@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · ADD · Paso 4 de 6 · Revisión</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · INSERT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso del asistente (paso 4 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Valores</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">4</span> Revisión</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">4 · Revisar reglas de negocio</h2>
+      <p class="mt-1 text-sm text-slate-500">Vista de consistencia: columnas requeridas por <code class="text-emerald-300/80">HeaderTable</code> / <code class="text-emerald-300/80">DetailTable</code> vs valores definidos (C.4).</p>
+      <ul class="mt-4 space-y-2 rounded-lg border border-white/10 bg-slate-900/50 p-4 text-sm text-slate-300">
+        <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> <span><code class="text-codas-accent">CUSNAME</code> — obligatorio, origen: parámetro <code class="text-emerald-200/80">P_CUSNAME</code></span></li>
+        <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> <span><code class="text-codas-accent">CUSTATUS</code> — obligatorio, parámetro definido</span></li>
+        <li class="flex items-start gap-2"><span class="text-slate-500">○</span> <span><code class="text-codas-accent">CUSZIPC</code> — nullable, valor <code class="text-slate-400">NULL</code> aceptado</span></li>
+        <li class="flex items-start gap-2"><span class="text-amber-300">!</span> <span class="text-amber-100/90">Advertencia (demo): si faltase un IN obligatorio, el paso 6 no permitirá generar hasta corregir.</span></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row sm:justify-between">
+      <a href="sp-asistido-add-03-valores.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+      <a href="sp-asistido-add-05-valores.html" class="rounded-md bg-codas-accent px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:bg-codas-hover">Siguiente · Firma</a>
+    </div>
+  </footer>
+</body>
+</html>

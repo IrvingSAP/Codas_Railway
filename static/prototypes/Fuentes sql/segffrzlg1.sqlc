@@ -1,0 +1,46 @@
+CREATE TABLE &LIB/SEGFFRZLG1 (
+ idProceso         Numeric      (10),
+ Tipo              Char         (10),
+ Proceso           Char         (10),
+ NombreProceso     VarChar      (50),
+ Producto          VarChar      (50),
+ Usuario           Char         (10),
+ Fecha             TimeStamp,
+ LogicaNegocio     Char         (10),
+ LibLogicaNegocio  Char         (10),
+ Mantenimiento     VarChar      (20),
+ Mensaje           VarChar      (300),
+ Estado            Char         (01))
+ RCDFMT  SEGRZLG1;
+
+
+LABEL ON TABLE &LIB/SEGFFRZLG1  Is
+'Razonabilidad de Cifras -Log Frecuencias';
+
+LABEL ON &LIB/SEGFFRZLG1 (
+ idProceso          Text Is  'Id Proceso',
+ Tipo               Text Is  'Acción',
+ Proceso            Text Is  'Proceso',
+ NombreProceso      Text Is  'Nombre Proceso',
+ Producto           Text Is  'Producto',
+ Usuario            Text Is  'Usuario',
+ Fecha              Text Is  'Fecha',
+ LogicaNegocio      Text Is  'Logica Negocio',
+ LibLogicaNegocio   Text Is  'Librería',
+ Mantenimiento      Text Is  'Mantenimiento',
+ Mensaje            Text Is  'Mensaje',
+ Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZLG1 (
+ idProceso               Is  'Id Proceso',
+ Tipo                    Is  'Acción',
+ Proceso                 Is  'Proceso',
+ NombreProceso           Is  'Nombre Proceso',
+ Producto                Is  'Producto',
+ Usuario                 Is  'Usuario',
+ Fecha                   Is  'Fecha',
+ LogicaNegocio           Is  'Logica Negocio',
+ LibLogicaNegocio        Is  'Librería',
+ Mantenimiento           Is  'Mantenimiento',
+ Mensaje                 Is  'Mensaje',
+ Estado                  Is  'Estado');

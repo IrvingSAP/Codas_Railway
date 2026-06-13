@@ -1,0 +1,61 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Pagos{% endblock %}
+{% block header_title %}Pagos{% endblock %}
+
+{% block billing_content %}
+<p class="mb-4 text-sm text-gray-500">
+    <a href="{% url 'billing:hub' %}" class="text-codas-blue-accent no-underline hover:underline">← Facturación</a>
+</p>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h2 class="text-base font-semibold text-white">Pagos</h2>
+        <p class="mt-1 text-sm text-gray-500">Solo suscripciones activas o pendientes pueden recibir pagos (validación en modelo).</p>
+    </div>
+    {% if can_crud %}
+    <a href="{% url 'billing:payment_create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">+ Registrar pago</a>
+    {% endif %}
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[800px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Compañía</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Monto</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Fecha</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Método</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">ID transacción</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for p in payments %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3 text-xs text-gray-400">{{ p.subscription.company.name_short }}</td>
+                    <td class="px-4 py-3 font-medium text-white">{{ p.amount }}</td>
+                    <td class="px-4 py-3 text-gray-400">{{ p.payment_date|date:"Y-m-d H:i" }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ p.get_method_display }}</td>
+                    <td class="px-4 py-3 font-mono text-xs text-gray-500">{{ p.transaction_id|default:"—" }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{% url 'billing:payment_detail' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        {% if can_crud %}
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:payment_update' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:payment_delete' p.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500">No hay pagos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

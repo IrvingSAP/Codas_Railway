@@ -1,0 +1,45 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar perfil{% else %}Nuevo perfil{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar perfil{% else %}Nuevo perfil{% endif %}{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% if is_edit %}{% url 'userprofile:detail' target_profile.pk %}{% else %}{% url 'userprofile:list' %}{% endif %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos del perfil</h2>
+</div>
+
+<form method="post" class="max-w-3xl space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if company_readonly %}
+    <div>
+        <p class="codas-label">Compañía</p>
+        <p class="rounded-md border border-gray-700 bg-gray-900/80 px-2.5 py-2 text-sm text-gray-300">{{ connection_company|default:"—" }}</p>
+        <p class="mt-1 text-xs text-gray-500">Definida por su perfil (solo lectura).</p>
+    </div>
+    {% endif %}
+
+    {% for field in form %}
+    <div>
+        <label for="{{ field.id_for_label }}" class="codas-label">{{ field.label }}{% if field.field.required %} <span class="text-rose-400">*</span>{% endif %}</label>
+        {{ field }}
+        {% if field.help_text %}<p class="mt-1 text-xs text-gray-500">{{ field.help_text }}</p>{% endif %}
+        {% if field.errors %}<p class="mt-1 text-xs text-rose-400">{{ field.errors.0 }}</p>{% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% if is_edit %}{% url 'userprofile:detail' target_profile.pk %}{% else %}{% url 'userprofile:list' %}{% endif %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

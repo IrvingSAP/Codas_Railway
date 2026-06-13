@@ -1,0 +1,87 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}CODAS — Iniciar sesión{% endblock %}
+
+{% block content %}
+<div class="codas-login-body">
+    <div class="codas-login-container">
+        <div class="codas-login-box text-center">
+            <img
+                src="{% static 'core/img/codaslogo.png' %}"
+                alt="CODAS"
+                class="codas-login-logo"
+                width="160"
+                height="auto"
+            >
+            <h1 class="text-xl font-semibold text-white">Iniciar sesión</h1>
+            <p class="mt-2 text-sm text-gray-400">
+                Ingrese usuario y contraseña (paso 1 — credenciales, CODAS_SECURITY).
+            </p>
+
+            {% if messages %}
+            <ul class="mt-4 list-none space-y-2 text-left text-sm text-gray-300">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if errors %}
+            <ul class="mt-4 list-none space-y-2 text-left text-sm text-red-400" role="alert">
+                {% for error in errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <form method="post" action="{% url 'security:security_login' %}" class="mt-6 space-y-4 text-left">
+                {% csrf_token %}
+                <div>
+                    <label for="id_username" class="mb-1 block text-sm font-medium text-gray-300">Usuario</label>
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        value="{{ username|default:'' }}"
+                        autocomplete="username"
+                        maxlength="150"
+                        required
+                        class="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-gray-100 shadow-sm focus:border-codas-blue-accent focus:outline-none focus:ring-1 focus:ring-codas-blue-accent"
+                    >
+                </div>
+                <div>
+                    <label for="id_password" class="mb-1 block text-sm font-medium text-gray-300">Contraseña</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        autocomplete="current-password"
+                        required
+                        class="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-gray-100 shadow-sm focus:border-codas-blue-accent focus:outline-none focus:ring-1 focus:ring-codas-blue-accent"
+                    >
+                </div>
+                <div class="pt-5">
+                    <button
+                        type="submit"
+                        class="w-full rounded border border-gray-600 bg-gray-700 px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 hover:border-codas-blue-accent hover:bg-codas-blue-accent focus:outline-none focus:ring-2 focus:ring-codas-blue-accent"
+                    >
+                        Ingresar
+                    </button>
+                </div>
+            </form>
+
+            <p class="mt-8">
+                <a href="{% url 'core:home' %}" class="text-codas-blue-accent no-underline hover:text-codas-accent-hover">
+                    Volver al inicio
+                </a>
+            </p>
+            <p class="mt-3">
+                <a href="{% url 'security:security_actualizar_2fa' %}" class="text-sm text-gray-400 no-underline hover:text-codas-blue-accent">
+                    Actualizar 2FA
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

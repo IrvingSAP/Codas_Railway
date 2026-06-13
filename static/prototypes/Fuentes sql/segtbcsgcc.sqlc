@@ -1,0 +1,48 @@
+-------------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBCSGUA                                         --
+-- Descripcion.........: Seg-Tablas  Consulta Generica, Usuario/LIB/Archivo --
+-- Tipo Objeto.........: TABLE                                              --
+-- Fecha De Creacion...: Mayo - 2024                                        --
+-- Autor...............: Irving Sifuntes                                    --
+-------------------------------------------------------------------------------
+-- AW1192003_BC_1:"RUNSQLSTM SRCFILE(R1SEG/SEGSRC)"
+-- AW1192003_BC_2:"SRCMBR(SEGTBCSGCC) COMMIT(*NONE)"
+-- AW1192003_OBJTYPE:"*FILE"
+--
+-- CreaTablas Tablas  Usuario Autorizados
+--  CREATE OR REPLACE  &LIB/SEGTBCSGCC
+CREATE OR REPLACE TABLE &LIB.CON_GEN_USER_AUTORIZADO
+	                  FOR SYSTEM NAME SEGTBCSGCC (
+USUARIO_AUTORIZADO          FOR COLUMN USUAUTO CHAR(10)
+                            NOT NULL DEFAULT '' CCSID 284 ,
+NOMBRE_LIBRERIA             FOR COLUMN LIBRERIA CHAR(10)
+                            NOT NULL DEFAULT '' CCSID 284 ,
+NOMBRE_ARCHIVO              FOR COLUMN ARCHIVO CHAR(10)
+                            NOT NULL DEFAULT '' CCSID 284 ,
+FECHA_INICIO                FOR FECHAINI   TIMESTAMP
+                            NOT NULL DEFAULT CURRENT TIMESTAMP,
+FECHA_FINAL                 FOR FECHAFIN   TIMESTAMP
+                            NOT NULL DEFAULT CURRENT TIMESTAMP,
+USUARIO_REGISTRO            FOR COLUMN USUREGI CHAR(10)
+                            NOT NULL DEFAULT '' CCSID 284 ,
+FECHA_REGISTRO              FOR FECHAREG   TIMESTAMP
+                            NOT NULL DEFAULT CURRENT TIMESTAMP,
+-- Clave Primaria
+CONSTRAINT &LIB.USUARIO_AUTORIZADO_PK
+PRIMARY KEY ( USUARIO_AUTORIZADO, NOMBRE_LIBRERIA, NOMBRE_ARCHIVO))
+
+RCDFMT RSEGCSGCC;
+
+
+/* DESCRIPCIÓN */
+LABEL ON TABLE &LIB.CON_GEN_USER_AUTORIZADO IS
+'Consulta Generica Usuario Autorizados' ;
+
+LABEL ON &LIB.CON_GEN_USER_AUTORIZADO(
+USUARIO_AUTORIZADO        TEXT Is 'USUARIO_AUTORIZADO',
+NOMBRE_LIBRERIA           TEXT Is 'NOMBRE_LIBRERIA',
+NOMBRE_ARCHIVO            TEXT Is 'NOMBRE_ARCHIVO',
+FECHA_INICIO              TEXT Is 'FECHA_INICIO',
+FECHA_FINAL               TEXT Is 'FECHA_FINAL' ,
+USUARIO_REGISTRO          TEXT Is 'USUARIO_REGISTRO' ,
+FECHA_REGISTRO            TEXT Is 'FECHA_REGISTRO') ;

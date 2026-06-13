@@ -1,0 +1,35 @@
+Create Table &LIB/SEGFFRZLGP
+(
+ PROCESO    CHAR (10)     NOT NULL DEFAULT '' ,
+ CODFREQ    CHAR (1)      NOT NULL DEFAULT '' ,
+ DIAFREQ    CHAR (5)      NOT NULL DEFAULT '' ,
+ HORAEJE    NUMERIC (4,2) NOT NULL DEFAULT 0  ,
+ RUTINA     CHAR (40)     NOT NULL DEFAULT '' ,
+ TEXTO      CHAR (300)    NOT NULL DEFAULT '' ,
+ TRABAJO    CHAR (30)     NOT NULL DEFAULT '' ,
+ FECHA      TIMESTAMP     NOT NULL DEFAULT CURRENT TIMESTAMP)
+  RcdFmt  REGRZLG;
+
+Label On Table &LIB/SEGFFRZLGP Is 'Razonabilidad de Cifras - Log del Proceso';
+
+Label On Column  &LIB/SEGFFRZLGP
+(
+ PROCESO       Is     'Cód. Proceso' ,
+ CODFREQ       Is     'Código Frecuencia',
+ DIAFREQ       Is     'Día Frecuencia',
+ HORAEJE       Is     'Hora Ejecución',
+ RUTINA        Is     'Rutina Del Log',
+ TEXTO         Is     'Texto',
+ TRABAJO       Is     'Trabajo',
+ FECHA         Is     'Fecha/Hora');
+
+Label On Column &LIB/SEGFFRZLGP
+(
+ PROCESO       Text Is     'Cód. Proceso' ,
+ CODFREQ       Text Is     'Código Frecuencia',
+ DIAFREQ       Text Is     'Día Frecuencia',
+ HORAEJE       Text Is     'Hora Ejecución',
+ RUTINA        Text Is     'Rutina Del Log',
+ TEXTO         Text Is     'Texto',
+ TRABAJO       Text Is     'Trabajo',
+ FECHA         Text Is     'Fecha/Hora');

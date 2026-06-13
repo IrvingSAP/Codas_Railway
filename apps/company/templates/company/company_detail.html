@@ -1,0 +1,58 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — {{ company.name_short }}{% endblock %}
+{% block header_title %}Compañía — {{ company.name_short }}{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'company:list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos de la compañía</h2>
+</div>
+
+<dl class="max-w-2xl space-y-4 text-sm">
+    <div>
+        <dt class="font-medium text-gray-400">Nombre corto</dt>
+        <dd class="mt-1 text-white">{{ company.name_short }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Nombre largo</dt>
+        <dd class="mt-1 text-gray-200">{{ company.name_long }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Identificación tributaria</dt>
+        <dd class="mt-1 text-gray-200">{{ company.tax_id|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Dirección</dt>
+        <dd class="mt-1 text-gray-200">{{ company.address|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Teléfono</dt>
+        <dd class="mt-1 text-gray-200">{{ company.phone|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Correo electrónico</dt>
+        <dd class="mt-1 text-gray-200">{{ company.email|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Activo</dt>
+        <dd class="mt-1 text-gray-200">{% if company.is_active %}Sí{% else %}No{% endif %}</dd>
+    </div>
+    {% if company.logo %}
+    <div>
+        <dt class="font-medium text-gray-400">Logo</dt>
+        <dd class="mt-1"><img src="{{ company.logo.url }}" alt="" class="max-h-24 rounded border border-white/10"></dd>
+    </div>
+    {% endif %}
+</dl>
+
+{% if can_crud %}
+<div class="mt-8 flex flex-wrap gap-3">
+    <a href="{% url 'company:update' company.pk %}" class="inline-flex rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'company:delete' company.pk %}" class="inline-flex rounded-md border border-rose-500/50 px-4 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endif %}
+{% endblock %}

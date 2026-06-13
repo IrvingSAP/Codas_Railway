@@ -1,0 +1,14 @@
+{# Menú lateral — Administrador de compañía (AC). #}
+<a href="{% url 'company:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'companies' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'companies' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">🏢</span>
+    <span>Mi compañía</span>
+</a>
+<a href="{% url 'billing:hub' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'billing' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'billing' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">💳</span>
+    <span>Facturación</span>
+</a>
+<a href="{% url 'userprofile:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'userprofiles' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'userprofiles' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">👥</span>
+    <span>Usuarios</span>
+</a>
+

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · Listado de perfiles de usuario</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo CRUD UserProfile ·</span>
+    <a href="userprofile-crud-demo-list.html" class="ml-1 font-semibold text-codas-accent underline">Listado</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="userprofile-crud-demo-detail.html" class="hover:text-codas-accent underline">Detalle</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="userprofile-crud-demo-form.html" class="hover:text-codas-accent underline">Alta / edición</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="userprofile-crud-demo-delete.html" class="hover:text-codas-accent underline">Confirmar borrado</a>
+  </div>
+
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4 md:px-5">
+    <a href="#" class="flex shrink-0 items-center gap-2 no-underline">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">Perfiles de usuario</h1>
+    <div class="flex shrink-0 items-center gap-3">
+      <span class="hidden max-w-[10rem] truncate text-sm text-slate-300 sm:inline">AdminCodas</span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white hover:border-codas-accent hover:bg-codas-accent/15">Salir</button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-2 overflow-y-auto p-4 text-sm" aria-label="Menú">
+        <a href="#" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">🏠</span>
+          <span>Inicio / panel</span>
+        </a>
+        <p class="mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Administración</p>
+        <a href="company-crud-demo-list.html" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">🏢</span>
+          <span>Compañías</span>
+        </a>
+        <a href="userprofile-crud-demo-list.html" class="flex items-center gap-3 rounded-md border-l-4 border-codas-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-accent/20 text-lg">👥</span>
+          <span>Perfiles de usuario</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">🔧</span>
+          <span>Django admin</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-white">Listado de perfiles</h2>
+            <p class="mt-1 text-sm text-slate-500">Prototipo con <strong class="text-slate-400">35</strong> registros · <strong class="text-slate-400">buscar por nombre</strong> (subcadena en usuario, no en correo); filtros <strong class="text-slate-400">tipo</strong> y <strong class="text-slate-400">estado</strong>; orden por columnas <strong class="text-slate-400">Nombre</strong>, <strong class="text-slate-400">Tipo</strong> y <strong class="text-slate-400">Estado</strong>; paginación en el navegador (Django vía <code class="rounded bg-slate-800 px-1 text-slate-300">GET</code>).</p>
+          </div>
+          <a href="userprofile-crud-demo-form.html" class="inline-flex items-center justify-center rounded-md bg-codas-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow hover:bg-codas-hover">
+            + Nuevo perfil
+          </a>
+        </div>
+
+        <div class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 sm:flex-row sm:flex-wrap sm:items-end">
+          <div class="min-w-[12rem] flex-1 basis-full sm:basis-auto">
+            <label for="filter-name" class="mb-1 block text-xs font-medium text-slate-400">Buscar por nombre</label>
+            <input id="filter-name" type="search" placeholder="Ej. jperez, user…" autocomplete="off"
+              class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+          </div>
+          <div class="min-w-[12rem]">
+            <label for="filter-tipo" class="mb-1 block text-xs font-medium text-slate-400">Tipo</label>
+            <select id="filter-tipo"
+              class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+              <option value="">Todos</option>
+              <option value="SU">Super usuario</option>
+              <option value="AC">Administrador de compañía</option>
+              <option value="AS">Administrador de sistema</option>
+              <option value="US">Usuario</option>
+            </select>
+          </div>
+          <div class="min-w-[9rem]">
+            <label for="filter-status" class="mb-1 block text-xs font-medium text-slate-400">Estado</label>
+            <select id="filter-status"
+              class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+              <option value="">Todos</option>
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+          </div>
+          <div class="min-w-[9rem]">
+            <label for="per-page" class="mb-1 block text-xs font-medium text-slate-400">Registros por página</label>
+            <select id="per-page"
+              class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="25">25</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3 flex flex-col gap-2 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <p><span class="text-slate-500">Total de registros:</span> <strong id="stat-total" class="font-semibold text-white">35</strong></p>
+          <p id="stat-range" class="text-slate-500">Mostrando —</p>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[900px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                  <th scope="col" class="whitespace-nowrap px-4 py-3 font-semibold text-slate-300">
+                    <button type="button" data-sort="username" class="inline-flex items-center gap-1 rounded hover:text-white" title="Ordenar por nombre (usuario)">
+                      Nombre
+                      <span class="sort-ind text-xs text-codas-accent" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th class="whitespace-nowrap px-4 py-3 font-semibold text-slate-300">Correo</th>
+                  <th class="whitespace-nowrap px-4 py-3 font-semibold text-slate-300">Compañía</th>
+                  <th scope="col" class="whitespace-nowrap px-4 py-3 font-semibold text-slate-300">
+                    <button type="button" data-sort="tipo" class="inline-flex items-center gap-1 rounded hover:text-white" title="Ordenar por tipo de usuario">
+                      Tipo
+                      <span class="sort-ind text-xs text-codas-accent" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th scope="col" class="whitespace-nowrap px-4 py-3 text-center font-semibold text-slate-300">
+                    <button type="button" data-sort="estado" class="inline-flex w-full items-center justify-center gap-1 rounded hover:text-white" title="Ordenar por estado">
+                      Estado
+                      <span class="sort-ind text-xs text-codas-accent" aria-hidden="true"></span>
+                    </button>
+                  </th>
+                  <th class="whitespace-nowrap px-4 py-3 font-semibold text-slate-300">Teléfono</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-slate-300">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody" class="divide-y divide-white/5">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="pager-wrap" class="mt-4 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-4 sm:flex-row">
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="btn-prev" class="rounded-md border border-slate-600 px-3 py-2 text-sm text-slate-300 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40">Anterior</button>
+            <span id="page-info" class="text-sm text-slate-500">Página 1 de 1</span>
+            <button type="button" id="btn-next" class="rounded-md border border-slate-600 px-3 py-2 text-sm text-slate-300 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40">Siguiente</button>
+          </div>
+        </div>
+
+        <p class="mt-6 text-xs text-slate-500">Vista definitiva: <code class="rounded bg-slate-800 px-1">dashboard/dashboard_base.html</code> · servidor: <code class="rounded bg-slate-800 px-1">q</code> (nombre usuario), <code class="rounded bg-slate-800 px-1">tipo</code>, <code class="rounded bg-slate-800 px-1">estado</code>, <code class="rounded bg-slate-800 px-1">per_page</code>, <code class="rounded bg-slate-800 px-1">ordering</code> (nombre, tipo, estado) en <code class="rounded bg-slate-800 px-1">GET</code>.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+(function () {
+  const TYPE_LABEL = { SU: 'Super usuario', AC: 'Administrador de compañía', AS: 'Administrador de sistema', US: 'Usuario' };
+  const TYPE_ORDER = { SU: 0, AS: 1, AC: 2, US: 3 };
+
+  function companyLine(shortName, longName) {
+    return shortName + ' — ' + longName;
+  }
+
+  const COMPANIES = [
+    companyLine('ELECC', 'Eleccentro C.A.'),
+    companyLine('DEMO', 'Compañía demo CODAS'),
+    companyLine('ACME', 'Acme de Venezuela'),
+    companyLine('ORION', 'Orion Systems'),
+    companyLine('NORTE', 'Grupo Norte'),
+    null,
+  ];
+
+  const BASE = [
+    { username: 'jperez', email: 'jperez@empresa.test', company: COMPANIES[0], tipo: 'US', status: 'A', phone: '+58 412-0000000' },
+    { username: 'admin.su', email: 'su@codas.test', company: null, tipo: 'SU', status: 'A', phone: null },
+  ];
+
+  const EXTRA_NAMES = [
+    'mgarcia', 'lrojas', 'crodriguez', 'vmendoza', 'htorres', 'pnavas', 'kruiz', 'silva.m', 'flopez', 'aramirez',
+    'cduarte', 'bgomez', 'ncastro', 'jvega', 'omorales', 'dferreira', 'lcastro', 'sblanco', 'mrios', 'epinto',
+    'vsoares', 'anunes', 'rcardoso', 'tlima', 'gbarros', 'hsantos', 'lazevedo', 'pmelo', 'fcoelho', 'cribeiro',
+    'operator1', 'auditor01', 'support.sys',
+  ];
+
+  const TYPES_ROT = ['US', 'US', 'US', 'AC', 'AS', 'US', 'US', 'SU'];
+
+  const rows = BASE.concat(EXTRA_NAMES.map(function (username, idx) {
+    const i = idx + 3;
+    const tipo = TYPES_ROT[idx % TYPES_ROT.length];
+    const status = (i % 7 === 0 || i % 11 === 0) ? 'I' : 'A';
+    const company = COMPANIES[(i + username.length) % COMPANIES.length];
+    const phone = status === 'A' && i % 5 !== 0 ? '+58 4' + (10 + (i % 89)) + '-' + String(1000000 + i * 137).slice(-7) : null;
+    return {
+      username: username,
+      email: username.replace(/\./g, '') + '@empresa.test',
+      company: company,
+      tipo: tipo,
+      status: status,
+      phone: phone,
+    };
+  }));
+
+  if (rows.length !== 35) {
+    console.warn('Se esperaban 35 filas, hay', rows.length);
+  }
+
+  var state = {
+    sortField: 'username',
+    sortDir: 'asc',
+    page: 1,
+    perPage: 10,
+    nameQ: '',
+    filterTipo: '',
+    filterStatus: '',
+  };
+
+  function statusBadge(code) {
+    if (code === 'A') {
+      return '<span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span>';
+    }
+    return '<span class="inline-flex rounded-full bg-slate-600/40 px-2 py-0.5 text-xs text-slate-400">Inactivo</span>';
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function filterRows() {
+    var q = state.nameQ.trim().toLowerCase();
+    return rows.filter(function (r) {
+      if (q && r.username.toLowerCase().indexOf(q) === -1) return false;
+      if (state.filterTipo && r.tipo !== state.filterTipo) return false;
+      if (state.filterStatus && r.status !== state.filterStatus) return false;
+      return true;
+    });
+  }
+
+  function sortRows(list) {
+    var field = state.sortField;
+    var dir = state.sortDir === 'asc' ? 1 : -1;
+    return list.slice().sort(function (a, b) {
+      var cmp = 0;
+      if (field === 'username') {
+        cmp = a.username.localeCompare(b.username, 'es');
+      } else if (field === 'estado') {
+        cmp = a.status.localeCompare(b.status);
+        if (cmp === 0) cmp = a.username.localeCompare(b.username, 'es');
+      } else if (field === 'tipo') {
+        cmp = (TYPE_ORDER[a.tipo] - TYPE_ORDER[b.tipo]);
+        if (cmp === 0) cmp = a.username.localeCompare(b.username, 'es');
+      }
+      return cmp * dir;
+    });
+  }
+
+  function paginate(list) {
+    var per = state.perPage;
+    var total = list.length;
+    var pages = Math.max(1, Math.ceil(total / per));
+    if (state.page > pages) state.page = pages;
+    if (state.page < 1) state.page = 1;
+    var start = (state.page - 1) * per;
+    return { slice: list.slice(start, start + per), total: total, pages: pages };
+  }
+
+  function render() {
+    var filtered = filterRows();
+    var sorted = sortRows(filtered);
+    var result = paginate(sorted);
+    var slice = result.slice;
+    var total = result.total;
+    var pages = result.pages;
+
+    document.getElementById('stat-total').textContent = String(total);
+    if (total === 0) {
+      document.getElementById('stat-range').textContent = 'Mostrando 0 de 0';
+    } else {
+      var start = (state.page - 1) * state.perPage + 1;
+      var end = Math.min(state.page * state.perPage, total);
+      document.getElementById('stat-range').textContent = 'Mostrando ' + start + ' a ' + end + ' de ' + total;
+    }
+
+    var tbody = document.getElementById('tbody');
+    if (slice.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-10 text-center text-slate-500">No hay resultados con los filtros actuales</td></tr>';
+    } else {
+      tbody.innerHTML = slice.map(function (r) {
+        var company = r.company ? escapeHtml(r.company) : '<span class="text-slate-500">—</span>';
+        var phone = r.phone ? escapeHtml(r.phone) : '<span class="text-slate-500">—</span>';
+        var tipoLabel = TYPE_LABEL[r.tipo] || r.tipo;
+        return (
+          '<tr class="hover:bg-white/[0.03]">' +
+          '<td class="px-4 py-3 font-medium text-white">' + escapeHtml(r.username) + '</td>' +
+          '<td class="px-4 py-3 text-codas-accent">' + escapeHtml(r.email) + '</td>' +
+          '<td class="px-4 py-3 text-slate-300">' + company + '</td>' +
+          '<td class="px-4 py-3 text-slate-300">' + escapeHtml(tipoLabel) + '</td>' +
+          '<td class="px-4 py-3 text-center">' + statusBadge(r.status) + '</td>' +
+          '<td class="px-4 py-3 text-slate-400">' + phone + '</td>' +
+          '<td class="px-4 py-3 text-right whitespace-nowrap">' +
+          '<a href="userprofile-crud-demo-detail.html" class="text-codas-accent no-underline hover:underline">Ver</a>' +
+          '<span class="text-slate-600"> · </span>' +
+          '<a href="userprofile-crud-demo-form.html" class="text-codas-accent no-underline hover:underline">Editar</a>' +
+          '<span class="text-slate-600"> · </span>' +
+          '<a href="userprofile-crud-demo-delete.html" class="text-rose-400 no-underline hover:underline">Eliminar</a>' +
+          '</td></tr>'
+        );
+      }).join('');
+    }
+
+    document.getElementById('page-info').textContent = 'Página ' + state.page + ' de ' + pages;
+    document.getElementById('btn-prev').disabled = state.page <= 1;
+    document.getElementById('btn-next').disabled = state.page >= pages;
+
+    document.querySelectorAll('[data-sort]').forEach(function (btn) {
+      var key = btn.getAttribute('data-sort');
+      var map = { username: 'username', tipo: 'tipo', estado: 'estado' };
+      var sk = map[key];
+      var span = btn.querySelector('.sort-ind');
+      if (state.sortField === sk) {
+        span.textContent = state.sortDir === 'asc' ? '▲' : '▼';
+      } else {
+        span.textContent = '';
+      }
+    });
+  }
+
+  document.getElementById('filter-name').addEventListener('input', function () {
+    state.nameQ = this.value;
+    state.page = 1;
+    render();
+  });
+
+  document.getElementById('filter-tipo').addEventListener('change', function () {
+    state.filterTipo = this.value;
+    state.page = 1;
+    render();
+  });
+
+  document.getElementById('filter-status').addEventListener('change', function () {
+    state.filterStatus = this.value;
+    state.page = 1;
+    render();
+  });
+
+  document.getElementById('per-page').addEventListener('change', function () {
+    state.perPage = parseInt(this.value, 10);
+    state.page = 1;
+    render();
+  });
+
+  document.getElementById('btn-prev').addEventListener('click', function () {
+    state.page -= 1;
+    render();
+  });
+
+  document.getElementById('btn-next').addEventListener('click', function () {
+    state.page += 1;
+    render();
+  });
+
+  document.querySelectorAll('[data-sort]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var key = btn.getAttribute('data-sort');
+      var map = { username: 'username', tipo: 'tipo', estado: 'estado' };
+      var sk = map[key];
+      if (state.sortField === sk) {
+        state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        state.sortField = sk;
+        state.sortDir = 'asc';
+      }
+      state.page = 1;
+      render();
+    });
+  });
+
+  render();
+})();
+  </script>
+</body>
+</html>

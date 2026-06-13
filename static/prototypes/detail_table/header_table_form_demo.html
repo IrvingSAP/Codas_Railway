@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full min-h-0">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Demo · Cabecera + HeaderTableAutoKeyConfig</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          colors: {
+            "codas-blue-dark": "#0a1a2f",
+            "codas-blue-accent": "#1e90ff",
+            "codas-accent-hover": "#1877d3",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .codas-label { display: block; margin-bottom: 0.25rem; font-size: 0.75rem; font-weight: 500; color: rgb(156 163 175); }
+    .codas-input {
+      height: 38px; width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0 0.625rem; font-size: 0.875rem; color: white;
+      outline: none;
+    }
+    .codas-input:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+    .codas-input:disabled { cursor: not-allowed; opacity: 0.55; }
+    .codas-textarea {
+      width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0.5rem 0.625rem; font-size: 0.875rem; color: white;
+      outline: none; min-height: 6rem;
+    }
+    .codas-textarea:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+  </style>
+</head>
+<body class="h-[100dvh] max-h-[100dvh] min-h-0 overflow-y-auto bg-slate-950 pb-10 font-sans text-gray-200 antialiased">
+  <div class="border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-gray-400">
+    <span class="font-medium text-amber-200/90">Demo estático</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span>Basado en <code class="rounded bg-gray-800 px-1 text-emerald-400/90">header_table_form.html</code></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span>Modelo <code class="rounded bg-gray-800 px-1 text-emerald-400/90">HeaderTableAutoKeyConfig</code></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="field_list_demo.html" class="text-codas-blue-accent no-underline hover:underline">Campos (DetailTable)</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="../header_table_create_ddl_demo.html" class="text-codas-blue-accent no-underline hover:underline">Alta cabecera (legacy)</a>
+  </div>
+
+  <header class="flex h-14 items-center gap-4 border-b border-white/10 bg-codas-blue-dark px-4">
+    <span class="text-sm font-semibold text-white">CODAS</span>
+    <h1 class="text-base font-semibold text-white md:text-lg">Editar cabecera de diseño de tabla</h1>
+  </header>
+
+  <main class="mx-auto max-w-4xl p-6 md:p-8">
+    <p class="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+      <span class="text-codas-blue-accent">←</span> Volver al listado (demo)
+      <span class="text-slate-600">·</span>
+      <span class="text-codas-blue-accent">Ver cabecera (solo lectura)</span>
+    </p>
+
+    <div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Edición de cabecera</h2>
+      <p class="mt-1 text-xs text-gray-500">
+        Ámbito: compañía del perfil (<strong class="text-gray-400">DEMO</strong>).
+        <span class="text-gray-600"> · </span>
+        <span class="font-mono text-gray-400">CUSMAST01</span>
+      </p>
+    </div>
+
+    <form class="max-w-4xl space-y-5" onsubmit="return false;" novalidate>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label class="codas-label" for="id_table_model">Modelo de tabla <span class="text-rose-400">*</span></label>
+          <select id="id_table_model" class="codas-input cursor-pointer">
+            <option value="S" selected>Simple</option>
+            <option value="A">Avanzado</option>
+            <option value="E">Experto</option>
+          </select>
+        </div>
+        <div>
+          <label class="codas-label" for="id_table_type">Tipo de tabla <span class="text-rose-400">*</span></label>
+          <select id="id_table_type" class="codas-input cursor-pointer">
+            <option value="PHYSICAL" selected>Física</option>
+            <option value="LOGICAL">Lógica</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label class="codas-label" for="id_table_name_long">Nombre largo de la tabla <span class="text-rose-400">*</span></label>
+          <input id="id_table_name_long" type="text" class="codas-input" maxlength="128" value="CUSTOMER_MASTER_FILE">
+        </div>
+        <div>
+          <label class="codas-label" for="id_table_name_short">Nombre corto de la tabla <span class="text-rose-400">*</span></label>
+          <input id="id_table_name_short" type="text" class="codas-input font-mono" maxlength="10" value="CUSMAST01">
+        </div>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label class="codas-label" for="id_schema">Esquema / librería <span class="text-rose-400">*</span></label>
+          <input id="id_schema" type="text" class="codas-input font-mono" maxlength="10" value="LIBDATA">
+        </div>
+        <div>
+          <label class="codas-label" for="id_status">Estado <span class="text-rose-400">*</span></label>
+          <select id="id_status" class="codas-input cursor-pointer">
+            <option value="A" selected>Activo</option>
+            <option value="P">Proceso</option>
+            <option value="I">Inactivo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <!-- HeaderTable: DDL cabecera -->
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+          <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
+            <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">Script DDL (cabecera)</h3>
+            <span class="font-mono text-[10px] text-gray-500">HeaderTable</span>
+          </div>
+          <p class="mb-4 text-xs text-gray-500">
+            Opcional para generación SQL. <span class="text-amber-200/80">pk_constraint_name</span> vacío: sin cláusula
+            <code class="rounded bg-gray-800 px-1 text-[10px] text-emerald-400/90">CONSTRAINT … PRIMARY KEY</code>.
+          </p>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class="codas-label" for="id_pk_constraint_name">Nombre del constraint de PK</label>
+              <input id="id_pk_constraint_name" type="text" class="codas-input font-mono" maxlength="30" value="PK_CUSMAST01">
+              <p class="mt-1 text-xs text-gray-500">Máx. 30 · A–Z, 0–9, _. Unicidad global si tiene valor.</p>
+            </div>
+            <div>
+              <label class="codas-label" for="id_record_format_name">Nombre record format (RCDFMT)</label>
+              <input id="id_record_format_name" type="text" class="codas-input font-mono" maxlength="30" value="CUSMAST0R">
+              <p class="mt-1 text-xs text-gray-500">Si está vacío, no se emite <code class="text-emerald-400/90">RCDFMT</code>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- HeaderTableAutoKeyConfig: identity_* -->
+        <div class="rounded-xl border border-amber-500/20 bg-slate-900/50 p-4">
+          <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
+            <h3 class="text-xs font-semibold uppercase tracking-wide text-amber-200/90">
+              Configuración de llave autogenerada
+            </h3>
+            <span class="font-mono text-[10px] text-gray-500">HeaderTableAutoKeyConfig · 1:1</span>
+          </div>
+          <p class="mb-4 text-xs text-gray-500">
+            Parámetros globales para <code class="rounded bg-gray-800 px-1 text-[10px] text-emerald-400/90">GENERATED AS IDENTITY</code>
+            en el script DDL. Relación <strong class="text-gray-400">OneToOne</strong> con la cabecera
+            (<code class="text-emerald-400/90">header</code> = PK/FK).
+          </p>
+
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <label class="codas-label" for="id_identity_start">IDENTITY: START WITH</label>
+              <input id="id_identity_start" type="number" min="1" class="codas-input" value="1" placeholder="1">
+              <p class="mt-1 text-xs text-gray-500">Parámetro global (p. ej. 1). Entero ≥ 1.</p>
+            </div>
+            <div>
+              <label class="codas-label" for="id_identity_increment">IDENTITY: INCREMENT BY</label>
+              <input id="id_identity_increment" type="number" min="1" class="codas-input" value="1" placeholder="1">
+              <p class="mt-1 text-xs text-gray-500">Entero ≥ 1 si se indica valor.</p>
+            </div>
+            <div>
+              <label class="codas-label" for="id_identity_cache">IDENTITY: CACHE</label>
+              <input id="id_identity_cache" type="number" min="1" class="codas-input" value="20" placeholder="1000">
+              <p class="mt-1 text-xs text-gray-500">Entero ≥ 1 si se indica valor.</p>
+            </div>
+            <div class="flex flex-col justify-end pb-0.5">
+              <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                <input id="id_identity_cycle" type="checkbox" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent">
+                <span>IDENTITY: CYCLE</span>
+              </label>
+              <p class="mt-1 text-xs text-gray-500">Si es verdadero, se emite CYCLE cuando aplique.</p>
+            </div>
+          </div>
+
+          <!-- Campos de auditoría del modelo (solo lectura en edición) -->
+          <div class="mt-4 rounded-md border border-white/5 bg-slate-950/60 px-3 py-2">
+            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Auditoría (solo lectura)</p>
+            <dl class="mt-2 grid gap-2 text-xs text-gray-400 sm:grid-cols-2">
+              <div><dt class="inline text-gray-500">Creado el:</dt> <dd class="inline text-gray-300">2026-05-20 14:32</dd></div>
+              <div><dt class="inline text-gray-500">Actualizado el:</dt> <dd class="inline text-gray-300">2026-05-24 09:15</dd></div>
+              <div><dt class="inline text-gray-500">Creado por:</dt> <dd class="inline text-gray-300">demo_user</dd></div>
+              <div><dt class="inline text-gray-500">Actualizado por:</dt> <dd class="inline text-gray-300">demo_user</dd></div>
+            </dl>
+            <p class="mt-2 text-[10px] text-gray-600">
+              Campos <code class="text-gray-500">created_at</code>,
+              <code class="text-gray-500">updated_at</code>,
+              <code class="text-gray-500">created_by</code>,
+              <code class="text-gray-500">updated_by</code> — no editables en el formulario.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="codas-label" for="id_notes">Notas</label>
+        <textarea id="id_notes" class="codas-textarea" rows="4" placeholder="Observaciones internas…">Cabecera de ejemplo para validar layout.</textarea>
+      </div>
+
+      <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="button" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-codas-accent-hover">
+          Guardar
+        </button>
+        <a href="#" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">
+          Cancelar y volver al detalle
+        </a>
+        <a href="../table-design-header-list-demo.html" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">
+          Ir al listado
+        </a>
+      </div>
+    </form>
+
+    <section class="mt-10 rounded-lg border border-dashed border-gray-600 bg-slate-900/30 p-4 text-xs text-gray-500">
+      <h2 class="mb-2 font-semibold text-gray-400">Mapa modelo → pantalla</h2>
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="border-b border-white/10 text-gray-400">
+            <th class="py-1 pr-3">Modelo</th>
+            <th class="py-1 pr-3">Campo</th>
+            <th class="py-1">En formulario</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono text-[11px]">
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">header</td><td class="text-gray-500">Implícito (PK 1:1)</td></tr>
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">identity_start</td><td>Sí</td></tr>
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">identity_increment</td><td>Sí</td></tr>
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">identity_cache</td><td>Sí</td></tr>
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">identity_cycle</td><td>Sí</td></tr>
+          <tr class="border-b border-white/5"><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">created_at / updated_at</td><td class="text-gray-500">Solo lectura (edición)</td></tr>
+          <tr><td class="py-1 pr-3 text-amber-200/80">HeaderTableAutoKeyConfig</td><td class="pr-3">created_by / updated_by</td><td class="text-gray-500">Solo lectura (edición)</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

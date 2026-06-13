@@ -1,0 +1,24 @@
+Create Table &LIB/SEGFFAUT27
+(TREAL    REAL            NOT NULL DEFAULT
+,TTIME    TIME            NOT NULL WITH DEFAULT
+,TDATE    DATE            NOT NULL WITH DEFAULT
+,TDEC     DEC  (20, 2)    NOT NULL DEFAULT 0
+,TCHAR    CHAR (80)       NOT NULL DEFAULT ''
+) RcdFmt SEG27R;
+
+Label On Table &LIB/SEGFFAUT27 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT27
+(TREAL    TEXT IS 'TREAL'
+,TTIME    TEXT IS 'TTIME     '
+,TDATE    TEXT IS 'TDATE     '
+,TDEC     TEXT IS 'DECIMAL'
+,TCHAR    TEXT IS 'CHAR'
+ );
+
+Label On Column &LIB/SEGFFAUT27
+(TREAL              Is 'T_REAL'
+,TTIME              IS 'T_TIME    '
+,TDATE              Is 'T_DATE    '
+,TDEC               IS 'T_DECIMAL'
+,TCHAR              IS 'T_CHAR'
+ );

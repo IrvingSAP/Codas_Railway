@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · ADD · Paso 6 de 6 · Vista previa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · INSERT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso del asistente (paso 6 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Valores</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Revisión</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">6 · Script generado (plantilla ADD corporativa · §9)</h2>
+      <p class="mt-1 text-sm text-slate-500">Ejemplo alineado a <code class="text-slate-400">docs/CODAS_SP_ASISTIDO.md</code> <strong class="text-slate-300">§9</strong> (vista previa) y a los campos de identificación de los <a class="text-codas-accent no-underline hover:underline" href="sp-asistido-add-05-valores.html">paso 3 / 5</a>. En producto, salida de <code class="text-slate-400">services/sp_sql</code> o equivalente, con <code class="text-slate-500">P_ERROR_*</code>, <code class="text-slate-500">SPECIFIC</code> y comentarios ajustables.</p>
+      <pre class="mt-4 max-h-[min(60vh,28rem)] overflow-auto rounded-xl border border-slate-700 bg-slate-900 p-4 text-left text-xs leading-relaxed text-emerald-200/90" role="code"><code>-- CODAS · SP asistido · ADD · demo
+-- Tabla: R1DATA.CUSMAS (diseño CUSMAS) · CUSNBR: IDENTITY (excl. INSERT)
+-- Plantilla: OUT estándar + manejadores 23505 y SQLEXCEPTION (CODAS_SP_ASISTIDO §9)
+
+CREATE OR REPLACE PROCEDURE R1DATA.INSCUS00 (
+    IN  P_CUSNAME      VARCHAR(40) CCSID 284,
+    IN  P_CUSTATUS     CHAR(1)     CCSID 284,
+    OUT P_ERROR_CODE   INTEGER,
+    OUT P_ERROR_MSG    VARCHAR(200)
+)
+LANGUAGE SQL
+MODIFIES SQL DATA
+SPECIFIC INSCUS0SP1
+BEGIN
+    /* ========= variables internas (diagnóstico) — §9.4 ========= */
+    DECLARE v_sqlstate CHAR(5)     DEFAULT '00000';
+    DECLARE v_msg        VARCHAR(200) DEFAULT '';
+
+    /* ========= manejador: clave duplicada (§9.5 / §9.6) ========= */
+    DECLARE EXIT HANDLER FOR SQLSTATE '23505'
+    BEGIN
+        SET P_ERROR_CODE = 100;
+        SET P_ERROR_MSG  = 'El registro ya existe.';
+    END;
+
+    /* ========= manejador: error SQL general (§9.5) ========= */
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            v_sqlstate = RETURNED_SQLSTATE,
+            v_msg = MESSAGE_TEXT;
+        SET P_ERROR_CODE = -1;
+        SET P_ERROR_MSG  = 'Error SQLSTATE=' CONCAT v_sqlstate CONCAT ' - ' CONCAT v_msg;
+    END;
+
+    /* ========= validaciones lógicas (opcionales) — podría quedar vacío (§9.4) ========= */
+
+    /* ========= INSERT (columnas = selección asistente; NULL según C.2/C.3) ========= */
+    INSERT INTO R1DATA.CUSMAS (
+        CUSNAME, CUSTATUS, CUSZIPC
+    )
+    VALUES (
+        P_CUSNAME, P_CUSTATUS, NULL
+    );
+
+    /* ========= finalización OK (camino normal) — §9.2 ========= */
+    SET P_ERROR_CODE = 0;
+    SET P_ERROR_MSG  = 'OK';
+END
+
+-- LABEL/MASK/comment: nombre largo del paso 3 y comentario opcional</code></pre>
+      <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+        <button type="button" class="rounded-md border border-slate-600 bg-slate-800/50 px-4 py-2.5 text-sm text-slate-200 hover:bg-slate-800" title="Persistir en Django cuando exista modelo">Guardar borrador</button>
+        <button type="button" class="rounded-md border border-emerald-500/40 bg-emerald-950/30 px-4 py-2.5 text-sm text-emerald-200">Descargar <span class="font-mono">.sql</span></button>
+      </div>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto max-w-3xl">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <a href="sp-asistido-add-05-valores.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+        <a href="sp-asistido-list-demo.html" class="rounded-md bg-codas-accent px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:bg-codas-hover">Volver al listado con datos</a>
+      </div>
+      <p class="mt-2 text-center sm:text-left"><a href="sp-asistido-add-01-tabla.html" class="text-sm text-codas-accent/90 no-underline hover:underline">Nuevo asistente ADD desde cero</a></p>
+    </div>
+  </footer>
+</body>
+</html>

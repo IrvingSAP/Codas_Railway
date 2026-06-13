@@ -1,0 +1,117 @@
+# CODAS — Reglas del proyecto (Django + Tailwind, solo HTML)
+# ============================================================
+
+# 1. ESTÁNDARES GENERALES
+# ============================================================
+- Stack: Python 3.12+ (compatible con el entorno del repo) y Django 6.x según `requirements.txt` (Django>=6.0,<7).
+- Base de datos: **PostgreSQL** obligatorio en local y producción (`psycopg`); variables en `.env`. **No usar SQLite.** Ver `docs/CODAS_DATABASE.md`.
+- Todas las dependencias Python se instalan solo en el entorno virtual del proyecto (`.venv`) y se declaran en `requirements.txt`.
+- Seguir PEP 8 de forma estricta.
+- Código claro, modular y mantenible.
+- No usar abreviaturas salvo las del dominio (SP, CRUD, PK, FK).
+- No poner lógica de negocio en templates; usar vistas y/o `services/`.
+- Errores de persistencia/consulta: catálogo en `docs/CODAS_UI_MESSAGES.md` y `docs/CODAS_CONTEXTO.md` § 6.4; patrón `OperationResult` + `safe_operation` en `apps/core/services/` (mensaje al usuario vía `messages` → modal del panel). Piloto en código: `apps.company`; no extender al resto de apps sin validar el piloto.
+- Un solo sistema de estilos en front: Tailwind (preferido) o Bootstrap, nunca ambos.
+
+# 2. ARQUITECTURA DJANGO
+# ============================================================
+- Cada app debe incluir como mínimo:
+  - `models.py`, `views.py`, `urls.py`
+  - `templates/<app_name>/`
+  - `services/` para lógica de negocio o procesos complejos
+  - `utils.py` para helpers sin estado de dominio
+  - `forms.py` solo si el equipo introduce formularios Django en esa app (política por defecto: ver sección 4).
+- `services/` es un paquete Python (`__init__.py` donde aplique).
+- Nombres de vistas consistentes:
+  - `list_view`, `create_view`, `update_view`, `delete_view`
+  - `wizard_step1`, `wizard_step2`, `wizard_step3`, etc.
+- Las vistas orquestan HTTP; la lógica de negocio vive en `services/`, no en vistas largas.
+- Wizards: pasos bien separados (URLs o `step` en POST según el diseño acordado) y estado en `session` salvo que se defina otra estrategia.
+
+# 3. MODELOS
+# ============================================================
+- Cuando un modelo requiera auditoría y estado, incluir de forma coherente:
+  - `created_at = DateTimeField(auto_now_add=True)`
+  - `updated_at = DateTimeField(auto_now=True)`
+  - `created_by` / `updated_by`: `ForeignKey` a `AUTH_USER_MODEL` con `on_delete` explícito (p. ej. `SET_NULL` si aplica) y `null=True` donde el primer guardado no tenga usuario.
+  - `status`: `CharField` con `choices` definidos (p. ej. Activo/Inactivo/Pendiente — documentar significado de A/I/P en comentario o constantes).
+- `Meta`: definir `ordering`, `verbose_name` y `verbose_name_plural` cuando aplique.
+- Implementar `__str__` en todos los modelos expuestos en UI o admin.
+
+# 4. VISTAS Y FORMULARIOS
+# ============================================================
+- Política del proyecto: priorizar lectura de datos con `request.POST` / `request.GET` y validación en vistas delgadas + `services/` salvo que en esa app se acuerde usar `forms.py`.
+- No introducir Django Forms de forma proactiva si el módulo no los usa ya; si se añaden, deben tener un motivo claro (validación reutilizable, mismo formulario en varios pasos, etc.).
+- Estructura legible en vistas (comentarios de sección):
+  - # Paso / entrada
+  - # Validaciones (delegar lo pesado a `services/`)
+  - # Persistencia / side effects
+  - # Respuesta (render / redirect)
+- CRUD:
+  - list: paginación y búsqueda cuando existan listados grandes
+  - create: validación + redirect tras éxito
+  - update: carga inicial + validación + guardado
+  - delete: confirmación (template o flujo) antes de borrar
+
+# 5. WIZARDS (ADD / UPDATE / DELETE / SELECT)
+# ============================================================
+- Un template por paso.
+- Estado en `session` (o mecanismo acordado); validar cada paso antes de avanzar.
+- Extraer lógica repetida a funciones o `services/`; no duplicar entre pasos.
+- Los scripts finales se generan al cerrar el flujo, vía servicios.
+- Patrón de orquestación típico (ajustar nombres a la vista real):
+  - GET: mostrar paso 1
+  - POST con step indicado: procesar y validar el paso anterior, avanzar o mostrar errores
+  - Último paso: delegar generación a `services/` y redirigir o mostrar resultado
+
+# 6. GENERACIÓN DE SCRIPTS SQL
+# ============================================================
+- Generación solo en `services/`, no en templates ni en HTML.
+- Archivos orientativos:
+  - `services/generate_update_script.py`
+  - `services/generate_select_script.py`
+  - `services/generate_delete_script.py`
+  - `services/generate_insert_script.py`
+- El resultado generado debe asociarse al modelo de dominio acordado (p. ej. `sp.generated_script` si existe ese campo).
+- Cada script debe incluir cabecera comentada con: fecha, usuario, tabla, operación.
+
+# 7. TEMPLATES
+# ============================================================
+- Tailwind o Bootstrap según sección 1; sin estilos inline salvo excepción justificada.
+- Reutilizar marcaup mediante includes/partials en `templates/core/components/`.
+- Componentes base recomendados:
+  - `input.html`, `textarea.html`, `select.html`, `table.html`, `card.html`, `modal.html`, `alert.html`, `button.html`
+- Herencia de plantillas:
+  - `templates/core/base.html` es la raíz visual.
+  - `templates/core/dashboard.html` debe extender `base.html` (no duplicar el layout completo).
+  - Las pantallas de aplicación extienden `dashboard.html` o `base.html` según necesiten o no el layout de escritorio común.
+
+# 8. ESTILO VISUAL CORPORATIVO
+# ============================================================
+- Dark mode por defecto.
+- Tailwind (orientativo): `bg-gray-900`, `text-gray-200`, `border-gray-700`, `rounded`, `shadow`, `hover:bg-gray-800`, etc.
+- Bootstrap (si se usara): `bg-dark`, `text-white`, `border-secondary`, `shadow`, variantes oscuras de cards.
+
+# 9. REFACTORIZACIÓN (AYUDA DEL ASISTENTE)
+# ============================================================
+- Fomentar: extraer funciones, mover lógica a `services/`, crear o ampliar componentes HTML, eliminar duplicados, mejorar nombres, partir vistas demasiado largas.
+- No hacer: cambiar la arquitectura global sin instrucción explícita; mezclar Bootstrap con Tailwind; mover SQL o lógica de negocio a templates; introducir API REST o capas no solicitadas.
+
+# 10. DOCUMENTACIÓN
+# ============================================================
+- Vistas o flujos complejos: docstring que explique propósito, entradas salientes y efectos secundarios.
+- Wizards complejos: docstring del módulo o del paquete del wizard; README solo si el flujo lo justifica.
+- Servicios: documentar parámetros, retornos y excepciones relevantes.
+- Scripts generados: cabecera obligatoria (ver sección 6).
+
+# 11. BUENAS PRÁCTICAS AL GENERAR CÓDIGO
+# ============================================================
+- Respetar el estilo visual corporativo (sección 8).
+- HTML: preferir componentes en `templates/core/components/`.
+- SQL dinámico: solo desde `services/` dedicados.
+- Modificar vistas: respetar la estructura de pasos y la delegación a servicios.
+- CRUD: mantener convenciones `list/create/update/delete` y nombres de vista alineados con la sección 2.
+
+# 12. CONTEXTO DE NEGOCIO (PRODUCTO)
+# ============================================================
+- Visión, dominio iSeries/BD2, decisiones de alcance y glosario: `docs/CODAS_CONTEXTO.md` (documento vivo; regla Cursor en `.cursor/rules/codas-contexto.mdc`).

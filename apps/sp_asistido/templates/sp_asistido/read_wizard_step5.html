@@ -1,0 +1,243 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — SP Asistido · READ · Paso 5{% endblock %}
+
+{% block header_title %}SP Asistido · READ{% endblock %}
+
+
+
+{% block content %}
+
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+
+    <div>
+
+        <p class="text-xs font-semibold uppercase tracking-wide text-sky-400/90">Orden y paginación (F.5)</p>
+
+        <h2 class="mt-1 text-lg font-semibold text-white">Tipo de lectura, ORDER BY y FETCH</h2>
+
+        <p class="mt-1 text-sm text-gray-500">Seleccione modalidad: <span class="text-gray-300">READ-C</span> usa cursor y permite <span class="text-gray-300">ORDER/FETCH</span>; <span class="text-gray-300">READ-R</span> devuelve un único registro por <span class="text-gray-300">OUT</span> y no utiliza cursor.</p>
+
+    </div>
+
+    {% include "sp_asistido/includes/read_wizard_stepper.html" %}
+
+
+
+    {% if errors %}
+
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+
+    </ul>
+
+    {% endif %}
+
+
+
+    <form id="read-step5-form" method="post" class="w-full space-y-5 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5">
+
+        {% csrf_token %}
+
+        <div class="rounded-lg border border-white/10 bg-slate-950/40 p-4">
+            <p class="mb-2 text-sm font-medium text-sky-200/90">Modalidad de lectura</p>
+            <div class="space-y-2">
+                <label class="flex cursor-pointer items-center gap-2.5 text-sm text-gray-200">
+                    <input type="radio" name="read_mode" value="{{ read_mode_cursor }}" class="h-4 w-4 accent-sky-500 js-read-mode" {% if read_mode == read_mode_cursor %}checked{% endif %}>
+                    READ-C (cursor/result set)
+                </label>
+                <label class="flex cursor-pointer items-center gap-2.5 text-sm text-gray-200">
+                    <input type="radio" name="read_mode" value="{{ read_mode_row }}" class="h-4 w-4 accent-sky-500 js-read-mode" {% if read_mode == read_mode_row %}checked{% endif %}>
+                    READ-R (registro único por OUT)
+                </label>
+            </div>
+        </div>
+
+        <div class="js-cursor-only space-y-4">
+        <p class="text-sm font-medium text-sky-200/90">Columnas del resultado (dirección de orden)</p>
+
+        {% if not order_field_rows %}
+
+        <p class="text-sm text-amber-200/90">No hay columnas de proyección. Vuelva al paso 3 (SELECT).</p>
+
+        {% else %}
+
+        <div class="overflow-x-auto rounded-xl border border-white/10">
+
+            <table class="w-full min-w-[700px] text-left text-sm">
+
+                <thead>
+
+                    <tr class="border-b border-white/10 bg-slate-900/90">
+
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Campo</th>
+
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Tipo</th>
+
+                        <th class="min-w-[9rem] px-3 py-2.5 text-xs text-gray-400">Dirección</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-white/5">
+
+                    {% for row in order_field_rows %}
+
+                    {% with f=row.field %}
+
+                    <tr class="hover:bg-white/5">
+
+                        <td class="px-3 py-2.5 font-mono text-sky-200/90">{{ f.field_name_short }}{% if f.is_key %}<span class="ml-1.5 inline rounded bg-sky-500/20 px-1.5 text-[10px] uppercase">clave</span>{% endif %}</td>
+
+                        <td class="px-3 py-2.5 text-xs text-gray-500">{{ f.get_field_type_display }}{% if f.field_length %}({{ f.field_length }}){% endif %}</td>
+
+                        <td class="px-3 py-2.5 align-middle">
+
+                            <select name="order_dir_{{ f.pk }}" class="h-10 w-full max-w-xs rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-sky-500">
+
+                                <option value=""{% if not row.order_dir %} selected{% endif %}>No ordenar</option>
+
+                                <option value="ASC"{% if row.order_dir == "ASC" %} selected{% endif %}>ASC</option>
+
+                                <option value="DESC"{% if row.order_dir == "DESC" %} selected{% endif %}>DESC</option>
+
+                            </select>
+
+                        </td>
+
+                    </tr>
+
+                    {% endwith %}
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <div class="border-t border-white/10 pt-4">
+
+            <p class="mb-2 text-sm font-medium text-sky-200/90">FETCH (máximo de filas devueltas)</p>
+
+            <fieldset class="space-y-3" aria-label="Límite de filas en FETCH">
+
+                <label class="flex cursor-pointer items-center gap-2.5 text-sm text-gray-200">
+
+                    <input type="radio" name="fetch_mode" value="unlimited" class="h-4 w-4 accent-sky-500 js-fetch-mode" {% if fetch_unlimited %}checked{% endif %}>
+
+                    Sin límite (el script no incluirá <span class="px-0.5 font-mono text-xs">FETCH FIRST</span>)
+
+                </label>
+
+                <div class="flex flex-wrap items-center gap-3 pl-0 sm:pl-7">
+
+                    <label class="flex cursor-pointer items-center gap-2.5 text-sm text-gray-200">
+
+                        <input type="radio" name="fetch_mode" value="limit" class="h-4 w-4 accent-sky-500 js-fetch-mode" {% if not fetch_unlimited %}checked{% endif %}>
+
+                        Máximo de filas
+
+                    </label>
+
+                    <input name="fetch_limit" type="text" inputmode="numeric" value="{{ fetch_limit }}" autocomplete="off" class="js-fetch-limit h-10 w-28 max-w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-sky-200 outline-none focus:border-sky-500" aria-label="Número máximo de filas" placeholder="1–99999"
+
+                    {% if fetch_unlimited %}disabled{% endif %}>
+
+                </div>
+
+            </fieldset>
+
+        </div>
+        </div>
+        <div class="js-row-note rounded-lg border border-emerald-500/20 bg-emerald-950/20 p-3 text-sm text-emerald-200/90">
+            En READ-R se omite ORDER/FETCH y el script devolverá columnas del SELECT como parámetros OUT.
+        </div>
+        <div class="js-row-note rounded-lg border border-emerald-500/20 bg-emerald-950/20 p-3 text-sm text-emerald-200/90">
+            <p class="mb-2 font-medium">Si el WHERE retorna más de un registro:</p>
+            <label class="mb-1 flex cursor-pointer items-center gap-2.5">
+                <input type="radio" name="read_row_policy" value="{{ read_row_policy_error }}" class="h-4 w-4 accent-emerald-500" {% if read_row_policy == read_row_policy_error %}checked{% endif %}>
+                Error controlado (recomendado)
+            </label>
+            <label class="flex cursor-pointer items-center gap-2.5">
+                <input type="radio" name="read_row_policy" value="{{ read_row_policy_first }}" class="h-4 w-4 accent-emerald-500" {% if read_row_policy == read_row_policy_first %}checked{% endif %}>
+                Tomar primer registro
+            </label>
+        </div>
+
+
+
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+
+            <a href="{% url 'sp_asistido:read_step' definition.pk 4 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+
+            <button type="submit" class="rounded-md bg-sky-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-sky-500">Siguiente · Resumen de firma</button>
+
+        </div>
+
+    </form>
+
+    <script>
+
+    (function () {
+
+        var form = document.getElementById('read-step5-form');
+
+        if (!form) return;
+
+        var inp = form.querySelector('.js-fetch-limit');
+        var cursorBlock = form.querySelector('.js-cursor-only');
+        var rowNotes = form.querySelectorAll('.js-row-note');
+
+        function currentMode() {
+            var mode = form.querySelector('input[name="read_mode"]:checked');
+            return mode ? mode.value : '{{ read_mode_cursor }}';
+        }
+
+        function sync() {
+            var isCursor = currentMode() === '{{ read_mode_cursor }}';
+            if (cursorBlock) {
+                cursorBlock.style.display = isCursor ? '' : 'none';
+            }
+            rowNotes.forEach(function (el) {
+                el.style.display = isCursor ? 'none' : '';
+            });
+
+            var pick = form.querySelector('input[name="fetch_mode"]:checked');
+
+            var u = !pick || pick.value === 'unlimited';
+            if (!isCursor) {
+                u = true;
+            }
+
+            if (inp) {
+
+                inp.disabled = u;
+
+                inp.classList.toggle('opacity-50', u);
+
+            }
+
+        }
+
+        form.querySelectorAll('.js-fetch-mode').forEach(function (r) { r.addEventListener('change', sync); });
+        form.querySelectorAll('.js-read-mode').forEach(function (r) { r.addEventListener('change', sync); });
+
+        sync();
+
+    })();
+
+    </script>
+
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+
+{% endblock %}
+
+

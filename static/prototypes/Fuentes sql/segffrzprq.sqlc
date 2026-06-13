@@ -1,0 +1,23 @@
+CREATE TABLE &LIB/SEGFFRZPRQ (
+ idProceso         Numeric     (10)    ,
+ PreRequisito      Char        (10)    ,
+ UsuarioJob        Char        (10)    ,
+ Estado            Char        (01)    ,
+CONSTRAINT PK_RZPRQ PRIMARY KEY (idProceso,PreRequisito))
+RCDFMT   REGRZPRQ;
+
+
+LABEL ON TABLE &LIB/SEGFFRZPRQ  Is
+'Razonabilidad de Cifras - Pre Requisitos';
+
+LABEL ON &LIB/SEGFFRZPRQ (
+idProceso          Text Is  'Id. Proceso',
+PreRequisito       Text Is  'Pre Requisito',
+UsuarioJob         Text Is  'Usuario JOB',
+Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZPRQ (
+idProceso               Is  'Id. Proceso',
+PreRequisito            Is  'Pre Requisito',
+UsuarioJob              Is  'Usuario JOB',
+Estado                  Is  'Estado');

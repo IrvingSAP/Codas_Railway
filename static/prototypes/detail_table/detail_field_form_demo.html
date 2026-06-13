@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Demo · Alta campo (DetailTable)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            'codas-blue-dark': '#0a1a2f',
+            'codas-blue-accent': '#1e90ff',
+            'codas-accent-hover': '#1877d3',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .codas-input {
+      height: 36px; width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0 0.625rem; font-size: 0.875rem; color: white; outline: none;
+    }
+    .codas-input:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+    .codas-textarea {
+      width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0.5rem 0.625rem; font-size: 0.875rem; color: white; outline: none;
+    }
+    .codas-textarea:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+    .codas-field-help { cursor: help; color: rgb(107 114 128); }
+  </style>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 font-sans text-gray-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-gray-400">
+    <span class="font-medium text-amber-200/90">Demo estático</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span>Paso 1 · <code class="rounded bg-gray-800 px-1 text-emerald-400/90">DetailTable</code></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="field_list_demo.html" class="text-codas-blue-accent no-underline hover:underline">Listado campos</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="header_table_form_demo.html" class="text-codas-blue-accent no-underline hover:underline">Cabecera</a>
+  </div>
+
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-blue-dark px-4">
+    <span class="text-sm font-semibold text-white">CODAS</span>
+    <h1 class="text-base font-semibold text-white md:text-lg">Campos · CUSMAST01</h1>
+  </header>
+
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+    <div class="mx-auto max-w-[1400px]">
+      <p class="mb-4 text-sm text-gray-500">
+        <a href="field_list_demo.html" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+      </p>
+
+      <div class="mb-4 rounded-lg border border-white/10 bg-slate-900/40 px-4 py-3 text-xs text-gray-500">
+        Basado en <code class="text-emerald-400/90">detail_field_form.html</code>.
+        Solo campos del núcleo <strong class="text-gray-300">DetailTable</strong>
+        (atributos DDL en <code class="text-amber-200/80">DetailTableDb2Attributes</code> → paso 2).
+      </div>
+
+      <form id="detail-field-form" class="mb-6 flex flex-col gap-3 rounded-xl border border-white/10 bg-slate-900/40 p-4" action="#" method="post" onsubmit="return false;">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2">
+          <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Nuevo campo</span>
+          <span class="font-mono text-[10px] text-gray-600">DetailTable</span>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div class="min-w-0">
+            <label for="field_name_short" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Nombre corto</span>
+              <span class="codas-field-help" title="8–10 caracteres A–Z0–9. Ej: CUSTID">ⓘ</span>
+            </label>
+            <input id="field_name_short" name="field_name_short" type="text" maxlength="10" autocomplete="off" placeholder="CUSTID" class="codas-input font-mono">
+          </div>
+          <div class="min-w-0 sm:col-span-2">
+            <label for="field_name_long" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Nombre largo</span>
+              <span class="codas-field-help" title="10–30 caracteres. Ej: CUSTOMER_IDENTIFIER">ⓘ</span>
+            </label>
+            <input id="field_name_long" name="field_name_long" type="text" maxlength="30" autocomplete="off" placeholder="CUSTOMER_IDENTIFIER" class="codas-input">
+          </div>
+          <div>
+            <label for="field_type" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Tipo DB2</span>
+              <span class="codas-field-help" title="Tipo de columna IBM i / DB2">ⓘ</span>
+            </label>
+            <select id="field_type" name="field_type" class="codas-input cursor-pointer">
+              <option value="CHAR">CHAR</option>
+              <option value="VARCHAR" selected>VARCHAR</option>
+              <option value="CLOB">CLOB</option>
+              <option value="GRAPHIC">GRAPHIC</option>
+              <option value="VARGRAPHIC">VARGRAPHIC</option>
+              <option value="SMALLINT">SMALLINT</option>
+              <option value="INTEGER">INTEGER</option>
+              <option value="BIGINT">BIGINT</option>
+              <option value="DECIMAL">DECIMAL</option>
+              <option value="NUMERIC">NUMERIC</option>
+              <option value="DECFLOAT">DECFLOAT</option>
+              <option value="REAL">REAL</option>
+              <option value="DOUBLE">DOUBLE</option>
+              <option value="DATE">DATE</option>
+              <option value="TIME">TIME</option>
+              <option value="TIMESTAMP">TIMESTAMP</option>
+              <option value="BINARY">BINARY</option>
+              <option value="VARBINARY">VARBINARY</option>
+              <option value="BLOB">BLOB</option>
+              <option value="ROWID">ROWID</option>
+              <option value="XML">XML</option>
+            </select>
+          </div>
+          <div id="wrap-field-length">
+            <label for="field_length" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Longitud</span>
+              <span class="codas-field-help" title="Precisión / caracteres según tipo">ⓘ</span>
+            </label>
+            <input id="field_length" name="field_length" type="number" min="0" value="50" class="codas-input">
+          </div>
+          <div id="wrap-allocate-length">
+            <label for="allocate_length" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>ALLOCATE</span>
+              <span class="codas-field-help" title="Obligatorio VARCHAR/VARGRAPHIC. > 0 y ≤ longitud">ⓘ</span>
+            </label>
+            <input id="allocate_length" name="allocate_length" type="number" min="0" placeholder="40" class="codas-input">
+          </div>
+          <div id="wrap-field-decimals" class="hidden">
+            <label for="decimal_places" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Decimales</span>
+              <span class="codas-field-help" title="Escala DECIMAL / NUMERIC">ⓘ</span>
+            </label>
+            <input id="decimal_places" name="decimal_places" type="number" min="0" class="codas-input">
+          </div>
+          <div class="flex flex-wrap items-end gap-4 pb-1">
+            <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+              <input id="is_key" type="checkbox" name="is_key" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent">
+              <span class="inline-flex items-center gap-1.5">
+                Llave
+                <span class="codas-field-help" title="Participa en PK; indique orden en llave">ⓘ</span>
+              </span>
+            </label>
+          </div>
+          <div id="wrap-order-key" class="hidden">
+            <label for="order_key" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Orden en llave</span>
+              <span class="codas-field-help" title="1, 2, 3… sin repetir en la tabla">ⓘ</span>
+            </label>
+            <input id="order_key" name="order_key" type="number" min="1" value="1" class="codas-input">
+          </div>
+          <div class="min-w-0 sm:col-span-2">
+            <label for="column_label" class="mb-1 text-xs font-medium text-gray-400">
+              Etiqueta <span class="text-gray-600">(LABEL … IS, máx. 20)</span>
+            </label>
+            <input id="column_label" name="column_label" type="text" maxlength="20" class="codas-input" placeholder="Cliente">
+          </div>
+          <div class="min-w-0 sm:col-span-2 xl:col-span-4">
+            <label for="column_text" class="mb-1 text-xs font-medium text-gray-400">
+              Texto largo <span class="text-gray-600">(LABEL … TEXT IS, máx. 50)</span>
+            </label>
+            <input id="column_text" name="column_text" type="text" maxlength="50" class="codas-input" placeholder="Identificador de cliente en maestro">
+          </div>
+          <div class="min-w-0 sm:col-span-2 xl:col-span-4">
+            <label for="notes" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+              <span>Notas</span>
+              <span class="codas-field-help" title="Obligatorio en implementación">ⓘ</span>
+            </label>
+            <textarea id="notes" name="notes" rows="2" class="codas-textarea" placeholder="Observaciones internas del campo"></textarea>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 border-t border-white/5 pt-3">
+          <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">
+            Guardar campo
+          </button>
+          <a href="detail_field_db2_attributes_demo.html"
+             class="inline-flex items-center rounded-md border border-amber-500/40 bg-amber-950/30 px-4 py-2 text-sm font-medium text-amber-100 no-underline transition hover:bg-amber-950/50">
+            Continuar → atributos DB2 (DetailTableDb2Attributes)
+          </a>
+          <button type="button" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-white/5">
+            Limpiar
+          </button>
+        </div>
+      </form>
+
+      <p class="text-xs text-gray-600">
+        Campos excluidos de este paso (viven en <code class="text-gray-500">DetailTableDb2Attributes</code>):
+        nullable, defaults, IDENTITY, CCSID, hidden, signo, único, índice y extensiones PDF.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var typeEl = document.getElementById('field_type');
+      var wrapDec = document.getElementById('wrap-field-decimals');
+      var wrapAlloc = document.getElementById('wrap-allocate-length');
+      var isKey = document.getElementById('is_key');
+      var wrapOrder = document.getElementById('wrap-order-key');
+
+      function syncType() {
+        var t = typeEl.value;
+        wrapDec.classList.toggle('hidden', t !== 'DECIMAL' && t !== 'NUMERIC');
+        wrapAlloc.classList.toggle('hidden', t !== 'VARCHAR' && t !== 'VARGRAPHIC');
+      }
+      function syncKey() {
+        wrapOrder.classList.toggle('hidden', !isKey.checked);
+      }
+      typeEl.addEventListener('change', syncType);
+      isKey.addEventListener('change', syncKey);
+      syncType();
+      syncKey();
+    })();
+  </script>
+</body>
+</html>

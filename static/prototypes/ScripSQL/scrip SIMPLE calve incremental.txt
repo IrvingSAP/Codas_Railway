@@ -1,0 +1,141 @@
+scrip - SIMPLE - con calve auto incremental
+
+
+se define como clave incremental cuando el usuario define un campo "GENERATED ALWAYS AS IDENTITY"
+en detailtable
+
+CREATE OR REPLACE TABLE &LIB.INSUMO_RUTAS_IFS
+
+FOR SYSTEM NAME CTRTBIFS00
+
+(ID_IFS                  FOR COLUMN IDIFS
+
+                         BIGINT
+
+                         GENERATED ALWAYS AS IDENTITY
+
+                         (START WITH 1 INCREMENT BY 1
+
+                          NO MINVALUE NO MAXVALUE
+
+                          NO CYCLE NO ORDER CACHE 1000)
+
+                         IMPLICITLY HIDDEN,
+
+RUTA_IFS                FOR COLUMN RUTAIFS
+
+                         VARCHAR(300) ALLOCATE(270) NOT NULL,
+
+TIPO_OBJETO             FOR COLUMN TIPOBJ
+
+                         CHAR(10) NOT NULL DEFAULT '',
+
+PROPIETARIO             FOR COLUMN PROPOBJ
+
+                         CHAR(10) NOT NULL DEFAULT '',
+
+USUARIO_AUTORIZACION    FOR COLUMN USRAUT
+
+                         CHAR(10) NOT NULL DEFAULT '',
+
+TIPO_AUTORIZACION       FOR COLUMN TIPAUT
+
+                         CHAR(12) NOT NULL DEFAULT '',
+
+LISTA_AUTORIZACION      FOR COLUMN LSTAUT
+
+                         CHAR(10) NOT NULL DEFAULT '',
+
+OPERATIVO               FOR COLUMN OPER
+
+                         CHAR(3) NOT NULL DEFAULT '',
+
+GESTION                 FOR COLUMN GEST
+
+                         CHAR(3) NOT NULL DEFAULT '',
+
+EXISTENTE               FOR COLUMN EXST
+
+                         CHAR(3) NOT NULL DEFAULT '',
+
+ALTERADO                FOR COLUMN ALTR
+
+                         CHAR(3) NOT NULL DEFAULT '',
+
+REFERENCIA              FOR COLUMN REFR
+
+                         CHAR(3) NOT NULL DEFAULT '',
+
+FECHA_REGISTRO          FOR COLUMN FECREG
+
+                         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+) RCDFMT AMGIFS00;
+
+ 
+
+Label On Table &LIB.INSUMO_RUTAS_IFS Is 'Insumo Rutas IFS';
+
+ 
+
+Label On Column &LIB.INSUMO_RUTAS_IFS
+
+(ID_IFS                  Is 'Identificador           ',
+
+RUTA_IFS                Is 'Ruta IFS               ',
+
+TIPO_OBJETO             Is 'Tipo Objeto            ',
+
+PROPIETARIO             Is 'Propietario            ',
+
+USUARIO_AUTORIZACION    Is 'Usuario Autorizacion   ',
+
+TIPO_AUTORIZACION       Is 'Tipo Autorizacion      ',
+
+LISTA_AUTORIZACION      Is 'Lista Autorizacion     ',
+
+OPERATIVO               Is 'Operativo              ',
+
+GESTION                 Is 'Gestion                ',
+
+EXISTENTE               Is 'Existente              ',
+
+ALTERADO                Is 'Alterado               ',
+
+REFERENCIA              Is 'Referencia             ',
+
+FECHA_REGISTRO          Is 'Fecha Registro         '
+
+);
+
+ 
+
+Label On Column &LIB.INSUMO_RUTAS_IFS
+
+(ID_IFS                  Text Is 'Identificador',
+
+RUTA_IFS                Text Is 'Ruta IFS',
+
+TIPO_OBJETO             Text Is 'Tipo Objeto',
+
+PROPIETARIO             Text Is 'Propietario',
+
+USUARIO_AUTORIZACION    Text Is 'Usuario Autorizacion',
+
+TIPO_AUTORIZACION       Text Is 'Tipo Autorizacion',
+
+LISTA_AUTORIZACION      Text Is 'Lista Autorizacion',
+
+OPERATIVO               Text Is 'Operativo',
+
+GESTION                 Text Is 'Gestion',
+
+EXISTENTE               Text Is 'Existente',
+
+ALTERADO                Text Is 'Alterado',
+
+REFERENCIA              Text Is 'Referencia',
+
+FECHA_REGISTRO          Text Is 'Fecha Registro'
+
+);

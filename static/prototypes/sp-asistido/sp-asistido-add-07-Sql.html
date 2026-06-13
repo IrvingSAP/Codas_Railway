@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ADD · Paso 7 de 7 · SQL</title><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script></head>
+<body class="flex h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+<div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></div>
+<header class="flex h-14 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent">← Listado</a><h1 class="text-base font-semibold text-white">Nuevo procedimiento · INSERT</h1></header>
+<div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+  <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Columnas</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Orígenes</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Revisión</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">7</span> SQL</li>
+  </ol>
+</div>
+<main class="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8"><div class="mx-auto max-w-3xl"><h2 class="text-lg font-semibold">7 · CREATE PROCEDURE + INSERT</h2><pre class="mt-4 max-h-[60vh] overflow-auto rounded-xl border border-slate-700 bg-slate-900 p-4 text-xs leading-relaxed text-emerald-200/90"><code>CREATE OR REPLACE PROCEDURE R1DATA.INSCUS00 (
+    IN  P_CUSNAME VARCHAR(40),
+    IN  P_CUSTATUS CHAR(1),
+    OUT P_ERROR_CODE INTEGER,
+    OUT P_ERROR_MSG VARCHAR(200)
+)
+LANGUAGE SQL
+MODIFIES SQL DATA
+SPECIFIC INSCUS0SP1
+BEGIN
+    DECLARE v_sqlstate CHAR(5) DEFAULT '00000';
+    DECLARE v_msg VARCHAR(200) DEFAULT '';
+
+    DECLARE EXIT HANDLER FOR SQLSTATE '23505'
+    BEGIN
+        SET P_ERROR_CODE = 100;
+        SET P_ERROR_MSG  = 'El registro ya existe.';
+    END;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_sqlstate = RETURNED_SQLSTATE, v_msg = MESSAGE_TEXT;
+        SET P_ERROR_CODE = -1;
+        SET P_ERROR_MSG  = 'Error SQLSTATE=' CONCAT v_sqlstate CONCAT ' - ' CONCAT v_msg;
+    END;
+
+    INSERT INTO R1DATA.CUSMAS (CUSNAME, CUSTATUS, CUSZIPC)
+    VALUES (P_CUSNAME, P_CUSTATUS, NULL);
+
+    SET P_ERROR_CODE = 0;
+    SET P_ERROR_MSG  = 'OK';
+END;</code></pre>
+<div class="mt-4 flex gap-2"><button class="rounded border border-slate-600 bg-slate-800/50 px-4 py-2 text-sm">Guardar borrador</button><button class="rounded border border-emerald-500/40 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-200">Descargar .sql</button></div></div></main>
+<footer class="border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-add-06-firma.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><a href="sp-asistido-list-demo.html" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Volver al listado</a></div></footer>
+</body></html>

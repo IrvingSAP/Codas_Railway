@@ -1,0 +1,64 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · DLT · Paso 4{% endblock %}
+{% block header_title %}SP Asistido · DLT{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-rose-400/90">Modo de baja (D.4)</p>
+        <h2 class="mt-1 text-lg font-semibold text-white">Físico (DELETE) o lógico (UPDATE)</h2>
+        <p class="mt-1 text-sm text-gray-500">En modo lógico indique el campo de estado en el detalle y el valor al que se actualizará la fila coincidente con el WHERE.</p>
+    </div>
+    {% include "sp_asistido/includes/dlt_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="w-full space-y-5 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5" id="dlt-mode-form">
+        {% csrf_token %}
+        <fieldset>
+            <legend class="mb-2 text-xs font-medium text-gray-400">Tipo de operación</legend>
+            <div class="flex flex-wrap gap-4">
+                <label class="inline-flex items-center gap-2 text-sm text-gray-200">
+                    <input type="radio" name="mode" value="fisico" class="h-4 w-4 accent-rose-500 mode-radio" {% if mode == "fisico" %}checked{% endif %}> Físico — DELETE
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm text-gray-200">
+                    <input type="radio" name="mode" value="logico" class="h-4 w-4 accent-rose-500 mode-radio" {% if mode == "logico" %}checked{% endif %}> Lógico — UPDATE de estado
+                </label>
+            </div>
+        </fieldset>
+        <div id="logical-fields" class="space-y-3 rounded-lg border border-white/10 p-4 {% if mode != 'logico' %}hidden{% endif %}">
+            <p class="text-xs text-gray-500">Solo aplica en modo lógico.</p>
+            <div>
+                <label class="mb-1 block text-xs text-gray-400" for="id_logical_field">Nombre corto del campo de estado</label>
+                <input id="id_logical_field" name="logical_field" value="{{ logical_field }}" maxlength="128" class="h-10 w-full max-w-xs rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-white outline-none focus:border-codas-blue-accent" placeholder="p. ej. CUSSTAT">
+            </div>
+            <div>
+                <label class="mb-1 block text-xs text-gray-400" for="id_logical_value">Valor de baja</label>
+                <input id="id_logical_value" name="logical_value" value="{{ logical_value }}" maxlength="80" class="h-10 w-full max-w-md rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent" placeholder="p. ej. I">
+            </div>
+        </div>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:dlt_step' definition.pk 3 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <button type="submit" class="rounded-md bg-rose-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-rose-500">Siguiente · Confirmación de riesgo</button>
+        </div>
+    </form>
+    <script>
+    (function () {
+        var form = document.getElementById('dlt-mode-form');
+        if (!form) return;
+        var logical = document.getElementById('logical-fields');
+        function sync() {
+            var v = form.querySelector('input[name="mode"]:checked');
+            if (!logical) return;
+            logical.classList.toggle('hidden', !v || v.value !== 'logico');
+        }
+        form.querySelectorAll('.mode-radio').forEach(function (r) { r.addEventListener('change', sync); });
+        sync();
+    })();
+    </script>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

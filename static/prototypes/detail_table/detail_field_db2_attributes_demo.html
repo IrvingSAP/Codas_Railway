@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Demo · Atributos DB2 (DetailTableDb2Attributes)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            'codas-blue-dark': '#0a1a2f',
+            'codas-blue-accent': '#1e90ff',
+            'codas-accent-hover': '#1877d3',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .codas-input {
+      height: 36px; width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0 0.625rem; font-size: 0.875rem; color: white; outline: none;
+    }
+    .codas-input:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+    .codas-input:disabled { cursor: not-allowed; opacity: 0.45; }
+    .codas-textarea {
+      width: 100%; border-radius: 0.375rem; border: 1px solid rgb(75 85 99);
+      background-color: rgb(17 24 39); padding: 0.5rem 0.625rem; font-size: 0.875rem; color: white; outline: none;
+      min-height: 4.5rem; resize: vertical;
+    }
+    .codas-textarea:focus { border-color: #1e90ff; box-shadow: 0 0 0 1px #1e90ff; }
+    .codas-textarea:disabled { cursor: not-allowed; opacity: 0.45; }
+    .example-out {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem; line-height: 1.45; color: rgb(156 163 175);
+      white-space: pre-wrap;
+    }
+    .attr-row.is-locked { opacity: 0.4; pointer-events: none; }
+    .attr-row.is-udf-active { background-color: rgb(120 53 15 / 0.12); }
+  </style>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 font-sans text-gray-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-gray-400">
+    <span class="font-medium text-amber-200/90">Demo estático</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span>Paso 2 · <code class="rounded bg-gray-800 px-1 text-amber-200/90">DetailTableDb2Attributes</code></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="detail_field_form_demo.html" class="text-codas-blue-accent no-underline hover:underline">← Paso 1 (DetailTable)</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="field_list_demo.html" class="text-codas-blue-accent no-underline hover:underline">Listado campos</a>
+  </div>
+
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-blue-dark px-4">
+    <span class="text-sm font-semibold text-white">CODAS</span>
+    <h1 class="text-base font-semibold text-white md:text-lg">Atributos DB2 · CUSTID</h1>
+  </header>
+
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-4 md:p-6">
+    <div class="mx-auto max-w-[1600px]">
+      <p class="mb-4 text-sm text-gray-500">
+        <a href="detail_field_form_demo.html" class="text-codas-blue-accent no-underline hover:underline">← Volver al formulario de campo</a>
+      </p>
+
+      <div class="mb-4 rounded-lg border border-amber-500/20 bg-amber-950/20 px-4 py-3 text-xs text-amber-100/80">
+        Puede marcar <strong>varios atributos</strong> a la vez. Si activa
+        <code class="text-amber-200/70">user_defined_field</code>, el resto queda deshabilitado y no se tiene en cuenta.
+        Columna de entrada solo cuando «Despliega campo de entrada» = SI.
+      </div>
+
+      <form id="db2-attrs-form" class="rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-6" onsubmit="return false;">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-sm font-semibold text-white">Demo de pantalla · atributos DB2</h2>
+          <span class="font-mono text-[10px] text-gray-600">DetailTableDb2Attributes</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[720px] border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-white/10 text-left text-xs uppercase tracking-wide text-gray-500">
+                <th class="w-10 px-2 py-2" scope="col" title="Activar atributo en el diseño"></th>
+                <th class="min-w-[11rem] px-3 py-2 font-semibold" scope="col">Campos</th>
+                <th class="min-w-[14rem] px-3 py-2 font-semibold" scope="col">Valor / entrada</th>
+                <th class="min-w-[18rem] px-3 py-2 font-semibold" scope="col">Ejemplo de construcción</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+
+              <tr>
+                <td colspan="4" class="bg-slate-800/40 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  Declaraciones y validaciones
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="ccsid" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="ccsid" aria-label="Activar ccsid">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">ccsid</td>
+                <td class="px-3 py-3 align-top">
+                  <input type="number" name="ccsid" min="0" class="attr-input codas-input max-w-xs" placeholder="1208" disabled>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">NOMBRE VARCHAR(50) CCSID 1208
+Útil para UTF-8, EBCDIC, ASCII, etc</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="is_hidden" data-input="no">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="is_hidden" aria-label="Activar is_hidden">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">is_hidden</td>
+                <td class="px-3 py-3 align-top text-gray-600">—</td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">LLAVE_SCRIPT CHAR(32) DEFAULT 'N/A' IMPLICITLY HIDDEN</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="default_sql_expression" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="default_sql_expression" aria-label="Activar default_sql_expression">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">default_sql_expression</td>
+                <td class="px-3 py-3 align-top">
+                  <input type="text" name="default_sql_expression" maxlength="200" class="attr-input codas-input" placeholder="CURRENT TIMESTAMP" disabled>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+IS_ACTIVE SMALLINT DEFAULT 1
+IS_ACTIVE SMALLINT NOT NULL WITH DEFAULT</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="nullable" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="nullable" aria-label="Activar nullable">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">nullable</td>
+                <td class="px-3 py-3 align-top">
+                  <select name="nullable" class="attr-input codas-input max-w-xs cursor-pointer" disabled>
+                    <option value="">—</option>
+                    <option value="1">NOT NULL WITH DEFAUL (Valor por defecto)</option>
+                    <option value="2">NOT NULL (no permite nulos)</option>
+		    <option value="3">NULL (permite nulos)</option>
+
+                  </select>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">IS_ACTIVE SMALLINT NOT NULL WITH DEFAUL , NOT NULL,NULL,</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="is_unique" data-input="no">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="is_unique" aria-label="Activar is_unique">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">is_unique</td>
+                <td class="px-3 py-3 align-top text-gray-600">—</td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">CODIGO_SKU     VARCHAR(30) UNIQUE</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="check_constraint_sql" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="check_constraint_sql" aria-label="Activar check_constraint_sql">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">check_constraint_sql</td>
+                <td class="px-3 py-3 align-top">
+                  <textarea name="check_constraint_sql" rows="3" class="attr-input codas-textarea font-mono text-xs" placeholder="STATUS IN ('A','I','P')" disabled></textarea>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">STATUS CHAR(1) CHECK (STATUS IN ('A','I','P'))</div>
+                </td>
+              </tr>
+                <td class="px-3 py-3 align-top">
+              <tr class="attr-row" data-field="generated_expression" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="generated_expression" aria-label="Activar generated_expression">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">generated_expression</td>
+                <td class="px-3 py-3 align-top">
+                  <textarea name="generated_expression" rows="3" class="attr-input codas-textarea font-mono text-xs" placeholder="TABLE_NAME_SHORT CONCAT '-' CONCAT TABLE_NAME_LONG" disabled></textarea>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">NOMBRE_COMPLETO VARCHAR(120) GENERATED ALWAYS AS (TABLE_NAME_SHORT CONCAT '-' CONCAT TABLE_NAME_LONG)</div>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="4" class="bg-slate-800/40 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  Protección y compresión
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="fieldproc_program" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="fieldproc_program" aria-label="Activar fieldproc_program">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">fieldproc_program</td>
+                <td class="px-3 py-3 align-top">
+                  <input type="text" name="fieldproc_program" maxlength="128" class="attr-input codas-input" placeholder="CODASLIB/ENCRIPTAR_DOC" disabled>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">DOCUMENTO VARCHAR(20) FIELDPROC CODASLIB/ENCRIPTAR_DOC</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="for_bit_data" data-input="no">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="for_bit_data" aria-label="Activar for_bit_data">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">for_bit_data</td>
+                <td class="px-3 py-3 align-top text-gray-600">—</td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">TOKEN VARBINARY(64) FOR BIT DATA</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="compress_mode" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="compress_mode" aria-label="Activar compress_mode">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">compress_mode</td>
+                <td class="px-3 py-3 align-top">
+                  <select name="compress_mode" class="attr-input codas-input max-w-md cursor-pointer" disabled>
+                    <option value="">—</option>
+                    <option value="NONE">Sin compresión</option>
+                    <option value="SYSTEM_DEFAULT">COMPRESS SYSTEM DEFAULT</option>
+                  </select>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">DESCRIPCION VARCHAR(200) COMPRESS SYSTEM DEFAULT</div>
+                </td>
+              </tr>
+
+              <tr class="attr-row" data-field="is_masked" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-codas-blue-accent" data-field="is_masked" aria-label="Activar is_masked">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-gray-200">is_masked</td>
+                <td class="px-3 py-3 align-top">
+                  <input type="text" name="is_masked" maxlength="64" class="attr-input codas-input" placeholder="EMAIL" disabled title="En modelo: mask_function">
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">EMAIL VARCHAR(254) MASKED WITH (FUNCTION 'EMAIL')</div>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="4" class="bg-slate-800/40 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  Definido por el Usuario
+                </td>
+              </tr>
+
+              <tr class="attr-row attr-row-udf" data-field="user_defined_field" data-input="si">
+                <td class="px-2 py-3 align-top">
+                  <input type="checkbox" id="sel-user_defined_field" class="attr-select h-4 w-4 rounded border-gray-600 bg-gray-900 text-amber-400" data-field="user_defined_field" aria-label="Activar user_defined_field">
+                </td>
+                <td class="px-3 py-3 align-top font-mono text-amber-100/90">user_defined_field</td>
+                <td class="px-3 py-3 align-top">
+                  <textarea name="user_defined_field" rows="3" maxlength="255" class="attr-input codas-textarea" placeholder="Definición creada por el usuario" disabled></textarea>
+                </td>
+                <td class="px-3 py-3 align-top">
+                  <div class="example-out">Definido por el usuario, definiciones personales o atributos que no estan presentes en esta seleccion</div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-2 border-t border-white/5 pt-4">
+          <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">
+            Guardar atributos DB2
+          </button>
+          <a href="detail_field_form_demo.html" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">← Paso 1</a>
+          <a href="field_list_demo.html" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Listado</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('db2-attrs-form');
+      var udfSelect = document.getElementById('sel-user_defined_field');
+      var allRows = form.querySelectorAll('.attr-row');
+      var otherRows = form.querySelectorAll('.attr-row:not(.attr-row-udf)');
+      var otherSelects = form.querySelectorAll('.attr-select:not(#sel-user_defined_field)');
+
+      function rowHasInput(row) {
+        return row.getAttribute('data-input') === 'si';
+      }
+
+      function setInputEnabled(row, on) {
+        if (!rowHasInput(row)) return;
+        row.querySelectorAll('.attr-input').forEach(function (el) {
+          el.disabled = !on;
+        });
+      }
+
+      function syncRow(row) {
+        var sel = row.querySelector('.attr-select');
+        var active = sel && sel.checked;
+        row.classList.toggle('bg-white/[0.03]', active);
+        if (rowHasInput(row)) {
+          setInputEnabled(row, active && !udfSelect.checked);
+        }
+      }
+
+      function applyUserDefinedLock() {
+        var udfOn = udfSelect.checked;
+
+        if (udfOn) {
+          otherSelects.forEach(function (cb) {
+            cb.checked = false;
+            cb.disabled = true;
+          });
+          otherRows.forEach(function (row) {
+            row.classList.add('is-locked');
+            setInputEnabled(row, false);
+          });
+          var udfRow = form.querySelector('.attr-row-udf');
+          udfRow.classList.add('is-udf-active');
+          setInputEnabled(udfRow, true);
+        } else {
+          otherSelects.forEach(function (cb) { cb.disabled = false; });
+          otherRows.forEach(function (row) { row.classList.remove('is-locked'); });
+          form.querySelector('.attr-row-udf').classList.remove('is-udf-active');
+          allRows.forEach(syncRow);
+        }
+      }
+
+      form.querySelectorAll('.attr-select').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+          if (cb === udfSelect && udfSelect.checked) {
+            applyUserDefinedLock();
+            return;
+          }
+          if (udfSelect.checked) return;
+          var row = cb.closest('.attr-row');
+          if (row) syncRow(row);
+        });
+      });
+
+      udfSelect.addEventListener('change', applyUserDefinedLock);
+
+      allRows.forEach(function (row) {
+        if (!rowHasInput(row)) return;
+        setInputEnabled(row, false);
+      });
+    })();
+  </script>
+</body>
+</html>

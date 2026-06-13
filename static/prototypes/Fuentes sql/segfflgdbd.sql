@@ -1,0 +1,45 @@
+/*
+ * ***********************************************************************
+ * NOMBRE DE CROGRAMA..: SEGFFLGDBD                                      *
+ * DESCRIPCIÓN.........: ARCHIVO HISTORICO DE DETALLE DE NOVEDADES DE    *
+ *                       DESBLOQUEO AUTOMATICO USUARIOS ISERIES          *
+ * REQUERIMIENTO.......: PMO25818 - IEX_DESBLOQUEO USUARIOS ISERIES      *
+ * SUBDOMINIO..........: RIESGOS Y SEGURIDAD                             *
+ * FECHA DE CREACIÓN...: 19 DE JUNIO DE 2018.                            *
+ * AUTOR...............: ALEXANDER OLARTE MU#OZ.                         *
+ * ***********************************************************************
+ *- REGISTRO Y CAMPOS ------------------------------------------
+*/
+CREATE TABLE   &LIB/SEGFFLGDBD(
+   USUARIO     CHAR (10)   NOT NULL DEFAULT '' ,
+   FECHMODIF   NUMERIC(8)  NOT NULL DEFAULT 0  ,
+   HORAMODIF   NUMERIC(6)  NOT NULL DEFAULT 0  ,
+   ESTADO      NUMERIC(1)  NOT NULL DEFAULT 0  ,
+   CORREO_USU  CHAR (150)  NOT NULL DEFAULT '' ,
+   DETALL_ACC  CHAR (500)  NOT NULL DEFAULT ''
+)
+RCDFMT REGDBDUSU;
+
+/* DESCRIPCIÓN */
+LABEL ON TABLE &LIB/SEGFFLGDBD IS
+'Archivo Detalle Log Desbloqueo Automático Usuarios';
+
+/* DESCRIPCIÓN CAMPOS */
+LABEL ON &LIB/SEGFFLGDBD
+(USUARIO     TEXT IS  'PERFIL DE USUARIO',
+ FECHMODIF   TEXT IS  'FECHA MODIFICACION',
+ HORAMODIF   TEXT IS  'HORA MODIFICACION',
+ ESTADO      TEXT IS  'ESTADO/FASE ACTUAL',
+ CORREO_USU  TEXT IS  'CORREO DE USUARIO',
+ DETALL_ACC  TEXT IS  'DETALLE DE LA ACCION'
+);
+
+/* DESCRIPCIÓN CAMPOS */
+LABEL ON COLUMN &LIB/SEGFFLGDBD
+(USUARIO          IS  'PERFIL_USUARIO',
+ FECHMODIF        IS  'FECHA_MODIF',
+ HORAMODIF        IS  'HORA_MODIF',
+ ESTADO           IS  'ESTADO_ACTUAL',
+ CORREO_USU       IS  'CORREO_USUARIO',
+ DETALL_ACC       IS  'DETALLE_ACCION'
+);

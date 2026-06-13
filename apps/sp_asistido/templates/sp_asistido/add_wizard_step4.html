@@ -1,0 +1,83 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · ADD · Paso 4{% endblock %}
+{% block header_title %}SP Asistido · ADD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="min-w-0 flex-1">
+            <h2 class="text-lg font-semibold text-white">Origen por columna</h2>
+            <p class="mt-1 text-sm text-gray-500">Reglas C.4: NULL con detalle vacío; IN, literal y expresión con detalle obligatorio.</p>
+        </div>
+        <a href="{% url 'sp_asistido:list' %}" class="shrink-0 text-sm text-codas-blue-accent no-underline hover:underline">← Listado</a>
+    </div>
+    {% include "sp_asistido/includes/add_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <div class="w-full overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full min-w-[920px] text-left text-sm">
+                <thead>
+                    <tr class="border-b border-white/10 bg-slate-900/80">
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Columna</th>
+                        <th class="w-44 px-3 py-2.5 text-xs text-gray-400">Origen</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for row in column_rows %}
+                    {% with d=row.detail %}
+                    <tr class="align-top">
+                        <td class="px-3 py-2.5 font-mono text-codas-blue-accent">{{ d.field_name_short }}</td>
+                        <td class="px-3 py-2.5">
+                            <select name="origin_{{ d.pk }}" class="h-9 w-full rounded-md border border-gray-600 bg-slate-900 px-2 text-xs text-white outline-none focus:border-codas-blue-accent js-add-origin" data-target="detail_{{ d.pk }}">
+                                <option value="in" {% if row.origin == "in" %}selected{% endif %}>Parámetro IN</option>
+                                <option value="literal" {% if row.origin == "literal" %}selected{% endif %}>Literal</option>
+                                <option value="null" {% if row.origin == "null" %}selected{% endif %}>NULL</option>
+                                <option value="expr" {% if row.origin == "expr" %}selected{% endif %}>Expresión SQL</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <input type="text" name="detail_{{ d.pk }}" id="detail_{{ d.pk }}" value="{{ row.value }}" class="h-9 w-full min-w-0 rounded-md border border-gray-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200 outline-none focus:border-codas-blue-accent js-add-detail">
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:add_step' definition.pk 3 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white hover:opacity-95">Siguiente · Revisión</button>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+<script>
+(function () {
+  function apply(row) {
+    var sel = row.querySelector('.js-add-origin');
+    var inp = row.querySelector('.js-add-detail');
+    if (!sel || !inp) return;
+    if (sel.value === 'null') {
+      inp.value = '';
+      inp.readOnly = true;
+      inp.classList.add('opacity-60');
+    } else {
+      inp.readOnly = false;
+      inp.classList.remove('opacity-60');
+    }
+  }
+  document.querySelectorAll('.js-add-origin').forEach(function (sel) {
+    var tr = sel.closest('tr');
+    sel.addEventListener('change', function () { apply(tr); });
+    apply(tr);
+  });
+})();
+</script>
+{% endblock %}

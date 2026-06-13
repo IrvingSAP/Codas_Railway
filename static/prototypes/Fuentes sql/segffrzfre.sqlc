@@ -1,0 +1,32 @@
+CREATE TABLE &LIB/SEGFFRZFRE (
+ idProceso         Numeric     (10)    ,
+ idFrecuencia      Numeric     (10)    ,
+ Frecuencia        Char        (01)    ,
+ DiaFrecuencia     VarChar     (05)    ,
+ HoraEjecucion     Decimal    (4,2)    ,
+ TiempoMaxDuracion Decimal    (4,2)    ,
+ Estado            Char        (01)    ,
+CONSTRAINT PK_RZFRE PRIMARY KEY (idProceso,idFrecuencia))
+RCDFMT   REGRZFRE;
+
+
+LABEL ON TABLE &LIB/SEGFFRZFRE  Is
+'Razonabilidad de Cifras - Frecuencias';
+
+LABEL ON &LIB/SEGFFRZFRE (
+idProceso          Text Is  'Id. Proceso',
+idFrecuencia       Text Is  'Id. Frecuencia',
+Frecuencia         Text Is  'Frecuencia',
+DiaFrecuencia      Text Is  'Dia Frecuencia',
+HoraEjecucion      Text Is  'Hora Ejecucion',
+TiempoMaxDuracion  Text Is  'Tiempo Max. Duracion',
+Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZFRE (
+idProceso               Is  'Id. Proceso',
+idFrecuencia            Is  'Id. Frecuencia',
+Frecuencia              Is  'Frecuencia',
+DiaFrecuencia           Is  'Dia Frecuencia',
+HoraEjecucion           Is  'Hora Ejecucion',
+TiempoMaxDuracion       Is  'Tiempo Max. Duracion',
+Estado                  Is  'Estado');

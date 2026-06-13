@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · Campos de diseño (DetailTable)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            'codas-blue-dark': '#0a1a2f',
+            'codas-blue-accent': '#1e90ff',
+            'codas-accent-hover': '#1877d3',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 font-sans text-gray-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-gray-400">
+    <span class="font-medium text-gray-300">Prototipo TableDesign</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="../table-design-header-list-demo.html" class="text-codas-blue-accent no-underline hover:underline">Listado cabeceras</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="font-semibold text-white">Campos · <code class="rounded bg-gray-800 px-1 text-emerald-400/90">DetailTable</code></span>
+  </div>
+
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-blue-dark px-4 md:px-5">
+    <a href="../table-design-header-list-demo.html" class="flex shrink-0 items-center gap-2 no-underline" title="Volver al listado de cabeceras">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">Diseño de tablas DB2 for i</h1>
+    <div class="flex shrink-0 items-center gap-3">
+      <span class="hidden max-w-[12rem] truncate text-sm text-gray-300 sm:inline">US · <span class="text-gray-500">ACME</span></span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white transition hover:border-codas-blue-accent hover:bg-codas-blue-accent/15">Salir</button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-blue-dark min-h-0" aria-label="Menú lateral">
+      <nav class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-4 text-sm" aria-label="Menú principal">
+        <a href="#" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-gray-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg" aria-hidden="true">🏠</span>
+          <span>Inicio / panel</span>
+        </a>
+        <p class="mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Datos / IBM i</p>
+        <a href="../table-design-header-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-codas-blue-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-blue-accent/20 text-lg" aria-hidden="true">▦</span>
+          <span class="leading-tight">Diseño de tablas<br><span class="text-[11px] font-normal text-gray-400">Cabeceras</span></span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain bg-slate-950 p-6 md:p-8">
+      <div class="mx-auto w-full max-w-[1400px]">
+        <!-- Título y acciones (patrón header_table_list) -->
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="max-w-3xl">
+            <h2 class="text-base font-semibold text-white">Campos de la cabecera</h2>
+            <p class="mt-1 text-sm text-gray-500">
+              Demo alineada a <code class="rounded bg-gray-800 px-1 text-xs text-emerald-400/90">header_table_list.html</code> (Tailwind, KPIs, bordes <span class="text-gray-400">white/10</span>, acentos <span class="text-codas-blue-accent">codas-blue-accent</span>).
+              Ámbito: compañía del perfil; cabecera <strong class="text-gray-400">CUSMAS</strong> (ficticia).
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+            <a href="../table-design-header-list-demo.html" class="rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline transition hover:bg-white/5">
+              ← Volver al listado
+            </a>
+            <a href="#" class="rounded-md border border-white/10 bg-codas-blue-accent/90 px-4 py-2.5 text-center text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">
+              Ver script DDL
+            </a>
+          </div>
+        </div>
+
+        <!-- Cabecera en solo lectura (bloque tipo tarjetas del listado) -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3 sm:col-span-2">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Cabecera · nombre corto</p>
+            <p class="mt-1 font-mono text-xl font-semibold text-codas-blue-accent">CUSMAS</p>
+            <p class="mt-0.5 truncate text-sm text-gray-400" title="Maestro de clientes">Maestro de clientes corporativos</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Librería / esquema</p>
+            <p class="mt-1 font-mono text-lg text-white">R1DATA</p>
+            <p class="mt-0.5 text-xs text-gray-500"><code class="text-gray-400">schema</code> en cabecera</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Script / llave cabecera</p>
+            <p class="mt-1 text-sm text-emerald-400">Script pendiente</p>
+            <p class="mt-0.5 text-xs text-gray-500"><span class="codas-inline-pk">PK</span> definida por campos</p>
+          </div>
+        </div>
+
+        <!-- Aviso bloqueo (alternar en implementación real según §9 CODAS_TABLE_DESIGN) -->
+        <div class="mb-6 hidden rounded-xl border border-amber-500/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-200/90" id="demo-readonly-banner" role="status">
+          <strong class="text-amber-100">Solo lectura (demo):</strong> cabecera con script generado o inactiva ocultaría el formulario y deshabilitaría acciones de mutación.
+        </div>
+
+        <!-- Formulario alta / edición (estilo filtros del listado) -->
+        <form class="mb-6 flex flex-col gap-3 rounded-xl border border-white/10 bg-slate-900/40 p-4" action="#" method="post" aria-label="Alta o edición de campo">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2">
+            <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Nuevo campo</span>
+            <span class="text-xs text-gray-600">POST + CSRF en implementación · validación servidor + opcional JS tipo DB2</span>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="min-w-0 sm:col-span-1">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_short">Nombre corto</label>
+              <input id="f_short" name="field_name_short" type="text" placeholder="ej. CUSTID"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white placeholder:text-gray-600 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div class="min-w-0 sm:col-span-2">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_long">Nombre largo</label>
+              <input id="f_long" name="field_name_long" type="text" placeholder="Identificador único de cliente"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white placeholder:text-gray-600 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_type">Tipo DB2</label>
+              <select id="f_type" name="field_type"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="CHAR">CHAR</option>
+                <option value="VARCHAR" selected>VARCHAR</option>
+                <option value="INTEGER">INTEGER</option>
+                <option value="DECIMAL">DECIMAL</option>
+                <option value="DATE">DATE</option>
+              </select>
+            </div>
+            <div id="wrap-length">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_length">Longitud</label>
+              <input id="f_length" name="length" type="number" min="1" value="36"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div id="wrap-decimals" class="hidden">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_decimals">Decimales</label>
+              <input id="f_decimals" name="decimal_places" type="number" min="0" value="2"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div class="flex items-end gap-4 pb-1">
+              <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                <input type="checkbox" name="nullable" class="rounded border-gray-600 bg-gray-900 text-codas-blue-accent focus:ring-codas-blue-accent">
+                Nullable
+              </label>
+              <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                <input id="f_is_key" type="checkbox" name="is_key" class="rounded border-gray-600 bg-gray-900 text-codas-blue-accent focus:ring-codas-blue-accent">
+                Llave
+              </label>
+            </div>
+            <div id="wrap-order-key" class="hidden">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_order_key">Orden en llave</label>
+              <input id="f_order_key" name="order_key" type="number" min="1" value="1"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div class="min-w-0 sm:col-span-2 xl:col-span-2">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_desc">Descripción</label>
+              <input id="f_desc" name="field_description" type="text"
+                class="h-9 w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+            </div>
+            <div class="min-w-0 sm:col-span-2 xl:col-span-4">
+              <label class="mb-1 block text-xs font-medium text-gray-400" for="f_notes">Notas</label>
+              <textarea id="f_notes" name="notes" rows="2"
+                class="w-full rounded-md border border-gray-600 bg-gray-900 px-2.5 py-2 text-sm text-white placeholder:text-gray-600 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent" placeholder="Opcional"></textarea>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+            <button type="button" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">Guardar campo</button>
+            <button type="button" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-white/5">Limpiar</button>
+            <button type="button" class="ml-auto text-xs text-gray-500 underline decoration-dotted hover:text-gray-400" title="Demo UI" onclick="document.getElementById('demo-readonly-banner').classList.toggle('hidden')">Alternar banner solo lectura</button>
+          </div>
+        </form>
+
+        <!-- Tabla de campos (mismo contenedor que listado cabeceras) -->
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[960px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Ord.</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre corto</th>
+                  <th class="min-w-[10rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre largo</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Tipo</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Long.</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Dec.</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Null</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Llave</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Ord. llave</th>
+                  <th class="sticky right-0 z-10 bg-slate-900/95 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">1</td>
+                  <td class="px-3 py-3 font-mono text-sm font-medium text-codas-blue-accent">CUSTID</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="Identificador de cliente">Identificador de cliente</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 font-mono text-xs text-slate-200">VARCHAR</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">36</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="px-3 py-3 text-center text-xs text-slate-500">No</td>
+                  <td class="px-3 py-3 text-center"><span class="codas-inline-pk">PK</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">1</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <button type="button" class="text-codas-blue-accent hover:underline">Editar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-400 hover:text-rose-400 hover:underline">Eliminar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-500 hover:text-gray-300" disabled title="Primera fila">↑</button>
+                    <button type="button" class="text-slate-500 hover:text-gray-300">↓</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">2</td>
+                  <td class="px-3 py-3 font-mono text-sm font-medium text-codas-blue-accent">CUSTNM</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300">Nombre comercial</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 font-mono text-xs text-slate-200">VARCHAR</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">80</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="px-3 py-3 text-center text-xs text-emerald-400/80">Sí</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <button type="button" class="text-codas-blue-accent hover:underline">Editar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-400 hover:text-rose-400 hover:underline">Eliminar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-500 hover:text-gray-300">↑</button>
+                    <button type="button" class="text-slate-500 hover:text-gray-300">↓</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">3</td>
+                  <td class="px-3 py-3 font-mono text-sm font-medium text-codas-blue-accent">CRLMT</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300">Límite de crédito</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 font-mono text-xs text-slate-200">DECIMAL</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">15</td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">2</td>
+                  <td class="px-3 py-3 text-center text-xs text-emerald-400/80">Sí</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="px-3 py-3 text-center text-slate-500">—</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <button type="button" class="text-codas-blue-accent hover:underline">Editar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-400 hover:text-rose-400 hover:underline">Eliminar</button>
+                    <span class="text-slate-600"> · </span>
+                    <button type="button" class="text-slate-500 hover:text-gray-300">↑</button>
+                    <button type="button" class="text-slate-500 hover:text-gray-300" disabled title="Última fila">↓</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500">
+            <p><span class="text-slate-500">Campos definidos:</span> <span class="font-medium text-slate-300">3</span>
+              <span class="mx-2 text-slate-600">·</span>
+              Reordenar con POST atómico (sin valores negativos en <code class="text-emerald-400/80">order_reg</code>).</p>
+          </div>
+        </div>
+
+        <p class="mt-6 rounded-lg border border-white/5 bg-slate-900/30 px-4 py-3 text-xs text-slate-500">
+          <strong class="text-slate-400">Referencias:</strong>
+          <a href="../../../docs/CODAS_TABLE_DESIGN.md" class="text-codas-blue-accent hover:underline">CODAS_TABLE_DESIGN.md</a> § 9 ·
+          legado <code class="text-emerald-400/80">static/prototypes/DetailTables/</code> ·
+          plantilla real listado <code class="text-emerald-400/80">header_table_list.html</code>.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .codas-inline-pk {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 0.25rem;
+      background: color-mix(in oklab, #f59e0b 15%, transparent);
+      padding: 0.125rem 0.375rem;
+      font-size: 0.75rem;
+      line-height: 1rem;
+      color: #fde68a;
+    }
+  </style>
+  <script>
+    (function () {
+      var type = document.getElementById('f_type');
+      var wrapLen = document.getElementById('wrap-length');
+      var wrapDec = document.getElementById('wrap-decimals');
+      var isKey = document.getElementById('f_is_key');
+      var wrapOk = document.getElementById('wrap-order-key');
+      function syncType() {
+        var v = type.value;
+        var needsLen = v === 'CHAR' || v === 'VARCHAR' || v === 'DECIMAL';
+        var needsDec = v === 'DECIMAL';
+        wrapLen.classList.toggle('hidden', !needsLen);
+        wrapDec.classList.toggle('hidden', !needsDec);
+      }
+      function syncKey() {
+        wrapOk.classList.toggle('hidden', !isKey.checked);
+      }
+      type.addEventListener('change', syncType);
+      isKey.addEventListener('change', syncKey);
+      syncType();
+      syncKey();
+    })();
+  </script>
+</body>
+</html>

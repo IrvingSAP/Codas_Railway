@@ -1,0 +1,109 @@
+----------------------------------------------------------
+ SCRIPT....: CREAR TABLA BASE.                          --
+ÓN.........: TABLA DE CONTROL, MONITOREO DE DEPURACIONES--
+TO.........: TABLE                                      --
+ENTO.......: EVC00032-TRANSVERSALES ISERIES.            --
+O..........: TRANSVERSALES DE APOYO ISERIES.       --
+CREACIÓN...: MAYO  2023                                 --
+...........: IRVING CIFUENTES                           --
+ATOS RELACIONAL:  DB2 FOR I                             --
+----------------------------------------------------------
+IONES        :                                          --
+MODIFICACIÓN :                                          --
+...........  :                                          --
+ÓN ......... :                                          --
+ENTO.........:                                          --
+----------------------------------------------------------
+
+ LIBRERIA DE TRABAJO
+T SCHEMA &LIB;
+
+LA CONTROL MONITOREO DEPURACIONES
+REPLACE TABLE &LIB/CONTROL_MONITOREO_DEPURACIONES
+ NAME SEGTBMONCT(
+
+ DE CAMPOS
+PURADOR       FOR COLUMN IDPROCESO  CHAR(10)
+              NOT NULL DEFAULT '' ,
+
+IO_PLAN       FOR COLUMN FECINIPLA  DATE
+              NOT NULL DEFAULT CURRENT DATE ,
+
+O_PLAN        FOR COLUMN HORINIPLAN TIME
+              NOT NULL DEFAULT CURRENT TIME ,
+
+_PROCESO      FOR COLUMN FRECUENCIA CHAR(1)
+              NOT NULL DEFAULT '' ,
+
+O_EJECUCION   FOR COLUMN HORAINIEJE TIMESTAMP
+              NOT NULL DEFAULT CURRENT TIMESTAMP ,
+
+JECUCION      FOR COLUMN HORAFINEJE TIMESTAMP
+              NOT NULL DEFAULT CURRENT TIMESTAMP ,
+
+CUCION        FOR COLUMN TIMEEJECUC NUMERIC (06,0)
+              NOT NULL DEFAULT 0 ,
+
+ALIDACION     FOR COLUMN HORAULTVAL TIMESTAMP
+              NOT NULL DEFAULT CURRENT TIMESTAMP ,
+
+CESO          FOR COLUMN ESTPROCESO CHAR(10)
+              NOT NULL DEFAULT '' ,
+
+ACION         FOR COLUMN TIPDEPUR CHAR(10)
+              NOT NULL DEFAULT '' ,
+
+              FOR COLUMN DATOSJOB CHAR(28)
+              NOT NULL DEFAULT '' ,
+
+N_PROCESO     FOR COLUMN OBSERPRO VARCHAR(100)
+              NOT NULL DEFAULT '',
+
+IMARIA
+ SEGTBMONCT_PK PRIMARY KEY(PROCESO_DEPURADOR)
+
+
+ DEL REGISTRO
+ONCT;
+
+ DE LA TABLA
+TABLE &LIB/SEGTBMONCT IS
+NTROL DEPURACIONES';
+
+N TABLE &LIB/SEGTBMONCT IS
+TROL DEPURACIONES';
+
+DE TEXTO DE LOS CAMPOS
+COLUMN  &LIB/SEGTBMONCT
+
+DEPURADOR      IS     'PROCESO             DEPURADOR' ,
+ICIO_PLAN      IS     'FECHA INICIO        PLANIFICDA' ,
+CIO_PLAN       IS     'HORA INICIO         PLANIFICADA' ,
+IA_PROCESO     IS     'FRECUENCIA DEL      PROCESO' ,
+CIO_EJECUCION  IS     'HORA INICIO DE      EJECUCION' ,
+_EJECUCION     IS     'HORA FIN DE         EJECUCION' ,
+JECUCION       IS     'TIEMPO DE           EJECUCION',
+_VALIDACION    IS     'HORA ULTIMA         VALIDACION',
+ROCESO         IS     'ESTADO DEL          PROCESO',
+URACION        IS     'TIPO DE             DEPURACION',
+B              IS     'DATOS DEL           JOB',
+ION_PROCESO    IS     'OBSERVACIONES DEL   PROCESO'
+
+
+
+DE TEXTO DE LOS CAMPOS
+COLUMN &LIB/SEGTBMONCT
+
+DEPURADOR      TEXT IS  'CODIGO DEL PROCESO DEPURADOR' ,
+ICIO_PLAN      TEXT IS  'FECHA INICIO PLANIFICDA' ,
+CIO_PLAN       TEXT IS  'HORA INICIO PLANIFICADA' ,
+IA_PROCESO     TEXT IS  'FRECUENCIA DEL PROCESO' ,
+CIO_EJECUCION  TEXT IS  'HORA INICIO DE EJECUCION' ,
+_EJECUCION     TEXT IS  'HORA FIN DE EJECUCION' ,
+JECUCION       TEXT IS  'TIEMPO DE EJECUCION',
+_VALIDACION    TEXT IS  'HORA ULTIMA VALIDACION',
+ROCESO         TEXT IS  'ESTADO: ACTIVO, HOLD, SCD, ETC..',
+URACION        TEXT IS  'DEPURACION: ARCHIVO/IFS',
+B              TEXT IS  'DATOS: NUMERO/USURIO/TRABAJO',
+ION_PROCESO    TEXT IS  'OBSERVACIONES'
+

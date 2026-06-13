@@ -1,0 +1,30 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Facturación{% endblock %}
+{% block header_title %}Facturación{% endblock %}
+
+{% block billing_content %}
+<div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <a href="{% url 'billing:plan_list' %}" class="group rounded-xl border border-white/10 bg-slate-900/50 p-5 no-underline shadow-sm transition hover:border-codas-blue-accent/50 hover:bg-slate-900/80">
+        <h2 class="text-base font-semibold text-white">Planes</h2>
+        <p class="mt-2 text-sm text-gray-400">Catálogo de precios y periodos</p>
+        <p class="mt-3 text-sm text-codas-blue-accent group-hover:underline">Abrir →</p>
+    </a>
+    <a href="{% url 'billing:subscription_list' %}" class="group rounded-xl border border-white/10 bg-slate-900/50 p-5 no-underline shadow-sm transition hover:border-codas-blue-accent/50 hover:bg-slate-900/80">
+        <h2 class="text-base font-semibold text-white">Suscripciones</h2>
+        <p class="mt-2 text-sm text-gray-400">Licencia por compañía (1:1)</p>
+        <p class="mt-3 text-sm text-codas-blue-accent group-hover:underline">Abrir →</p>
+    </a>
+    <a href="{% url 'billing:subscriptioncontact_list' %}" class="group rounded-xl border border-white/10 bg-slate-900/50 p-5 no-underline shadow-sm transition hover:border-codas-blue-accent/50 hover:bg-slate-900/80">
+        <h2 class="text-base font-semibold text-white">Contactos</h2>
+        <p class="mt-2 text-sm text-gray-400">Hasta 3 por suscripción</p>
+        <p class="mt-3 text-sm text-codas-blue-accent group-hover:underline">Abrir →</p>
+    </a>
+    <a href="{% url 'billing:payment_list' %}" class="group rounded-xl border border-white/10 bg-slate-900/50 p-5 no-underline shadow-sm transition hover:border-codas-blue-accent/50 hover:bg-slate-900/80">
+        <h2 class="text-base font-semibold text-white">Pagos</h2>
+        <p class="mt-2 text-sm text-gray-400">Registro de cobros</p>
+        <p class="mt-3 text-sm text-codas-blue-accent group-hover:underline">Abrir →</p>
+    </a>
+</div>
+<p class="text-sm text-gray-500">Alta y edición de catálogo y suscripciones: perfil <strong class="text-gray-400">superusuario (SU)</strong>. Consulta según alcance para administrador de compañía (AC).</p>
+{% endblock %}

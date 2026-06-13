@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · DLT · Paso 2 de 6 · Tabla</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400"><span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-rose-300">Borrar (DLT)</span></span></div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a><h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · DELETE</h1></header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-rose-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-rose-500/30 text-white">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> WHERE</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Modo</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Confirmación</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">2 · Elegir HeaderTable</h2>
+      <p class="mt-1 text-sm text-slate-500">Regla de diseño: últimas 25 tablas por fecha de creación (desc) + búsqueda por nombre.</p>
+      <div class="mt-4 rounded-xl border border-rose-500/20 bg-rose-950/10 p-3">
+        <label for="dlt02-search-table" class="mb-1 block text-xs font-medium text-slate-400">Buscar por nombre de tabla</label>
+        <input id="dlt02-search-table" type="search" placeholder="Ej. CUSMAS, PAYHDR, INVL..." class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-slate-600">
+      </div>
+      <div id="dlt02-table-list" class="mt-4 space-y-2" role="radiogroup">
+        <label class="js-table-item flex gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-3" data-name="CUSMAS"><input type="radio" name="hdr" checked><span><span class="font-mono text-codas-accent">CUSMAS</span> · R1DATA <span class="text-[11px] text-slate-500">· 2026-04-24 09:15</span></span></label>
+        <label class="js-table-item flex gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-3" data-name="PAYHDR"><input type="radio" name="hdr"><span><span class="font-mono text-codas-accent">PAYHDR</span> · R1DATA <span class="text-[11px] text-slate-500">· 2026-04-24 08:41</span></span></label>
+        <label class="js-table-item flex gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-3" data-name="INVL01"><input type="radio" name="hdr"><span><span class="font-mono text-codas-accent">INVL01</span> · STOCK <span class="text-[11px] text-slate-500">· 2026-04-24 08:10</span></span></label>
+        <label class="js-table-item flex gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-3" data-name="CUSARC"><input type="radio" name="hdr"><span><span class="font-mono text-codas-accent">CUSARC</span> · R1DATA <span class="text-[11px] text-slate-500">· 2026-04-24 07:55</span></span></label>
+        <label class="js-table-item flex gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-3" data-name="ORDHDR"><input type="radio" name="hdr"><span><span class="font-mono text-codas-accent">ORDHDR</span> · SALES <span class="text-[11px] text-slate-500">· 2026-04-24 07:33</span></span></label>
+      </div>
+      <p id="dlt02-empty-search" class="mt-3 hidden rounded-lg border border-amber-500/20 bg-amber-950/20 px-3 py-2 text-xs text-amber-200/90">Sin resultados para la búsqueda actual.</p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-dlt-01-name-sp.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><a href="sp-asistido-dlt-03-where.html" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · WHERE</a></div></footer>
+  <script>(function(){var i=document.getElementById("dlt02-search-table"),it=[].slice.call(document.querySelectorAll("#dlt02-table-list .js-table-item")),e=document.getElementById("dlt02-empty-search");function n(s){return (s||"").toLowerCase();}function s(){it.forEach(function(x){var on=x.querySelector('input[type="radio"]').checked;x.classList.toggle("border-2",on);x.classList.toggle("border-rose-500/50",on);x.classList.toggle("bg-rose-950/20",on);});}function f(){var q=n(i.value.trim()),v=0;it.forEach(function(x){var ok=n(x.getAttribute("data-name")).indexOf(q)!==-1;x.classList.toggle("hidden",!ok);if(ok)v++;});e.classList.toggle("hidden",v!==0);}it.forEach(function(x){x.querySelector('input[type="radio"]').addEventListener("change",s);});i.addEventListener("input",f);s();f();})();</script>
+</body>
+</html>

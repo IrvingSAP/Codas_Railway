@@ -1,0 +1,62 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Planes{% endblock %}
+{% block header_title %}Planes{% endblock %}
+
+{% block billing_content %}
+<p class="mb-4 text-sm text-gray-500">
+    <a href="{% url 'billing:hub' %}" class="text-codas-blue-accent no-underline hover:underline">← Facturación</a>
+</p>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h2 class="text-base font-semibold text-white">Catálogo de planes</h2>
+    {% if can_crud %}
+    <a href="{% url 'billing:plan_create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">+ Nuevo plan</a>
+    {% endif %}
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Código</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Nombre</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Periodo</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-center font-semibold text-gray-300">Activo</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for p in plans %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3 font-mono text-sm text-codas-blue-accent">{{ p.code }}</td>
+                    <td class="px-4 py-3 font-medium text-white">{{ p.name }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ p.get_billing_period_display }}</td>
+                    <td class="px-4 py-3 text-center">
+                        {% if p.is_active %}
+                        <span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Sí</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-gray-600/40 px-2 py-0.5 text-xs text-gray-400">No</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{% url 'billing:plan_detail' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        {% if can_crud %}
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:plan_update' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:plan_delete' p.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500">No hay planes.{% if can_crud %} Cree el primero.{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

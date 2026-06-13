@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · SP Asistido · Listado</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo SP Asistido</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="font-semibold text-codas-accent">Ruta producto: <code class="rounded bg-slate-800 px-1.5 py-0.5 text-codas-accent/90">/panel/sp-asistido/</code></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-empty-demo.html" class="text-codas-accent no-underline hover:underline">Ver listado vacío (B.6)</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-read-01-name-sp.html" class="text-sky-300/90 no-underline hover:underline">Asistente READ (F.1–F.7)</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-add-01-name-sp.html" class="text-emerald-300/90 no-underline hover:underline">Asistente ADD (C.1–C.7)</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-modelo-tablas-demo.html" class="text-violet-300/90 no-underline hover:underline">Modelo SP Asistido (demo tablas)</a>
+  </div>
+
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4 md:px-5">
+    <a href="../table-design-header-list-demo.html" class="flex shrink-0 items-center gap-2 no-underline" title="Ir a otro prototipo">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">Store procedure asistido</h1>
+    <div class="flex shrink-0 items-center gap-2 text-xs sm:gap-3 sm:text-sm">
+      <span class="hidden max-w-[14rem] truncate rounded border border-sky-500/20 bg-sky-950/40 px-2 py-1 text-sky-200 sm:inline" title="Política aprobada: AS / US / AC (panel SP; mensajes alineados a table_design o textos propios SP)">AC · <span class="text-slate-300">DemoCorp S.A.</span></span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white hover:border-codas-accent hover:bg-codas-accent/15">Salir</button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-2 overflow-y-auto p-4 text-sm" aria-label="Menú">
+        <a href="../table-design-header-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">▦</span>
+          <span class="leading-tight">Diseño de tablas</span>
+        </a>
+        <a href="sp-asistido-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-codas-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline" aria-current="page">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-accent/25 text-base">⚡</span>
+          <span class="leading-tight">SP asistido<br><span class="text-[11px] font-normal text-slate-400">IBM i / DB2</span></span>
+        </a>
+        <p class="mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Convención UI (A.3)</p>
+        <ul class="space-y-1 px-1 text-[11px] text-slate-500">
+          <li><span class="inline-block w-2 h-2 rounded-sm bg-sky-400 align-middle mr-1"></span> <strong class="text-slate-300">Leer</strong> · READ / SELECT</li>
+          <li><span class="inline-block w-2 h-2 rounded-sm bg-emerald-400 align-middle mr-1"></span> <strong class="text-slate-300">Añadir</strong> · ADD / INSERT</li>
+          <li><span class="inline-block w-2 h-2 rounded-sm bg-amber-400 align-middle mr-1"></span> <strong class="text-slate-300">Cambiar</strong> · UPD / UPDATE</li>
+          <li><span class="inline-block w-2 h-2 rounded-sm bg-rose-400 align-middle mr-1"></span> <strong class="text-slate-300">Borrar</strong> · DLT / DELETE</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-950 px-6 pt-6 pb-10 md:px-8 md:pt-8 md:pb-12">
+      <div class="mx-auto w-full max-w-[1600px]">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="max-w-3xl">
+            <h2 class="text-base font-semibold text-white">Procedimientos almacenados (definiciones)</h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Demo del <strong class="text-slate-400">listado principal (B.1–B.6)</strong> · Paquete Django aprobado: <code class="rounded bg-slate-800 px-1 py-0.5 text-xs text-emerald-300">apps.sp_asistido</code>.
+              <strong class="font-medium text-slate-400">Ámbito:</strong> en producción el listado filtrará por <code class="text-emerald-300/90">company_id</code> del perfil (B.5); no se muestra columna «Compañía»: todas las filas son de la compañía del usuario.
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-stretch sm:justify-end">
+            <!-- B.4: Nuevo con selector de operación -->
+            <div class="relative min-w-[min(100%,280px)]">
+              <label class="mb-1.5 block text-xs font-medium text-slate-500 sm:sr-only">Nuevo procedimiento (B.4)</label>
+              <select
+                class="h-[44px] w-full cursor-pointer rounded-md border-2 border-codas-accent/50 bg-codas-accent/10 px-3 pr-8 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-codas-accent"
+                title="Demo: al implementar, aquí se abrirá el asistente de la operación elegida"
+              >
+                <option value="">+ Nuevo procedimiento…</option>
+                <option value="read">Leer (READ) — consulta</option>
+                <option value="add">Añadir (ADD) — INSERT</option>
+                <option value="upd">Cambiar (UPD) — UPDATE</option>
+                <option value="dlt">Borrar (DLT) — DELETE</option>
+              </select>
+            </div>
+            <div class="flex items-end gap-2">
+              <button type="button" class="h-[44px] rounded-md border border-slate-600 px-4 text-sm text-slate-300 hover:border-slate-500 hover:bg-white/5" title="Misma idea que otros listados">Exportar CSV</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Atajos visuales: cuatro entradas claras (alternativa B.4) -->
+        <div class="mb-6 flex flex-wrap gap-2" aria-label="Inicio rápido por operación">
+          <span class="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:w-auto sm:mr-2">Inicio rápido</span>
+          <a href="sp-asistido-read-01-name-sp.html" class="inline-flex items-center gap-1.5 rounded-md border border-sky-500/30 bg-sky-950/40 px-3 py-2 text-xs font-medium text-sky-200 no-underline hover:bg-sky-500/20">Leer (READ)</a>
+          <a href="sp-asistido-add-01-name-sp.html" class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-950/40 px-3 py-2 text-xs font-medium text-emerald-200 no-underline hover:bg-emerald-500/20">Añadir (ADD)</a>
+          <a href="sp-asistido-upd-01-name-sp.html" class="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-950/40 px-3 py-2 text-xs font-medium text-amber-200 no-underline hover:bg-amber-500/20">Cambiar (UPD)</a>
+          <a href="sp-asistido-dlt-01-name-sp.html" class="inline-flex items-center gap-1.5 rounded-md border border-rose-500/30 bg-rose-950/40 px-3 py-2 text-xs font-medium text-rose-200 no-underline hover:bg-rose-500/20">Borrar (DLT)</a>
+        </div>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">En ámbito (demo)</p>
+            <p class="mt-1 text-2xl font-semibold text-white">6</p>
+            <p class="mt-0.5 text-xs text-slate-500">Definiciones SP de la compañía con filtros actuales</p>
+          </div>
+          <div class="rounded-xl border border-sky-500/15 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Leer (READ)</p>
+            <p class="mt-1 text-2xl font-semibold text-sky-300">2</p>
+            <p class="mt-0.5 text-xs text-slate-500">Procedimientos de consulta</p>
+          </div>
+          <div class="rounded-xl border border-emerald-500/15 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Listos / generados</p>
+            <p class="mt-1 text-2xl font-semibold text-emerald-400">3</p>
+            <p class="mt-0.5 text-xs text-slate-500">Script emitido o validado (demo)</p>
+          </div>
+          <div class="rounded-xl border border-amber-500/15 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Borradores</p>
+            <p class="mt-1 text-2xl font-semibold text-amber-200">1</p>
+            <p class="mt-0.5 text-xs text-slate-500">Aún no exportados a IBM i</p>
+          </div>
+        </div>
+
+        <form class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4" aria-label="Filtros de listado (B.2)">
+          <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
+            <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Filtros</span>
+            <span class="text-xs text-slate-600">Operación, tabla, texto, orden, paginación (B.2 · B.3)</span>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
+            <div class="min-w-0 xl:col-span-2">
+              <label class="mb-1 block text-xs font-medium text-slate-400">Buscar texto (B.2)</label>
+              <input type="search" placeholder="Nombre del SP, esquema, tabla de diseño, notas…" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Operación (B.2)</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                <option value="">Todas</option>
+                <option value="read">Leer (READ)</option>
+                <option value="add">Añadir (ADD)</option>
+                <option value="upd">Cambiar (UPD)</option>
+                <option value="dlt">Borrar (DLT)</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Tabla de diseño (B.2)</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                <option value="">Todas (HeaderTable en compañía)</option>
+                <option>CUSMAS — R1DATA</option>
+                <option>PAYHDR — R1DATA</option>
+                <option>INVL01 — STOCK</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Ordenar (B.3)</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                <option>Actualizado (más reciente)</option>
+                <option>Nombre del SP (A→Z)</option>
+                <option>Operación · nombre</option>
+                <option>Tabla de diseño · nombre</option>
+                <option>Estado (borrador primero)</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Por página (B.3)</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                <option>10</option>
+                <option selected>15</option>
+                <option>25</option>
+                <option>50</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+            <button type="button" class="rounded-md bg-codas-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-hover">Aplicar filtros</button>
+            <button type="button" class="rounded-md border border-slate-600 px-4 py-2 text-sm text-slate-300 hover:bg-white/5">Limpiar</button>
+          </div>
+        </form>
+
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[1100px] border-collapse text-left text-sm" aria-describedby="sp-list-caption">
+              <caption id="sp-list-caption" class="sr-only">Listado de definiciones de store procedure. Columnas: procedimiento, operación, tabla, estado, fechas.</caption>
+              <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                  <th class="sticky left-0 z-10 bg-slate-900/95 px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Procedimiento</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Operación</th>
+                  <th class="min-w-[9rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Tabla diseño</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Estado</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Creado</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Actualizado</th>
+                  <th class="sticky right-0 z-10 bg-slate-900/95 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3">
+                    <p class="font-mono text-sm font-medium text-codas-accent">R1DATA.GET_CUS_LIST</p>
+                    <p class="mt-0.5 text-xs text-slate-500">Esquema: <code class="text-slate-400">R1DATA</code> · v1</p>
+                  </td>
+                  <td class="px-3 py-3 text-center">
+                    <span class="inline-flex items-center gap-1 rounded border border-sky-500/35 bg-sky-950/50 px-2 py-1 text-xs font-medium text-sky-200" title="READ / Leer">Leer</span>
+                  </td>
+                  <td class="px-3 py-3">
+                    <p class="font-mono text-xs text-slate-300">CUSMAS</p>
+                    <p class="text-xs text-slate-500">Maestro de clientes</p>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Listo</span></td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-10</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-21 09:12</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Abrir</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Duplicar</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3">
+                    <p class="font-mono text-sm font-medium text-codas-accent">R1DATA.INS_PAY_LINE</p>
+                    <p class="mt-0.5 text-xs text-slate-500">v1</p>
+                  </td>
+                  <td class="px-3 py-3 text-center">
+                    <span class="inline-flex items-center gap-1 rounded border border-emerald-500/35 bg-emerald-950/50 px-2 py-1 text-xs font-medium text-emerald-200" title="ADD / Añadir">Añadir</span>
+                  </td>
+                  <td class="px-3 py-3">
+                    <p class="font-mono text-xs text-slate-300">PAYHDR</p>
+                    <p class="text-xs text-slate-500">Pagos / cabecera</p>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200">Borrador</span></td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-22</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-22 16:40</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Abrir</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Duplicar</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3">
+                    <p class="font-mono text-sm font-medium text-codas-accent">STOCK.UPD_INV_QTY</p>
+                  </td>
+                  <td class="px-3 py-3 text-center">
+                    <span class="inline-flex items-center gap-1 rounded border border-amber-500/35 bg-amber-950/50 px-2 py-1 text-xs font-medium text-amber-200" title="UPD / Cambiar">Cambiar</span>
+                  </td>
+                  <td class="px-3 py-3">
+                    <p class="font-mono text-xs text-slate-300">INVL01</p>
+                    <p class="text-xs text-slate-500">Inventario lóg.</p>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Listo</span></td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-03-28</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-15 10:00</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Abrir</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Duplicar</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3">
+                    <p class="font-mono text-sm font-medium text-codas-accent">R1DATA.DEL_CUS_ARCH</p>
+                  </td>
+                  <td class="px-3 py-3 text-center">
+                    <span class="inline-flex items-center gap-1 rounded border border-rose-500/40 bg-rose-950/50 px-2 py-1 text-xs font-medium text-rose-200" title="DLT / Borrar">Borrar</span>
+                  </td>
+                  <td class="px-3 py-3">
+                    <p class="font-mono text-xs text-slate-300">ARCCTL</p>
+                    <p class="text-xs text-slate-500">Control archivado</p>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full border border-white/10 bg-slate-700/40 px-2 py-0.5 text-xs text-slate-300">Inactivo</span></td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2025-12-01</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2025-12-20 12:00</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Abrir</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Duplicar</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex flex-col gap-3 border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>Mostrando <span class="font-medium text-slate-300">1–4</span> de <span class="font-medium text-slate-300">6</span> (demo) · B.3 paginación</p>
+            <nav class="flex flex-wrap items-center justify-end gap-1" aria-label="Paginación (B.3)">
+              <button type="button" class="rounded border border-slate-600 px-2 py-1 text-slate-500" disabled>« Anterior</button>
+              <button type="button" class="rounded border border-codas-accent bg-codas-accent/20 px-2.5 py-1 font-medium text-codas-accent">1</button>
+              <button type="button" class="rounded border border-slate-600 px-2.5 py-1 text-slate-300 hover:bg-white/5">2</button>
+              <button type="button" class="rounded border border-slate-600 px-2 py-1 text-slate-300 hover:bg-white/5">Siguiente »</button>
+            </nav>
+          </div>
+        </div>
+
+        <p class="mt-6 rounded-lg border border-white/5 bg-slate-900/30 px-4 py-3 text-xs text-slate-500">
+          <strong class="text-slate-400">Nota (B.5 / A.2):</strong> el acceso con perfil <strong class="text-slate-300">AC</strong> o equivalente aprobado deberá revisarse en backend (lista vs edición; mensajes <code class="text-emerald-400/80">403</code> o modal según pauta con <code class="text-emerald-400/80">table_design</code>).
+        </p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

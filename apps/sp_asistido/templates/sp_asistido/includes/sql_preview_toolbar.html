@@ -1,0 +1,73 @@
+{% with sql_toolbar_textarea_id=textarea_id|default:"id_preview_sql" sql_toolbar_basename=download_basename|default:"codas_sp_script" %}
+<div
+    class="sp-sql-preview-toolbar mb-2 flex flex-wrap gap-2"
+    data-textarea-id="{{ sql_toolbar_textarea_id|escape }}"
+    data-download-basename="{{ sql_toolbar_basename|escape }}"
+    role="group"
+    aria-label="Acciones sobre el script"
+>
+    <button
+        type="button"
+        class="sp-js-copy-sp-sql inline-flex items-center justify-center rounded-md border border-slate-600 bg-slate-800/60 px-3 py-1.5 text-sm text-gray-200 transition hover:border-slate-500 hover:bg-slate-800"
+    >
+        Copiar al portapapeles
+    </button>
+    <button
+        type="button"
+        class="sp-js-dl-sp-sql inline-flex items-center justify-center rounded-md border border-slate-600 bg-slate-800/60 px-3 py-1.5 text-sm text-gray-200 transition hover:border-slate-500 hover:bg-slate-800"
+    >
+        Descargar .sql
+    </button>
+</div>
+<script>
+(function () {
+  var root = document.currentScript && document.currentScript.previousElementSibling;
+  if (!root || !root.classList || !root.classList.contains('sp-sql-preview-toolbar')) { return; }
+  var taId = root.getAttribute('data-textarea-id') || 'id_preview_sql';
+  var base = root.getAttribute('data-download-basename') || 'codas_sp_script';
+  function wire() {
+    var el = document.getElementById(taId);
+    if (!el) { return; }
+    function getText() {
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        return (el.value != null) ? el.value : '';
+      }
+      return (el.textContent != null) ? el.textContent : '';
+    }
+    var copyBtn = root.querySelector('.sp-js-copy-sp-sql');
+    var dlBtn = root.querySelector('.sp-js-dl-sp-sql');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var text = getText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(function () {
+            window.alert('No se pudo copiar. Seleccione el texto manualmente.');
+          });
+        } else {
+          window.alert('El portapapeles no está disponible en este navegador.');
+        }
+      });
+    }
+    if (dlBtn) {
+      dlBtn.addEventListener('click', function () {
+        var text = getText();
+        var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = base + '.sql';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+})();
+</script>
+{% endwith %}

@@ -1,0 +1,25 @@
+CREATE TABLE &LIB/SEGFFRELOG (
+ LogAcc            Char        (1) NOT NULL DEFAULT '' ,
+ LogPrf            Char        (10) NOT NULL DEFAULT '' ,
+ Logfec            TimeStamp         ,
+ Logusr            Char        (10)  ,
+ LogDes            Char        (70)
+)
+RCDFMT   RReLog;
+
+LABEL ON TABLE &LIB/SEGFFRELOG  Is
+'Registro log de usuarios para activar y desactivar';
+
+LABEL ON &LIB/SEGFFRELOG (
+LogAcc             Text Is  'Accion Realizada',
+Logprf             Text Is  'Usuario ',
+Logfec             Text Is  'Fecha ',
+Logusr             Text Is  'Usuario Ejecuta',
+LogDes             Text Is  'Descrpcion ');
+
+LABEL ON COLUMN &LIB/SEGFFRELOG (
+LogAcc                  Is  'Accion Realizada',
+Logprf                  Is  'Usuario ',
+Logfec                  Is  'Fecha ',
+Logusr                  Is  'Usuario Ejecuta',
+LogDes                  Is  'Descrpcion ');

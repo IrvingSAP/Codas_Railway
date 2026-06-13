@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · READ · Paso 6 de 6 · Vista previa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-sky-300">Leer (READ)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nueva consulta · SELECT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso (paso 6 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Filtros</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Orden</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-sky-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/30 text-white">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">6 · Script generado (READ · result set + OUT · §9.7)</h2>
+      <p class="mt-1 text-sm text-slate-500">Ejemplo: <code class="text-slate-500">DYNAMIC RESULT SETS 1</code>, cursor de retorno, mismos <code class="text-slate-500">P_ERROR_CODE</code> / <code class="text-slate-500">P_ERROR_MSG</code> que en ADD, sin datos tabulares en el mensaje de error. Síntaxis DB2 for i orientativa. Ver <a class="text-codas-accent no-underline hover:underline" href="sp-asistido-read-05-firma.html">paso 5</a> y <code class="text-slate-500">docs/CODAS_SP_ASISTIDO.md</code> <strong class="text-slate-300">§9.7</strong>.</p>
+      <pre class="mt-4 max-h-[min(60vh,28rem)] overflow-auto rounded-xl border border-slate-700 bg-slate-900 p-4 text-left text-xs leading-relaxed text-sky-200/90" role="code"><code>-- CODAS · SP asistido · READ · demo
+-- Tabla: R1DATA.CUSMAS — datos devueltos vía result set, no vía P_ERROR_*
+-- Plantilla: P_ERROR_*, handlers §9, cursor WITH RETURN (§9.7)
+
+CREATE OR REPLACE PROCEDURE R1DATA.SELCUS00 (
+    IN  P_ESTADO   CHAR(1)     CCSID 284,
+    OUT P_ERROR_CODE   INTEGER,
+    OUT P_ERROR_MSG    VARCHAR(200)
+)
+LANGUAGE SQL
+READS SQL DATA
+DYNAMIC RESULT SETS 1
+SPECIFIC SELCUS0SP1
+BEGIN
+    /* Ejemplo: un predicado = paso 3 (CUSTATUS + Parámetro IN P_ESTADO) */
+    DECLARE c_result CURSOR WITH HOLD
+        WITH RETURN FOR
+        SELECT CUSNBR, CUSNAME, CUSTATUS, CUSZIPC, CUSCTRY
+        FROM   R1DATA.CUSMAS
+        WHERE  CUSTATUS = P_ESTADO
+        ORDER BY CUSNBR ASC
+        FETCH FIRST 100 ROWS ONLY;
+
+    DECLARE v_sqlstate CHAR(5)     DEFAULT '00000';
+    DECLARE v_msg        VARCHAR(200) DEFAULT '';
+
+    /* Duplicado (menos frecuente en SELECT; incluido por homogeneidad §9) */
+    DECLARE EXIT HANDLER FOR SQLSTATE '23505'
+    BEGIN
+        SET P_ERROR_CODE = 100;
+        SET P_ERROR_MSG  = 'Restricción de unicidad.';
+    END;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            v_sqlstate = RETURNED_SQLSTATE,
+            v_msg = MESSAGE_TEXT;
+        SET P_ERROR_CODE = -1;
+        SET P_ERROR_MSG  = 'Error SQLSTATE=' CONCAT v_sqlstate CONCAT ' - ' CONCAT v_msg;
+    END;
+
+    OPEN c_result;
+    SET P_ERROR_CODE = 0;
+    SET P_ERROR_MSG  = 'OK';
+    /* Llamador consume el result set; columnas = paso 2, WHERE/ORDER = pasos 3–4 */
+END
+
+-- LABEL/comment: nombre largo (paso 5)</code></pre>
+      <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+        <button type="button" class="rounded-md border border-slate-600 bg-slate-800/50 px-4 py-2.5 text-sm text-slate-200 hover:bg-slate-800" title="Cuando exista persistencia">Guardar borrador</button>
+        <button type="button" class="rounded-md border border-sky-500/40 bg-sky-950/30 px-4 py-2.5 text-sm text-sky-200">Descargar <span class="font-mono">.sql</span></button>
+      </div>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto max-w-3xl">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <a href="sp-asistido-read-05-firma.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+        <a href="sp-asistido-list-demo.html" class="rounded-md bg-codas-accent px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:bg-codas-hover">Volver al listado con datos</a>
+      </div>
+      <p class="mt-2 text-center sm:text-left">
+        <a href="sp-asistido-read-01-tabla.html" class="text-sm text-codas-accent/90 no-underline hover:underline">Nuevo asistente READ desde cero</a>
+        <span class="text-slate-600"> · </span>
+        <a href="sp-asistido-add-01-tabla.html" class="text-sm text-codas-accent/90 no-underline hover:underline">Asistente ADD</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

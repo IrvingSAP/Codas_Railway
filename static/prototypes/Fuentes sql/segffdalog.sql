@@ -1,0 +1,84 @@
+--------------------------------------------------------------------
+-- NOMBRE DE SCRIPT....: CREAR TABLA BASE.                        --
+-- DESCRIPCIÓN.........: SCRIPT PARA CREAR TABLAS                 --
+-- TIPO OBJETO.........: TABLE                                    --
+-- REQUERIMIENTO.......: PMO31385-MODERNIZACION Y AJUSTE          --
+-- SUBDOMINIO..........: COMPONENTE DE DEPURACUÓN DE ARCHIVOS     --
+-- FECHA DE CREACIÓN...: JUNIO 28-2020.                           --
+-- AUTOR...............: IRVING SIFUETES - TCAPC02 - KROSSFUN     --
+-- BASE DE DATOS RELACIONAL:  DB2 FOR I                           --
+--------------------------------------------------------------------
+-- CREATE TABLE &LIB/SEGFFDALOG
+-- (APLICATIVO CHAR (3)     NOT NULL DEFAULT '' ,
+--  PROCESO    CHAR (10)    NOT NULL DEFAULT '' ,
+--  CODFREQ    CHAR (1)     NOT NULL DEFAULT '' ,
+--  DIAFREQ    CHAR (4)     NOT NULL DEFAULT '' ,
+--  HORADEP    NUMERIC (2)  NOT NULL DEFAULT 0  ,
+--  TIPODEP    CHAR (1)     NOT NULL DEFAULT '' ,
+--  BIBLIOTECA CHAR (10)    NOT NULL DEFAULT '' ,
+--  ARCHIVO    CHAR (10)    NOT NULL DEFAULT '' ,
+--  CRITSELEC  CHAR (800)   NOT NULL DEFAULT '' ,
+--  MIEMBRO    CHAR (10)    NOT NULL DEFAULT '' ,
+--  MSGID      CHAR (7)     NOT NULL DEFAULT '' ,
+--  TEXTO      CHAR (200)   NOT NULL DEFAULT '' ,
+--  TRABAJO    CHAR (30)    NOT NULL DEFAULT '' ,
+--  FECHA      TIMESTAMP    NOT NULL DEFAULT CURRENT TIMESTAMP,
+-- TIPOLOG    CHAR (1)     NOT NULL DEFAULT '' ,
+-- Constraint SEGFFDALOG_PK Primary Key(APLICATIVO, PROCESO,
+--                                      BIBLIOTECA, ARCHIVO,
+--                                      MIEMBRO, FECHA, TRABAJO)
+-- ) RcdFmt @RDALOG;
+--
+-- Label On Table &LIB/SEGFFDALOG Is 'Log de proceso de
+-- depuracion de archivos';
+--
+-- Label On Column  &LIB/SEGFFDALOG
+-- (APLICATIVO    Is     'Código              aplicativo',
+-- PROCESO       Is     'Id                  proceso' ,
+-- CODFREQ       Is     'Código              frecuencia',
+-- DIAFREQ       Is     'Día                 frecuencia',
+-- HORADEP       Is     'Hora                depuración',
+-- TIPODEP       Is     'Tipo                depuración',
+-- BIBLIOTECA    Is     'Biblioteca' ,
+-- ARCHIVO       Is     'Archivo             físico' ,
+-- CRITSELEC     Is     'Criterio            selección',
+-- MIEMBRO       Is     'Miembro',
+-- MSGID         Is     'Msgid               error',
+-- TEXTO         Is     'Texto',
+-- TRABAJO       Is     'Trabajo',
+-- FECHA         Is     'Fecha/Hora',
+-- TIPOLOG       Is     'Tipo                Log'
+-- );
+
+--  Label On Column &LIB/SEGFFDALOG
+--  (APLICATIVO    Text Is   'Aplicativo' ,
+--   PROCESO       Text Is   'Id de Proceso' ,
+--   CODFREQ       Text Is   'Código frecuencia',
+--   DIAFREQ       Text Is   'Día frecuencia',
+--   HORADEP       Text Is   'Hora depuración',
+--   TIPODEP       Text Is   'Tipo depuración',
+--   BIBLIOTECA    Text Is   'Biblioteca' ,
+--   ARCHIVO       Text Is   'Archivo físico' ,
+--   CRITSELEC     Text Is   'Criterio selección',
+--   MIEMBRO       Text Is   'Miembro',
+--   MSGID         Text Is   'Msgid error',
+--   TEXTO         Text Is   'Texto',
+--   TRABAJO       Text Is   'Trabajo' ,
+--   FECHA         Text Is   'Fecha/Hora' ,
+--   TIPOLOG       Text Is   'Tipo Log'
+--   );
+--------------------------------------------------------------------
+-- MODIFICACIONES:                                                --
+-- FECHA DE MODIFICACIÓN : 30/07/2020                             --
+-- AUTOR...............  : Irving Argenis Sifuentes Perez         --
+-- REQUERIMIENTO........ : Actualizacion del Mant. Dep. Archivo   --
+-- DESCRIPCION...........: Se realiza la modificacion del campo   --
+--                         HORADEP, Esto permite indicar la hora  --
+--                         y minuto, esta informacion sera tomada --
+--                         por el proceso de depuracion, otorgando--
+--                         mayor control y flexibilidad al        --
+--                         proceso.                               --
+--------------------------------------------------------------------
+   ALTER TABLE &LIB/SEGFFDALOG
+    ALTER COLUMN HORADEP
+    SET DATA TYPE NUMERIC(4,2) NOT NULL DEFAULT 0

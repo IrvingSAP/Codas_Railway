@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Demo 1 · Layout corporativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-200 antialiased">
+
+  <!-- Conmutador entre prototipos -->
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo:</span>
+    <a href="dashboard-demo1-corporativo.html" class="ml-2 font-semibold text-codas-accent underline">Demo 1 · Corporativo</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="dashboard-demo2-saas.html" class="hover:text-codas-accent underline">Demo 2 · SaaS</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="dashboard-demo3-operativo.html" class="hover:text-codas-accent underline">Demo 3 · Operativo</a>
+  </div>
+
+  <!-- Barra superior: logo | título | usuario + Salir -->
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-5">
+    <a href="#" class="flex shrink-0 items-center gap-2 no-underline" title="CODAS">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">
+      Dashboard del Sistema
+    </h1>
+    <div class="flex shrink-0 items-center gap-3">
+      <span class="hidden max-w-[10rem] truncate text-sm text-slate-300 sm:inline">AdminCodas</span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white transition hover:border-codas-accent hover:bg-codas-accent/15">
+        Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Fila: menú lateral + body -->
+  <div class="flex min-h-0 min-w-0 flex-1 flex-row">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-2 p-4 text-sm" aria-label="Menú principal">
+        <a href="#" class="flex items-center gap-3 rounded-md border-l-4 border-codas-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-accent/20 text-lg" aria-hidden="true">🏠</span>
+          <span>Inicio / panel</span>
+        </a>
+        <p class="mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Administración</p>
+        <a href="#" class="flex items-center gap-3 rounded-md py-3 pl-3 pr-2 text-slate-300 no-underline transition hover:bg-white/10 hover:text-white">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg" aria-hidden="true">🏢</span>
+          <span>Compañías</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-md py-3 pl-3 pr-2 text-slate-300 no-underline transition hover:bg-white/10 hover:text-white">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg" aria-hidden="true">👥</span>
+          <span>Usuarios</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-md py-3 pl-3 pr-2 text-slate-300 no-underline transition hover:bg-white/10 hover:text-white">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg" aria-hidden="true">🔧</span>
+          <span>Django admin</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-md py-3 pl-3 pr-2 text-slate-300 no-underline transition hover:bg-white/10 hover:text-white">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg" aria-hidden="true">📊</span>
+          <span>Auditoría</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 min-w-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="mb-6 text-base font-semibold text-white">Resumen del sistema</h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-xl border border-white/10 bg-slate-900/70 p-6 text-center shadow-sm">
+            <p class="text-sm font-medium text-slate-400">Compañías registradas</p>
+            <p class="mt-3 text-3xl font-bold text-codas-accent">0</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/70 p-6 text-center shadow-sm">
+            <p class="text-sm font-medium text-slate-400">Usuarios totales</p>
+            <p class="mt-3 text-3xl font-bold text-codas-accent">1</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/70 p-6 text-center shadow-sm sm:col-span-2 lg:col-span-1">
+            <p class="text-sm font-medium text-slate-400">Administradores de compañía</p>
+            <p class="mt-3 text-3xl font-bold text-codas-accent">0</p>
+          </div>
+        </div>
+        <p class="mt-8 text-xs text-slate-500">Demo 1 — Espaciado amplio, ítem activo con barra izquierda y fondo suave.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+-------------------------------------------------------------------
+ SCRIPT....: SEGVX2FMNU                                          --
+ón.........: Consultas de Funciones por menu                     --
+to.........: VIEW                                                --
+ento.......: PMO31385-Asignacion Masiva Funciones por menu       --
+o..........: Transversales Iseries .                              --
+Creación...: Agosto 11-2020.                                     --
+...........: Carlos Rojas                                        --
+atos relacional:  DB2 for i                                      --
+-------------------------------------------------------------------
+IONES:                                                           --
+Modificación :                                                   --
+...........  :                                                   --
+ón ......... :                                                   --
+ento.........:                                                   --
+-------------------------------------------------------------------
+PLACE VIEW &LIB.Funciones_Menu FOR SYSTEM NAME SEGVW2FMNU
+
+ODBC, A.UCODAP, A.UTIPMN, A.USTPMN, A.UOPCIO, A.UCDPB2,
+MDB2, A.UPROGR, A.ULIBRE, A.UFUNSI, A.UCDPA2, A.UCMDA2,
+FUNC, B.UODESC FROM VISIONSYSR/UMNU AS a JOIN VISIONSYSR/UOPNM
+ ON B.UOFUNC = A.UFUNSI
+SEGVW2FMN;
+
+y comentarios
+
+ABLE  &LIB.Funciones_Menu
+Vista: Consulta Funcionesde Menu';
+ABLE  &LIB.Funciones_Menu
+Vista: Consulta Asinacion Funciones de Menu';
+

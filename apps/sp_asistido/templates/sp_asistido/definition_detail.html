@@ -1,0 +1,125 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · {{ definition.schema_name }}.{{ definition.procedure_name_short }}{% endblock %}
+{% block header_title %}SP Asistido · Detalle{% endblock %}
+
+{% block content %}
+<div class="pb-10">
+    <p class="mb-6 text-sm text-gray-500">
+        <a href="{% url 'sp_asistido:list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+    </p>
+
+    <div class="mb-6 flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-start md:justify-between">
+        <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Definición</p>
+            <h2 class="mt-1 break-words font-mono text-xl font-semibold text-codas-blue-accent md:text-2xl">{{ definition.schema_name }}.{{ definition.procedure_name_short }}</h2>
+            <p class="mt-2 text-sm text-gray-300">{{ definition.procedure_name_long }}</p>
+            {% if definition.procedure_comment %}
+            <p class="mt-2 text-sm text-gray-500">{{ definition.procedure_comment }}</p>
+            {% endif %}
+        </div>
+        <div class="flex shrink-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+            <a href="{% url 'sp_asistido:edit' definition.pk %}" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-amber-500/35 bg-amber-950/30 px-4 py-2.5 text-center text-sm font-medium text-amber-200 no-underline hover:bg-amber-500/20">Editar</a>
+            {% if definition.script_generated %}
+            <form method="post" action="{% url 'sp_asistido:reopen' definition.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-yellow-500/45 bg-yellow-950/35 px-4 py-2.5 text-center text-sm font-medium text-yellow-200 hover:bg-yellow-500/20">Reabrir asistente</button>
+            </form>
+            {% endif %}
+            {% if continue_add_step %}
+            <a href="{% url 'sp_asistido:add_step' definition.pk continue_add_step %}" class="inline-flex justify-center rounded-md border border-emerald-500/40 bg-emerald-950/40 px-4 py-2.5 text-center text-sm font-medium text-emerald-200 no-underline hover:bg-emerald-500/20">Continuar asistente ADD</a>
+            {% endif %}
+            {% if continue_dlt_step %}
+            <a href="{% url 'sp_asistido:dlt_step' definition.pk continue_dlt_step %}" class="inline-flex justify-center rounded-md border border-rose-500/40 bg-rose-950/40 px-4 py-2.5 text-center text-sm font-medium text-rose-200 no-underline hover:bg-rose-500/20">Continuar asistente DLT</a>
+            {% endif %}
+            {% if continue_upd_step %}
+            <a href="{% url 'sp_asistido:upd_step' definition.pk continue_upd_step %}" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-codas-blue-accent/40 bg-codas-blue-dark/50 px-4 py-2.5 text-center text-sm font-medium text-white [text-shadow:0_0_8px_rgba(30,144,255,0.35)] no-underline shadow-[0_0_14px_rgba(30,144,255,0.12)] transition hover:border-codas-blue-accent/60 hover:bg-codas-blue-accent/15">Continuar asistente UPD</a>
+            {% endif %}
+            {% if continue_read_step %}
+            <a href="{% url 'sp_asistido:read_step' definition.pk continue_read_step %}" class="inline-flex justify-center rounded-md border border-sky-500/40 bg-sky-950/40 px-4 py-2.5 text-center text-sm font-medium text-sky-200 no-underline hover:bg-sky-500/20">Continuar asistente READ</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Operación</p>
+            <p class="mt-2 text-sm font-medium text-white">
+                {{ definition.get_operation_display }}
+                {% if definition.operation == "READ" %}
+                <span class="ml-2 inline-flex items-center rounded border border-cyan-500/30 bg-cyan-950/40 px-2 py-0.5 text-xs text-cyan-200">
+                    {% if definition.read_mode == "R" %}READ-R{% else %}READ-C{% endif %}
+                </span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Estado</p>
+            <p class="mt-2 text-sm font-medium text-white">{{ definition.get_status_display }}</p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Paso wizard</p>
+            <p class="mt-2 text-sm font-medium text-white">{{ definition.current_step }}</p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4 sm:col-span-2 lg:col-span-1">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Script generado</p>
+            <p class="mt-2 text-sm text-white">{% if definition.script_generated %}<span class="text-emerald-400">Sí</span>{% if definition.script_date %} <span class="text-gray-500">({{ definition.script_date|date:"Y-m-d" }})</span>{% endif %}{% else %}<span class="text-gray-500">No</span>{% endif %}</p>
+        </div>
+        {% if definition.operation == "READ" %}
+        <div class="rounded-xl border border-cyan-500/20 bg-cyan-950/20 p-4 sm:col-span-2 lg:col-span-2">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-cyan-300/80">Modalidad READ</p>
+            <p class="mt-2 text-sm font-medium text-cyan-100">
+                {% if definition.read_mode == "R" %}READ-R (registro único por OUT){% else %}READ-C (cursor/result set){% endif %}
+            </p>
+            <p class="mt-1 text-xs text-cyan-200/80">
+                Política múltiples filas:
+                {% if definition.read_row_policy == "F" %}Tomar primer registro{% else %}Error controlado{% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Tabla de diseño y compañía</h3>
+    </div>
+    <dl class="mb-8 max-w-3xl space-y-4 text-sm">
+        <div>
+            <dt class="font-medium text-gray-400">Compañía</dt>
+            <dd class="mt-1 text-gray-200">{{ definition.company.name_short }} — {{ definition.company.name_long }}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-400">Cabecera (diseño)</dt>
+            <dd class="mt-1 font-mono text-codas-blue-accent">{{ definition.header_table.schema }}.{{ definition.header_table.table_name_short }}</dd>
+            <dd class="mt-0.5 text-gray-500">{{ definition.header_table.table_name_long }}</dd>
+        </div>
+    </dl>
+
+    <div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Auditoría y conteos</h3>
+    </div>
+    <dl class="mb-8 max-w-3xl space-y-4 text-sm">
+        <div>
+            <dt class="font-medium text-gray-400">Creado</dt>
+            <dd class="mt-1 text-gray-200">{{ definition.created_at|date:"Y-m-d H:i" }}{% if definition.created_by %} · <span class="text-gray-500">{{ definition.created_by.get_username }}</span>{% endif %}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-400">Actualizado</dt>
+            <dd class="mt-1 text-gray-200">{{ definition.updated_at|date:"Y-m-d H:i" }}{% if definition.updated_by %} · <span class="text-gray-500">{{ definition.updated_by.get_username }}</span>{% endif %}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-400">Relaciones persistidas</dt>
+            <dd class="mt-1 text-gray-300">Asignaciones (ADD/UPD): <strong class="text-white">{{ counts.assignments }}</strong> · Parámetros: <strong class="text-white">{{ counts.parameters }}</strong> · Condiciones: <strong class="text-white">{{ counts.conditions }}</strong> · Estados de paso: <strong class="text-white">{{ counts.step_states }}</strong> · Versiones SQL: <strong class="text-white">{{ counts.artifacts }}</strong></dd>
+        </div>
+    </dl>
+
+    {% if current_artifact %}
+    <div class="mb-6 border-l-4 border-emerald-500/50 bg-slate-900/60 py-2 pl-4">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Script SQL vigente (v{{ current_artifact.version }})</h3>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-[#020b23] p-4">
+        <p class="mb-2 text-xs text-gray-500">Solo lectura{% if current_artifact.script_hash %} · <span class="font-mono">{{ current_artifact.script_hash|truncatechars:20 }}</span>{% endif %}</p>
+        {% with sv=current_artifact.version|stringformat:"d" %}{% with download_basename="sp_artifact_"|add:definition.procedure_name_short|slugify|add:"_v"|add:sv %}{% include "sp_asistido/includes/sql_preview_toolbar.html" with textarea_id="id_artifact_sql" %}{% endwith %}{% endwith %}
+        <pre id="id_artifact_sql" class="max-h-[28rem] overflow-auto whitespace-pre-wrap break-words rounded-lg border border-gray-800 bg-slate-950/80 p-3 font-mono text-xs leading-relaxed text-gray-200">{{ current_artifact.sql_script }}</pre>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

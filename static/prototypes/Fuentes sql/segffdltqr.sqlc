@@ -1,0 +1,21 @@
+CREATE TABLE &LIB/SEGFFDLTQR (
+ libreria          CHAR        (10) NOT NULL,
+ objeto            CHAR        (10) NOT NULL,
+ tipo              CHAR        (07) NOT NULL,
+ msg               CHAR        (200) NOT NULL)
+RCDFMT   REGDLTQR;
+
+LABEL ON TABLE &LIB/SEGFFDLTQR  Is
+'^SEG! Lista de Querys a Eliminar';
+
+LABEL ON &LIB/SEGFFDLTQR (
+libreria           Text Is  'Liberia',
+objeto             Text Is  'Objeto',
+tipo               Text Is  'tipo',
+msg                Text Is  'Mensaje');
+
+LABEL ON &LIB/SEGFFDLTQR (
+libreria                Is  'Liberia',
+objeto                  Is  'Objeto',
+tipo                    Is  'tipo',
+msg                     Is  'Mensaje');

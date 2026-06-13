@@ -1,0 +1,17 @@
+{# Menú lateral — Usuario (US). Placeholders de dominio iSeries / mantenimientos. #}
+<a href="{% url 'table_design:header_list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'table_design' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'table_design' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">📐</span>
+    <span>Diseño de tablas</span>
+</a>
+<a href="{% url 'sp_asistido:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'sp_asistido' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'sp_asistido' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">⚡</span>
+    <span>SP Asistido</span>
+</a>
+<a href="{% url 'maintenance_builder:list_view' %}" class="codas-dashboard-nav-item codas-dashboard-nav-item--inactive">
+    <span class="codas-dashboard-nav-icon-box codas-dashboard-nav-icon-box--inactive" aria-hidden="true">📦</span>
+    <span>Mantenimientos</span>
+</a>
+<a href="{% url 'sources:list' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active == 'sources' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active == 'sources' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">🧩</span>
+    <span>Plantillas</span>
+</a>

@@ -1,0 +1,19 @@
+{
+  "name": "codas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/src/input.css -o ./static/css/tailwind.css",
+    "watch:css": "tailwindcss -i ./static/src/input.css -o ./static/css/tailwind.css --watch",
+    "build:css:min": "tailwindcss -i ./static/src/input.css -o ./static/css/tailwind.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}

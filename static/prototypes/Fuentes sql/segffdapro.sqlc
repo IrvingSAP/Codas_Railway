@@ -1,0 +1,95 @@
+--AW1192003_BC_1:"RUNSQLSTM SRCFILE(R1SEG/SEGSRC) SRCMBR(SEGTBLCS12) "
+--AW1192003_BC_2:"COMMIT(*NONE)"
+--AW1192003_OBJTYPE:"*FILE"
+---------------------------------------------------------------------------
+-- Nombre De SCRIPT....: Crear Tabla Base.                               --
+-- Descripción.........: LOG SERVIDOR COMUNICACIONALA SEGTBLCS12         --
+-- Tipo Objeto.........: TABLE                                           --
+-- Requerimiento.......: Migracion componente Autorizador REC a SEG      --
+-- Subdominio..........: COMPONENTE AUTORIZADOR                          --
+-- Fecha De Creación...: Febreo 2025.                                    --
+-- Autor...............: Irving Sifuentes                                --
+-- Base de datos relacional:  DB2 for i                                  --
+---------------------------------------------------------------------------
+
+-- SE DEFINE LIBRERIA DE TRABAJO
+-- SET CURRENT SCHEMA &LIB;
+
+-- Crear TABLA LOG transaccional S12
+  CREATE OR REPLACE TABLE &LIB/SEGTBLCS12
+
+--DEFINICION DE CAMPOS
+
+  (NOMBALMA          CHAR (8)          NOT NULL DEFAULT '' ,
+   ORIGEN            CHAR (12)         NOT NULL DEFAULT '' ,
+   NUMPEDIDO         CHAR (10)         NOT NULL DEFAULT '' ,
+   SOLICITA          CHAR (2)          NOT NULL DEFAULT '' ,
+   NUMCUSTO          CHAR (4)          NOT NULL DEFAULT '' ,
+   CODAPL            CHAR (3)          NOT NULL DEFAULT '' ,
+   NOMBLLAVE         CHAR (3)          NOT NULL DEFAULT '' ,
+   LIBALMACEN        CHAR (10)         NOT NULL DEFAULT '' ,
+   TEXTODESC         CHAR (2)          NOT NULL DEFAULT '' ,
+   GRUPOMQMD         CHAR (10)         NOT NULL DEFAULT '' ,
+   TIPAUT            CHAR (48)         NOT NULL DEFAULT '' ,
+   TIPCLAVE          CHAR (48)         NOT NULL DEFAULT '' ,
+   FORMCLAVE         CHAR (10)         NOT NULL DEFAULT '' ,
+   LONGCLAVE         CHAR (5)          NOT NULL DEFAULT '' ,
+   PROALMACEN        VARCHAR (32000)   NOT NULL DEFAULT '' ,
+   ESTAPROC          CHAR (104)        NOT NULL DEFAULT '' ,
+   FECREG            CHAR (364)        NOT NULL DEFAULT ''
+
+ -- Clave Primaria  Sin Clave
+   )
+  -- Formato del Registro
+ RcdFmt RSEGTRS12;
+
+ -- Etiqueta de la tabla
+   Label On Table &LIB/SEGTBLCS12 Is
+   'LOG SERVIDOR COMUNICACIONAL SEGTBLCS12' ;
+
+   COMMENT On Table &LIB/SEGTBLCS12 Is
+   'LOG SERVIDOR COMUNICACIONAL SEGTBLCS12' ;
+-- Autorizacion de la tabla  --SE DEBE RETIRAR
+
+-- Atributo de texto de los campos
+   Label On Column  &LIB/SEGTBLCS12
+   (FECHA         is      'Fecha de Registro'     ,
+   HORA           is      'Hora de Registro'      ,
+   NOMBREJOB      is      'Nombre JOB'            ,
+   TIPOMSG        is      'Tipo Mnsaje'           ,
+   CODTRN         is      'Codigo Transaccion'    ,
+   IDCLI          is      'ID Cliente'            ,
+   IDSRV          is      'Aplicacion Servidor'   ,
+   WAITTIME       is      'Tiempo de espera'      ,
+   VERSION        is      'Version Trama'         ,
+   GRUPOMQMD      is      'Grupo MQMD'            ,
+   MESSAGEID      is      'Mensaje - ID'          ,
+   CORRID         is      'Correlativo-ID'        ,
+   NOMBREHILO     is      'Nombre del hilo'       ,
+   LONGMSG        is      'Longitud del mensaje'  ,
+   MENSAJE        is      'Mensaje del negocio'   ,
+   RESTO          is      'Resto de trama'        ,
+   MQMDMSG        is      'MQMD del mensaje'
+    );
+
+-- Atributo de texto de los campos
+   Label On Column &LIB/SEGTBLCS12
+   (FECHA             Text is      'FECHA     MENSAJE'         ,
+   HORA               Text is      'HORA      MENSAJE'         ,
+   NOMBREJOB          Text is      'NOMBRE    DE JOB'          ,
+   TIPOMSG            Text is      'TIPO DE   MENSAJE'         ,
+   CODTRN             Text is      'CÓDIGO DE LA TRANSACCIÓN'  ,
+   IDCLI              Text is      'ID APLICATIVO CLIENTE'     ,
+   IDSRV              Text is      'IDENTIFICADOR DE SERVIDOR' ,
+   WAITTIME           Text is      'TIEMPO DE ESPERA'          ,
+   VERSION"           Text is      'VERSIÓN   DE TRAMA'        ,
+   GRUPOMQMD          Text is      'GRUPO DE  MQMD'            ,
+   MESSAGEID          Text is      'MESSAGEID'                 ,
+   CORRID             Text is      'CORRELATIONID'             ,
+   NOMBREHILO         Text is      'NOMBRE    DEL HILO'        ,
+   LONGMSG            Text is      'LONGITUD  DEL MENSAJE'     ,
+   MENSAJE            Text is      'MENSAJE   DE NEGOCIO'      ,
+   RESTO              Text is      'RESTO DE  TRAMA'           ,
+   MQMDMSG            Text is      'MQMD DEL  MESSAG'
+    );
+

@@ -1,0 +1,115 @@
+<form id="detail-field-form" method="post" action="{% if field %}{% url 'table_design:field_update' header.pk field.pk %}{% else %}{% url 'table_design:field_create' header.pk %}{% endif %}" class="mb-6 flex flex-col gap-3 rounded-xl border border-white/10 bg-slate-900/40 p-4">
+    {% csrf_token %}
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2">
+        <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">{{ step_title|default:"Campo" }} · <code class="text-emerald-400/80">DetailTable</code></span>
+        <a href="{% url 'table_design:field_list' header.pk %}" class="text-xs text-codas-blue-accent no-underline hover:underline">← Listado de campos</a>
+    </div>
+    {% if form.non_field_errors %}
+    <ul class="list-inside list-disc text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div class="min-w-0">
+            <label for="{{ form.field_name_short.id_for_label }}" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                <span>Nombre corto</span>
+                <span class="codas-field-help" title="Nombre interno del campo en DB2. Solo letras y números, entre {{ field_rules.min_short }} y {{ field_rules.max_short }} caracteres. Ej: NBRPURAPP" aria-label="Ayuda: nombre corto">ⓘ</span>
+            </label>
+            {{ form.field_name_short }}
+            {% if form.field_name_short.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.field_name_short.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="min-w-0 sm:col-span-2">
+            <label for="{{ form.field_name_long.id_for_label }}" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                <span>Nombre largo</span>
+                <span class="codas-field-help" title="Nombre descriptivo del campo. Letras, números y guion bajo (_), entre {{ field_rules.min_long }} y {{ field_rules.max_long }} caracteres. Ej: NUMBER_PURCHASES_APPLIED" aria-label="Ayuda: nombre largo">ⓘ</span>
+            </label>
+            {{ form.field_name_long }}
+            {% if form.field_name_long.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.field_name_long.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.field_type.id_for_label }}" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                <span>Tipo DB2</span>
+                <span class="codas-field-help" title="Tipo de columna IBM i / DB2 (CHAR, VARCHAR, INTEGER, DECIMAL…). La longitud y los decimales se ajustan según el tipo." aria-label="Ayuda: tipo DB2">ⓘ</span>
+            </label>
+            {{ form.field_type }}
+            {% if form.field_type.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.field_type.errors.0 }}</p>{% endif %}
+        </div>
+        <div id="wrap-field-length">
+            <div class="mb-1 flex flex-wrap items-center gap-2">
+                <label for="{{ form.field_length.id_for_label }}" class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                    <span>Longitud</span>
+                    <span class="codas-field-help" title="Longitud o precisión según el tipo (p. ej. caracteres en VARCHAR, precisión en DECIMAL). Algunos tipos tienen longitud fija automática." aria-label="Ayuda: longitud">ⓘ</span>
+                </label>
+                <span id="badge-field-length" class="min-h-[1.25rem] text-xs"></span>
+            </div>
+            {{ form.field_length }}
+            {% if form.field_length.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.field_length.errors.0 }}</p>{% endif %}
+        </div>
+        <div id="wrap-allocate-length" class="hidden">
+            <div class="mb-1 flex flex-wrap items-center gap-2">
+                <label for="{{ form.allocate_length.id_for_label }}" class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                    <span>ALLOCATE</span>
+                    <span class="codas-field-help" title="Obligatorio para VARCHAR y VARGRAPHIC. Suballocación en DB2 for i (p. ej. VARCHAR(300) ALLOCATE(270)). Debe ser mayor que cero y no mayor que la longitud." aria-label="Ayuda: ALLOCATE">ⓘ</span>
+                </label>
+                <span id="badge-allocate" class="min-h-[1.25rem] text-xs"></span>
+            </div>
+            {{ form.allocate_length }}
+            {% if form.allocate_length.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.allocate_length.errors.0 }}</p>{% endif %}
+        </div>
+        <div id="wrap-field-decimals" class="hidden">
+            <div class="mb-1 flex flex-wrap items-center gap-2">
+                <label for="{{ form.decimal_places.id_for_label }}" class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                    <span>Decimales</span>
+                    <span class="codas-field-help" title="Escala para DECIMAL y NUMERIC (número de posiciones decimales). No aplica al resto de tipos." aria-label="Ayuda: decimales">ⓘ</span>
+                </label>
+                <span id="badge-field-decimals" class="min-h-[1.25rem] text-xs"></span>
+            </div>
+            {{ form.decimal_places }}
+            {% if form.decimal_places.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.decimal_places.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="flex flex-wrap items-end gap-4 pb-1">
+            <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                {{ form.is_key }}
+                <span class="inline-flex items-center gap-1.5">
+                    Llave
+                    <span class="codas-field-help" title="Indica que el campo participa en la clave primaria o índice de unicidad. Si marca llave, indique también el orden en llave." aria-label="Ayuda: llave">ⓘ</span>
+                </span>
+            </label>
+        </div>
+        <div id="wrap-order-key" class="hidden">
+            <div class="mb-1 flex flex-wrap items-center gap-2">
+                <label for="{{ form.order_key.id_for_label }}" class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                    <span>Orden en llave</span>
+                    <span class="codas-field-help" title="Posición del campo dentro de la llave (1, 2, 3…). No puede repetirse entre campos llave de la misma tabla." aria-label="Ayuda: orden en llave">ⓘ</span>
+                </label>
+                <span id="badge-field-order-key" class="min-h-[1.25rem] text-xs"></span>
+            </div>
+            {{ form.order_key }}
+            {% if form.order_key.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.order_key.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="min-w-0 sm:col-span-2">
+            <label for="{{ form.column_label.id_for_label }}" class="mb-1 text-xs font-medium text-gray-400">Etiqueta <span class="text-gray-600">(LABEL ON COLUMN … IS, máx. {{ field_rules.column_label_max }})</span></label>
+            {{ form.column_label }}
+            {% if form.column_label.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.column_label.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="min-w-0 sm:col-span-2 xl:col-span-4">
+            <label for="{{ form.column_text.id_for_label }}" class="mb-1 text-xs font-medium text-gray-400">Texto largo <span class="text-gray-600">(LABEL ON COLUMN … TEXT IS, máx. {{ field_rules.column_text_max }})</span></label>
+            {{ form.column_text }}
+            {% if form.column_text.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.column_text.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="min-w-0 sm:col-span-2 xl:col-span-4">
+            <label for="{{ form.notes.id_for_label }}" class="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-400">
+                <span>Notas</span>
+                <span class="codas-field-help" title="Obligatorio. Observaciones internas sobre el campo; no forman parte del DDL salvo que el proceso de despliegue las use." aria-label="Ayuda: notas">ⓘ</span>
+            </label>
+            {{ form.notes }}
+            {% if form.notes.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.notes.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 border-t border-white/5 pt-3">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">
+            Guardar y continuar
+        </button>
+        <a href="{% url 'table_design:field_list' header.pk %}" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Cancelar</a>
+    </div>
+</form>

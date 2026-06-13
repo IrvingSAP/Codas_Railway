@@ -1,0 +1,46 @@
+Create Table &LIB/SEGFFAUT36
+(TREAL    REAL            NOT NULL DEFAULT
+,TSMALLINT       SMALLINT     NOT NULL WITH DEFAULT
+,TBIGINT         BIGINT       NOT NULL WITH DEFAULT
+,TNUMERIC        NUMERIC (30)  NOT NULL WITH DEFAULT
+,TNUMERICD       NUMERIC (15,4)   NOT NULL WITH DEFAULT
+,TDOUBLE         DOUBLE          NOT NULL DEFAULT
+,TCLOB           CLOB   (100)    NOT NULL DEFAULT
+,TCHAR1          CHAR (50)     NOT NULL DEFAULT ''
+,TCHAR2          CHAR (50)     NOT NULL DEFAULT ''
+,TCHAR3          CHAR (50)     NOT NULL DEFAULT ''
+,TCHAR4          CHAR (50)     NOT NULL DEFAULT ''
+,TVARCHAR1       VARCHAR (70)
+,TVARCHAR2       VARCHAR (70)
+) RcdFmt SEG36R;
+
+Label On Table &LIB/SEGFFAUT36 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT36
+(TREAL    TEXT IS 'TREAL'
+,TSMALLINT        TEXT IS 'TSMALLINT     '
+,TNUMERIC         TEXT IS 'TNUMERIC     '
+,TNUMERICD        TEXT IS 'TNUMERIC DEC '
+,TDOUBLE          TEXT IS 'TDOUBLE'
+,TCLOB            TEXT IS 'TCLOB'
+,TCHAR1           TEXT IS 'TCHAR1    '
+,TCHAR2           TEXT IS 'TCHAR2    '
+,TCHAR3           TEXT IS 'TCHAR3    '
+,TCHAR4           TEXT IS 'TCHAR4    '
+,TVARCHAR1        TEXT IS 'TVARCHAR1 '
+,TVARCHAR2        TEXT IS 'TVARCHAR2 '
+ );
+
+Label On Column &LIB/SEGFFAUT36
+(TREAL         Is 'T_REAL'
+,TSMALLINT             IS 'T_SMALLINT    '
+,TNUMERIC              IS 'T_NUMERIC    '
+,TNUMERICD             IS 'T_NUMERIC DEC'
+,TDOUBLE               IS 'T_DOUBLE'
+,TCLOB                 IS 'T_CLOB'
+,TCHAR1                IS 'T_CHAR1    '
+,TCHAR2                IS 'T_CHAR2    '
+,TCHAR3                IS 'T_CHAR3    '
+,TCHAR4                IS 'T_CHAR4    '
+,TVARCHAR1             IS 'T_VARCHAR1 '
+,TVARCHAR2             IS 'T_VARCHAR2 '
+ );

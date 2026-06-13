@@ -1,0 +1,38 @@
+CREATE TABLE &LIB/SEGFFRZTPE (
+ idProceso         Numeric     (10)    ,
+ idTope            Numeric     (10)    ,
+ CodigoTope        Char        (10)    ,
+ ValorTope         Decimal   (10,2)    ,
+ PorcentajeTope    Decimal    (5,2)    ,
+ MesDelTope        Char        (02)    ,
+ DiaDelMes         Char        (02)    ,
+ CodigoMensaje     Char        (10)    ,
+ Estado            Char        (01)    ,
+CONSTRAINT PK_RZTPE PRIMARY KEY (idTope))
+RCDFMT   REGRZTPE;
+
+
+LABEL ON TABLE &LIB/SEGFFRZTPE  Is
+'Razonabilidad de Cifras - Topes Especiales';
+
+LABEL ON &LIB/SEGFFRZTPE (
+idProceso          Text Is  'Id. Proceso',
+idTope             Text Is  'Id. Tope',
+CodigoTope         Text Is  'Codigo Tope',
+ValorTope          Text Is  'Valor Tope',
+PorcentajeTope     Text Is  'Porcentaje Tope',
+MesDelTope         Text Is  'Mes en que Aplica el Tope',
+DiaDelMes          Text Is  'Día del Mes en que Aplica el Tope',
+CodigoMensaje      Text Is  'Mensaje Asociado al TOpe',
+Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZTPE (
+idProceso               Is  'Id. Proceso',
+idTope                  Is  'Id. Tope',
+CodigoTope              Is  'Codigo Tope',
+ValorTope               Is  'Valor Tope',
+PorcentajeTope          Is  'Porcentaje Tope',
+MesDelTope              Is  'Mes en que Aplica el Tope',
+CodigoMensaje           Is  'Mensaje Asociado al TOpe',
+DiaDelMes               Is  'Día del Mes en que Aplica el Tope',
+Estado                  Is  'Estado');

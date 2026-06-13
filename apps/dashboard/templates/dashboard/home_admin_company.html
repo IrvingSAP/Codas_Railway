@@ -1,0 +1,36 @@
+{% extends "dashboard/dashboard_base.html" %}
+{# Inicio /panel/ para UserProfile.user_type = AC (administrador de compañía). #}
+
+{% block title %}CODAS — Panel administrador de compañía{% endblock %}
+{% block header_title %}Panel administrador de compañía{% endblock %}
+
+{% block content %}
+<p class="mb-6 max-w-2xl text-sm text-gray-400">
+    Bienvenido. Este panel corresponde al tipo de usuario <strong class="text-gray-300">{{ profile.get_user_type_display }}</strong>.
+    Los módulos específicos de administración de compañía se irán habilitando aquí.
+</p>
+
+<h2 class="mb-2 text-base font-semibold text-white">Resumen de su compañía</h2>
+{% if profile.company %}
+<p class="mb-6 text-sm text-gray-500">
+    {{ profile.company.name_short }} — {{ profile.company.name_long }}
+</p>
+{% else %}
+<p class="mb-6 text-sm text-amber-400/90">
+    Su perfil no tiene compañía asignada; los totales se muestran en cero.
+</p>
+{% endif %}
+
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="codas-dashboard-card-metric">
+        <h3 class="m-0 text-sm font-medium text-gray-400">Usuarios (tipo US)</h3>
+        <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ total_users }}</p>
+        <p class="mt-2 text-xs text-gray-500">Perfiles de usuario final en su compañía</p>
+    </div>
+    <div class="codas-dashboard-card-metric sm:col-span-2 lg:col-span-1">
+        <h3 class="m-0 text-sm font-medium text-gray-400">Administradores de sistema (tipo AS)</h3>
+        <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ total_admin_system }}</p>
+        <p class="mt-2 text-xs text-gray-500">Perfiles AS registrados en su compañía</p>
+    </div>
+</div>
+{% endblock %}

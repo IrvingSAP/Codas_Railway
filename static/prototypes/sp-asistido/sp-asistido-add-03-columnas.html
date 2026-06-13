@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ADD · Paso 3 de 7 · Columnas</title><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script></head>
+<body class="flex h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+<div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></div>
+<header class="flex h-14 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent">← Listado</a><h1 class="text-base font-semibold text-white">Nuevo procedimiento · INSERT</h1></header>
+<div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+  <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">3</span> Columnas</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Orígenes</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Revisión</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">7</span> SQL</li>
+  </ol>
+</div>
+<main class="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">
+  <div class="mx-auto max-w-4xl">
+    <h2 class="text-lg font-semibold">3 · Columnas destino</h2>
+    <p class="mt-1 text-sm text-slate-500">Seleccione al menos una columna insertable del detalle (las columnas IDENTITY quedan excluidas).</p>
+    <p id="add03-cols-error" class="mt-2 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+
+    <div class="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-[#020b23] shadow-[inset_0_0_0_1px_rgba(30,144,255,0.05)]">
+      <table id="add03-cols-table" class="w-full min-w-[720px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-slate-800 bg-[#0b1730]">
+            <th class="w-12 px-3 py-2.5 text-xs">✓</th>
+            <th class="px-3 py-2.5 text-xs">Corto</th>
+            <th class="px-3 py-2.5 text-xs">Largo (demo)</th>
+            <th class="px-3 py-2.5 text-xs">Tipo DB2</th>
+            <th class="px-3 py-2.5 text-xs">Nota</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-900/80">
+          <tr class="text-slate-500 bg-[#03102a]">
+            <td class="px-3 py-2"><input type="checkbox" disabled></td>
+            <td class="px-3 py-2 font-mono text-codas-accent/80">CUSNBR</td>
+            <td class="px-3 py-2">Cliente nro</td>
+            <td class="px-3 py-2 text-slate-400">DECIMAL(9)</td>
+            <td class="px-3 py-2"><span class="font-medium tracking-wide text-amber-300">IDENTITY</span> · <span class="text-slate-300">excluido</span></td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2"><input class="js-col-cb" type="checkbox" checked></td>
+            <td class="px-3 py-2 font-mono text-codas-accent">CUSNAME</td>
+            <td class="px-3 py-2">Nombre cliente</td>
+            <td class="px-3 py-2">VARCHAR(40)</td>
+            <td class="px-3 py-2 text-slate-500">Insertable</td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2"><input class="js-col-cb" type="checkbox" checked></td>
+            <td class="px-3 py-2 font-mono text-codas-accent">CUSTATUS</td>
+            <td class="px-3 py-2">Estado</td>
+            <td class="px-3 py-2">CHAR(1)</td>
+            <td class="px-3 py-2 text-slate-500">Insertable</td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2"><input class="js-col-cb" type="checkbox"></td>
+            <td class="px-3 py-2 font-mono text-codas-accent">CUSZIPC</td>
+            <td class="px-3 py-2">ZIP / CP</td>
+            <td class="px-3 py-2">CHAR(10)</td>
+            <td class="px-3 py-2 text-slate-500">Nullable</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<footer class="border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-add-02-tabla.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><button id="add03-btn-next" type="button" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · Orígenes</button></div></footer>
+<script>(function(){var e=document.getElementById("add03-cols-error");document.getElementById("add03-btn-next").addEventListener("click",function(){var n=[].slice.call(document.querySelectorAll(".js-col-cb")).filter(function(c){return c.checked;}).length;if(n<1){e.textContent="Seleccione al menos una columna para INSERT.";e.classList.remove("hidden");return;}e.classList.add("hidden");window.location.href="sp-asistido-add-04-valores.html";});})();</script>
+</body></html>

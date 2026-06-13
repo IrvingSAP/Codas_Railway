@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · READ · Paso 3 de 6 · Filtros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-sky-300">Leer (READ)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nueva consulta · SELECT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso (paso 3 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-sky-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/30 text-white">3</span> Filtros</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Orden</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-6xl">
+      <h2 class="text-lg font-semibold text-white">3 · Filtros (WHERE)</h2>
+      <p class="mt-1 text-sm text-slate-500">Se listan <strong class="text-slate-300">todos</strong> los campos de detalle (como en el paso 2). Debe <strong class="text-sky-200">elegirse un campo</strong> con el círculo: solo entonces se habilitan <strong class="text-slate-300">Operador</strong>, <strong class="text-slate-300">Origen</strong> y <strong class="text-slate-300">Valor / IN</strong> en esa fila. <strong class="text-white">Sin campo seleccionado no se avanza</strong> al paso 4: toda consulta READ en este flujo exige al menos <strong class="text-white">una condición de búsqueda</strong> (regla CODAS). En producto, los nombres <code class="text-slate-500">P_*</code> alinean la firma (paso 5).</p>
+
+      <p class="mt-3 text-xs text-amber-200/90">Validación (demo, JavaScript; revalidar en el servidor): <strong class="text-white">obligatorio</strong> un campo para el WHERE; luego, si el operador no es <code class="text-slate-500">IS NULL</code> — con <strong class="text-white">Parámetro IN</strong> el nombre no puede ir vacío (prefijo <code class="text-slate-500">P_</code>); con <strong class="text-white">Literal</strong> el texto no puede quedar vacío. Con <code class="text-slate-500">IS NULL</code> se ignoran Origen y valor.</p>
+
+      <div class="mb-1 mt-4 overflow-x-auto overflow-hidden rounded-xl border border-white/10">
+        <table class="w-full min-w-[1000px] text-left text-sm" id="read03-table" role="grid" aria-label="Filtro por columna; una fila activa">
+          <thead>
+            <tr class="border-b border-white/10 bg-slate-900/90">
+              <th class="w-12 px-2 py-2.5 text-xs font-semibold text-slate-400" title="Campo de la condición WHERE">○</th>
+              <th class="px-3 py-2.5 text-xs font-semibold text-slate-400">Corto</th>
+              <th class="px-3 py-2.5 text-xs font-semibold text-slate-400">Largo (demo)</th>
+              <th class="w-32 px-3 py-2.5 text-xs font-semibold text-slate-400">Tipo DB2</th>
+              <th class="w-36 px-3 py-2.5 text-xs font-semibold text-slate-400">Operador</th>
+              <th class="w-36 px-3 py-2.5 text-xs font-semibold text-slate-400">Origen</th>
+              <th class="min-w-[12rem] px-3 py-2.5 text-xs font-semibold text-slate-400">Valor / IN</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr class="js-filter-row hover:bg-white/[0.02] opacity-60" data-where-colid="CUSNBR" data-where-type="NUMERIC(9)">
+              <td class="px-2 py-2.5 align-top">
+                <input type="radio" name="where_field" value="CUSNBR" class="js-where-pick mt-1.5" aria-label="Filtrar por CUSNBR">
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-codas-accent">CUSNBR</td>
+              <td class="px-3 py-2.5">Cliente nro</td>
+              <td class="px-3 py-2.5 text-xs">DECIMAL(9)</td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-op-CUSNBR">Operador CUSNBR</label>
+                <select id="w-op-CUSNBR" class="js-w-op h-9 w-full max-w-[7.5rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="=" selected>&equals;</option>
+                  <option value="<>">&lt;&gt;</option>
+                  <option value="IN">IN</option>
+                  <option value="IS NULL">IS NULL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-or-CUSNBR">Origen CUSNBR</label>
+                <select id="w-or-CUSNBR" class="js-w-or h-9 w-full max-w-[9rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-va-CUSNBR">Valor CUSNBR</label>
+                <input type="text" id="w-va-CUSNBR" class="js-w-va h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200" value="P_CLIENTE" disabled autocomplete="off">
+                <p class="js-w-hint mt-1 text-[10px] text-slate-600" data-col="CUSNBR">Nombre del IN en el SP; literal numérico sin comillas.</p>
+              </td>
+            </tr>
+            <tr class="js-filter-row hover:bg-white/[0.02] opacity-60" data-where-colid="CUSNAME">
+              <td class="px-2 py-2.5 align-top">
+                <input type="radio" name="where_field" value="CUSNAME" class="js-where-pick mt-1.5" aria-label="Filtrar por CUSNAME">
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-codas-accent">CUSNAME</td>
+              <td class="px-3 py-2.5">Nombre fiscal</td>
+              <td class="px-3 py-2.5 text-xs">VARCHAR(40)</td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-op-CUSNAME">Operador CUSNAME</label>
+                <select id="w-op-CUSNAME" class="js-w-op h-9 w-full max-w-[7.5rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="=" selected>&equals;</option>
+                  <option value="<>">&lt;&gt;</option>
+                  <option value="LIKE">LIKE</option>
+                  <option value="IN">IN</option>
+                  <option value="IS NULL">IS NULL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-or-CUSNAME">Origen CUSNAME</label>
+                <select id="w-or-CUSNAME" class="js-w-or h-9 w-full max-w-[9rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-va-CUSNAME">Valor CUSNAME</label>
+                <input type="text" id="w-va-CUSNAME" class="js-w-va h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200" value="P_CUSNAME" disabled autocomplete="off">
+                <p class="js-w-hint mt-1 text-[10px] text-slate-600">Literal entre comillas en SQL generado, o nombre P_*.</p>
+              </td>
+            </tr>
+            <tr class="js-filter-row hover:bg-white/[0.02] opacity-60" data-where-colid="CUSTATUS">
+              <td class="px-2 py-2.5 align-top">
+                <input type="radio" name="where_field" value="CUSTATUS" class="js-where-pick mt-1.5" aria-label="Filtrar por CUSTATUS">
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-codas-accent">CUSTATUS</td>
+              <td class="px-3 py-2.5">Estado</td>
+              <td class="px-3 py-2.5 text-xs">CHAR(1)</td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-op-CUSTATUS">Operador CUSTATUS</label>
+                <select id="w-op-CUSTATUS" class="js-w-op h-9 w-full max-w-[7.5rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="=" selected>&equals;</option>
+                  <option value="<>">&lt;&gt;</option>
+                  <option value="LIKE">LIKE</option>
+                  <option value="IN">IN</option>
+                  <option value="IS NULL">IS NULL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-or-CUSTATUS">Origen CUSTATUS</label>
+                <select id="w-or-CUSTATUS" class="js-w-or h-9 w-full max-w-[9rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-va-CUSTATUS">Valor CUSTATUS</label>
+                <input type="text" id="w-va-CUSTATUS" class="js-w-va h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200" value="P_ESTADO" disabled autocomplete="off">
+                <p class="js-w-hint mt-1 text-[10px] text-slate-600">P. ej. P_ESTADO según paso 5 / firma.</p>
+              </td>
+            </tr>
+            <tr class="js-filter-row hover:bg-white/[0.02] opacity-60" data-where-colid="CUSZIPC">
+              <td class="px-2 py-2.5 align-top">
+                <input type="radio" name="where_field" value="CUSZIPC" class="js-where-pick mt-1.5" aria-label="Filtrar por CUSZIPC">
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-codas-accent">CUSZIPC</td>
+              <td class="px-3 py-2.5">Cód. postal</td>
+              <td class="px-3 py-2.5 text-xs">CHAR(10)</td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-op-CUSZIPC">Operador CUSZIPC</label>
+                <select id="w-op-CUSZIPC" class="js-w-op h-9 w-full max-w-[7.5rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="=" selected>&equals;</option>
+                  <option value="<>">&lt;&gt;</option>
+                  <option value="LIKE">LIKE</option>
+                  <option value="IS NULL">IS NULL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-or-CUSZIPC">Origen CUSZIPC</label>
+                <select id="w-or-CUSZIPC" class="js-w-or h-9 w-full max-w-[9rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <input type="text" id="w-va-CUSZIPC" class="js-w-va h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200" value="P_ZIP" disabled autocomplete="off">
+                <p class="js-w-hint mt-1 text-[10px] text-slate-600">—</p>
+              </td>
+            </tr>
+            <tr class="js-filter-row hover:bg-white/[0.02] opacity-60" data-where-colid="CUSCTRY">
+              <td class="px-2 py-2.5 align-top">
+                <input type="radio" name="where_field" value="CUSCTRY" class="js-where-pick mt-1.5" aria-label="Filtrar por CUSCTRY">
+              </td>
+              <td class="px-3 py-2.5 font-mono text-xs text-codas-accent">CUSCTRY</td>
+              <td class="px-3 py-2.5">País</td>
+              <td class="px-3 py-2.5 text-xs">CHAR(3)</td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-op-CUSCTRY">Operador CUSCTRY</label>
+                <select id="w-op-CUSCTRY" class="js-w-op h-9 w-full max-w-[7.5rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="=" selected>&equals;</option>
+                  <option value="<>">&lt;&gt;</option>
+                  <option value="IN">IN</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <label class="sr-only" for="w-or-CUSCTRY">Origen CUSCTRY</label>
+                <select id="w-or-CUSCTRY" class="js-w-or h-9 w-full max-w-[9rem] rounded border border-slate-600 bg-slate-900 px-1.5 text-xs text-white" disabled>
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5">
+                <input type="text" id="w-va-CUSCTRY" class="js-w-va h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-200" value="P_CTRY" disabled autocomplete="off">
+                <p class="js-w-hint mt-1 text-[10px] text-slate-600">—</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-slate-600">Una condición por asistente en el prototipo (futuro: varias filas con <code class="text-slate-500">AND</code>). <strong class="text-slate-500">Nunca</strong> se genera un READ sin <code class="text-slate-500">WHERE</code> en este recorrido.</p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto w-full max-w-3xl">
+      <p id="read03-error" class="mb-2 hidden text-center text-xs text-rose-300 sm:text-left" role="alert" aria-live="polite"></p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+        <a href="sp-asistido-read-02-columnas.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+        <button type="button" id="read03-btn-next" class="inline-flex min-h-[2.5rem] w-full items-center justify-center rounded-md border border-transparent bg-[#1e90ff] px-4 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-[#1877d3] sm:ml-auto sm:w-auto">Siguiente · Orden y paginación</button>
+      </div>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      var tbl = document.getElementById("read03-table");
+      var elErr = document.getElementById("read03-error");
+      var picks = tbl.querySelectorAll(".js-where-pick");
+      var rows = tbl.querySelectorAll("tr.js-filter-row");
+
+      function getActiveId() {
+        var c = tbl.querySelector('input[name="where_field"]:checked');
+        return c ? c.value : null;
+      }
+
+      function setRowUI(activeId) {
+        rows.forEach(function (tr) {
+          var id = tr.getAttribute("data-where-colid");
+          var isOn = activeId && id === activeId;
+          var dis = !isOn;
+          tr.classList.toggle("bg-sky-500/5", isOn);
+          tr.classList.toggle("ring-1", isOn);
+          tr.classList.toggle("ring-sky-500/30", isOn);
+          tr.classList.toggle("opacity-60", dis);
+          tr.querySelectorAll(".js-w-op, .js-w-or, .js-w-va").forEach(function (el) {
+            el.disabled = dis;
+            if (el.classList.contains("js-w-va") && isOn) {
+              var op = tr.querySelector(".js-w-op");
+              if (op && op.value === "IS NULL") el.disabled = true;
+            }
+          });
+        });
+        if (activeId) {
+          var tr = tbl.querySelector('tr.js-filter-row[data-where-colid="' + activeId + '"]');
+          if (tr) applyIsNull(tr);
+        }
+      }
+
+      function applyIsNull(tr) {
+        var op = tr.querySelector(".js-w-op");
+        var va = tr.querySelector(".js-w-va");
+        var oSel = tr.querySelector(".js-w-or");
+        if (!op || !va) return;
+        if (op.value === "IS NULL") {
+          va.disabled = true;
+          va.setAttribute("aria-hidden", "true");
+          oSel.disabled = true;
+        } else {
+          if (getActiveId() === tr.getAttribute("data-where-colid")) {
+            va.disabled = false;
+            oSel.disabled = false;
+          }
+        }
+      }
+
+      function wireRow(tr) {
+        var op = tr.querySelector(".js-w-op");
+        var oSel = tr.querySelector(".js-w-or");
+        if (op) op.addEventListener("change", function () { if (getActiveId() === tr.getAttribute("data-where-colid")) applyIsNull(tr); });
+        if (oSel) oSel.addEventListener("change", function () { /* revalidate hint only */ });
+      }
+      rows.forEach(wireRow);
+
+      function syncFromPicks() {
+        setRowUI(getActiveId());
+      }
+
+      picks.forEach(function (r) {
+        r.addEventListener("change", syncFromPicks);
+      });
+      syncFromPicks();
+
+      var paramNameOk = function (s) {
+        s = (s || "").trim();
+        if (s.length < 2) return false;
+        return /^P_[A-Z0-9_#]+$/i.test(s);
+      };
+
+      function validate() {
+        var id = getActiveId();
+        if (!id) {
+          return {
+            ok: false,
+            msg: "Seleccione al menos un campo para la condición WHERE. No puede continuar sin criterio de búsqueda."
+          };
+        }
+        var tr = tbl.querySelector('tr.js-filter-row[data-where-colid="' + id + '"]');
+        if (!tr) {
+          return {
+            ok: false,
+            msg: "Seleccione al menos un campo para la condición WHERE."
+          };
+        }
+        var op = (tr.querySelector(".js-w-op") || {}).value;
+        var origen = (tr.querySelector(".js-w-or") || {}).value;
+        var val = (tr.querySelector(".js-w-va") || { value: "" }).value;
+        if (op === "IS NULL") return { ok: true, msg: "" };
+        val = (val || "").trim();
+        if (origen === "literal") {
+          if (val.length === 0) return { ok: false, msg: "Con origen «Literal» debe indicar un valor en «Valor / IN»." };
+          return { ok: true, msg: "" };
+        }
+        if (origen === "in") {
+          if (val.length === 0) return { ok: false, msg: "Con origen «Parámetro IN» el nombre no puede quedar vacío (p. ej. P_ESTADO)." };
+          if (!paramNameOk(val)) return { ok: false, msg: "Nombre de IN inválido: use letras, números, # o _; prefijo P_ (ej. P_CUSNAME)." };
+          return { ok: true, msg: "" };
+        }
+        return { ok: true, msg: "" };
+      }
+
+      document.getElementById("read03-btn-next").addEventListener("click", function () {
+        var v = validate();
+        if (!v.ok) {
+          if (elErr) {
+            elErr.textContent = v.msg;
+            elErr.classList.remove("hidden");
+            elErr.scrollIntoView({ block: "nearest" });
+          }
+          return;
+        }
+        if (elErr) elErr.classList.add("hidden");
+        window.location.href = "sp-asistido-read-04-orden-paginacion.html";
+      });
+    })();
+  </script>
+</body>
+</html>

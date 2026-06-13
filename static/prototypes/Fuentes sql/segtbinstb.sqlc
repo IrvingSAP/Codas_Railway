@@ -1,0 +1,86 @@
+-------------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBINSTB                                          --
+-- Descripción.........: SEG-Tablas Inscritas para consultar y enviar a IFS  --
+-- Tipo Objeto.........: TABLE                                               --
+-- Requerimiento.......: PMO31385-standar utilizacion de correo              --
+-- Subdominio..........: Transversales Iseries                               --
+-- Fecha De Creación...: Junio 26-2020.                                      --
+-- Autor...............: JOSE RICARDO YUMAYUSA GUALTEROS.                     --
+-- Base de datos relacional:  DB2 for i                                      --
+-------------------------------------------------------------------------------
+-- MODIFICACIONES:                                                           --
+-- Fecha de Modificación :                                                   --
+-- Autor...............  :                                                   --
+-- Descripción ......... :                                                   --
+-- Requerimiento.........:                                                   --
+-------------------------------------------------------------------------------
+
+-- CreaTablas Inscritas para consultar y enviar a IFS
+--  CREATE OR REPLACE  &LIB/SEGTBINSTB
+CREATE OR REPLACE TABLE &LIB/Tablas_Inscritas_Consulta_a_IFS
+			FOR SYSTEM NAME SEGTBINSTB(
+ID_INSCRIP_TABLAS    	FOR COLUMN PKINSCTABL
+			NUMERIC(10) NOT NULL GENERATED ALWAYS AS
+			IDENTITY(START WITH 1, INCREMENT BY 1,
+			NO MINVALUE,  CYCLE, NO ORDER,  NO CACHE),
+NOMBRE_LIBRERIA      FOR COLUMN NOMBRLIBRE CHAR(10)
+			CCSID 284 NOT NULL DEFAULT '',
+NOMBRE_TABLA         FOR COLUMN NOMBRTABLA CHAR(10)
+			CCSID 284 NOT NULL DEFAULT '',
+NOMBRE_REMITENTE     FOR COLUMN NOMBRREMIT VARCHAR(50)
+			CCSID 284 NOT NULL DEFAULT '',
+CORREO_REMITENTE     FOR COLUMN CORREREMIT VARCHAR(100)
+			CCSID 284 NOT NULL DEFAULT '',
+NOMBRE_DESTINATARIO  FOR COLUMN NOMBRDESTI VARCHAR(1000)
+			CCSID 284 NOT NULL DEFAULT '',
+CORREO_DESTINATARIO  FOR COLUMN CORREDESTI VARCHAR(1000)
+			CCSID 284 NOT NULL DEFAULT '',
+NOMBRE_CON_COPIA     FOR COLUMN NOMBRCOPIA VARCHAR(1000)
+			CCSID 284 NOT NULL DEFAULT '',
+CORREO_CON_COPIA     FOR COLUMN CORRECOPIA VARCHAR(1000)
+			CCSID 284 NOT NULL DEFAULT '',
+ASUNTO_CORREO        FOR COLUMN ASUNTOCORR VARCHAR(0100)
+			CCSID 284 NOT NULL DEFAULT '',
+CUERPO_CORREO        FOR COLUMN CUERPOCORR VARCHAR(1000)
+			CCSID 284 NOT NULL DEFAULT '',
+TIEMPO_CREACION      FOR COLUMN FECHACREAC TIMESTAMP NOT NULL
+                     	DEFAULT CURRENT_TIMESTAMP
+                     	IMPLICITLY HIDDEN ,
+USUARIO_CREACION     FOR COLUMN USUARIOCRE CHAR(10)
+			CCSID 284 NOT NULL DEFAULT ' '
+                     	IMPLICITLY HIDDEN ,
+TIEMPO_MODIFICACION  FOR COLUMN FECHAMODIF TIMESTAMP
+			NOT NULL GENERATED ALWAYS
+                     	FOR EACH ROW ON UPDATE AS ROW CHANGE
+                     	TIMESTAMP IMPLICITLY HIDDEN ,
+USUARIO_MODIFICACION FOR COLUMN USUARIOMOD CHAR(10)
+			CCSID 284 NOT NULL DEFAULT ' '
+                     	IMPLICITLY HIDDEN ,
+-- Clave Primaria
+CONSTRAINT &LIB/ID_INSCRIP_TABLAS_PK
+PRIMARY KEY ( ID_INSCRIP_TABLAS ))
+RCDFMT RSEGTBINST;
+
+-- Etiqueta de la tabla
+
+LABEL ON TABLE &LIB/SEGTBINSTB Is
+'SEG-Tablas Inscritas Consultar y enviar Correo';
+
+-- Atributo de texto de los campos
+LABEL ON &LIB/SEGTBINSTB
+(ID_INSCRIP_TABLAS   Text Is  'Clave Primaria....................',
+NOMBRE_LIBRERIA      Text Is  'Nombre de la Libreria.............',
+NOMBRE_TABLA         Text Is  'Nombre de la Tabla o Vista........',
+NOMBRE_REMITENTE     Text Is  'Nombre del Remitente..............',
+CORREO_REMITENTE     Text Is  'Correo del Remitente..............',
+NOMBRE_DESTINATARIO  Text Is  'Nombre del Destinatario...........',
+CORREO_DESTINATARIO  Text Is  'Correo del Destinatario...........',
+NOMBRE_CON_COPIA     Text Is  'Nombre a quien se copia...........',
+CORREO_CON_COPIA     Text Is  'Correo a quien se Copia...........',
+ASUNTO_CORREO        Text Is  'Asunto del Correo.................',
+CUERPO_CORREO        Text Is  'Cuerpo del Correo.................',
+TIEMPO_CREACION      Text Is  'Fecha-Hora Creación...............',
+USUARIO_CREACION     Text Is  'Usuario Creación..................',
+TIEMPO_MODIFICACION  Text Is  'Fecha-Hora Actualización..........',
+USUARIO_MODIFICACION Text Is  'Usuario Actualización.............');
+

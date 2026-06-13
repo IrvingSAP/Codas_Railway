@@ -1,0 +1,146 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block extra_css %}{% endblock %}
+
+{% block title %}CODAS — Campos de diseño de tabla{% endblock %}
+{% block header_title %}Campos · {{ header.table_name_short }}{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'table_design:header_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Listado de cabeceras</a>
+    <span class="text-gray-600"> · </span>
+    <a href="{% url 'table_design:header_detail' header.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver cabecera</a>
+</p>
+
+<div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div class="max-w-3xl">
+        <h2 class="text-base font-semibold text-white">Campos de la cabecera</h2>
+        <p class="mt-1 text-sm text-gray-500">
+            Definición de columnas <code class="rounded bg-gray-800 px-1 text-xs text-emerald-400/90">DetailTable</code> para
+            <strong class="text-gray-400">{{ header.table_name_short }}</strong>
+            (compañía <strong class="text-gray-400">{% if profile.company %}{{ profile.company.name_short }}{% else %}—{% endif %}</strong>).
+        </p>
+    </div>
+</div>
+
+<div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3 sm:col-span-2">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Nombre corto · largo</p>
+        <p class="mt-1 font-mono text-lg font-semibold text-codas-blue-accent">{{ header.table_name_short }}</p>
+        <p class="mt-0.5 truncate text-sm text-gray-400" title="{{ header.table_name_long }}">{{ header.table_name_long }}</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Librería / esquema</p>
+        <p class="mt-1 font-mono text-lg text-white">{% if header.schema %}{{ header.schema }}{% else %}<span class="text-gray-500">—</span>{% endif %}</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Script · llave en cabecera</p>
+        <p class="mt-1 text-sm {% if header.script_generated %}text-emerald-400{% else %}text-gray-500{% endif %}">
+            {% if header.script_generated %}Script generado{% else %}Sin script{% endif %}
+        </p>
+        <p class="mt-0.5 text-xs text-gray-500">
+            {% if header.is_field_key %}<span class="rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200">PK por campos</span>{% else %}<span class="text-gray-600">Sin llave por campos</span>{% endif %}
+        </p>
+    </div>
+</div>
+
+{% if mutations_blocked %}
+<div class="mb-6 rounded-xl border border-amber-500/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-100/90" role="status">
+    <strong class="text-amber-100">Solo lectura:</strong> no se pueden crear, editar, eliminar ni reordenar campos mientras la cabecera tenga script generado o esté inactiva.
+</div>
+{% endif %}
+
+{% if not mutations_blocked %}
+<div class="mb-6 flex flex-wrap gap-2">
+    <a href="{% url 'table_design:field_create' header.pk %}" class="inline-flex items-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">
+        Nuevo campo
+    </a>
+    <span class="self-center text-xs text-gray-500">Flujo en dos pasos: núcleo <code class="text-emerald-400/80">DetailTable</code> → atributos <code class="text-amber-200/80">DetailTableDb2Attributes</code></span>
+</div>
+{% endif %}
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[920px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Ord.</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre corto</th>
+                    <th class="min-w-[10rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre largo</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Tipo</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Long.</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Dec.</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Null</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Llave</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Ord. llave</th>
+                    <th class="sticky right-0 z-10 bg-slate-900/95 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for f in fields %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-3 py-3 text-center font-mono text-slate-300">{{ f.order_reg }}</td>
+                    <td class="px-3 py-3 font-mono text-sm font-medium text-codas-blue-accent">{{ f.field_name_short }}</td>
+                    <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="{{ f.field_name_long }}">{{ f.field_name_long }}</td>
+                    <td class="px-3 py-3 font-mono text-xs"><span class="rounded bg-slate-700/60 px-2 py-0.5 text-slate-200">{{ f.field_type }}</span></td>
+                    <td class="px-3 py-3 text-center font-mono text-slate-300">{{ f.field_length }}</td>
+                    <td class="px-3 py-3 text-center text-slate-400">{% if f.decimal_places is not None %}{{ f.decimal_places }}{% else %}—{% endif %}</td>
+                    <td class="px-3 py-3 text-center text-xs">
+                        {% if f.db2_attributes %}
+                        {% if f.db2_attributes.nullable %}<span class="text-emerald-400/90">Sí</span>{% else %}<span class="text-slate-500">No</span>{% endif %}
+                        {% else %}<span class="text-slate-600">—</span>{% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-center text-xs">{% if f.is_key %}<span class="rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200">PK</span>{% else %}<span class="text-slate-600">—</span>{% endif %}</td>
+                    <td class="px-3 py-3 text-center font-mono text-slate-400">{% if f.order_key is not None %}{{ f.order_key }}{% else %}—{% endif %}</td>
+                    <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                        {% if not mutations_blocked %}
+                        <a href="{% url 'table_design:field_update' header.pk f.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-slate-600"> · </span>
+                        <form method="post" action="{% url 'table_design:field_delete' header.pk f.pk %}" class="inline codas-field-delete-form" data-codas-delete-msg="¿Eliminar el campo {{ f.field_name_short }}?">
+                            {% csrf_token %}
+                            <button type="button" class="codas-field-delete-btn border-0 bg-transparent p-0 text-slate-400 hover:text-rose-400 hover:underline">Eliminar</button>
+                        </form>
+                        <span class="text-slate-600"> · </span>
+                        <form method="get" action="{% url 'table_design:field_db2_attributes' header.pk f.pk %}" class="inline"><button type="submit" class="border-0 bg-transparent p-0 text-slate-500 hover:text-amber-200/90 no-underline hover:underline" title="Atributos DB2">DB2</button></form>
+                        <form method="post" action="{% url 'table_design:field_move_up' header.pk f.pk %}" class="inline">{% csrf_token %}<button type="submit" class="border-0 bg-transparent p-0 text-slate-500 hover:text-gray-300" {% if forloop.first %}disabled aria-disabled="true"{% endif %}>↑</button></form>
+                        <form method="post" action="{% url 'table_design:field_move_down' header.pk f.pk %}" class="inline">{% csrf_token %}<button type="submit" class="border-0 bg-transparent p-0 text-slate-500 hover:text-gray-300" {% if forloop.last %}disabled aria-disabled="true"{% endif %}>↓</button></form>
+                        {% else %}
+                        <span class="text-slate-600">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="px-4 py-8 text-center text-sm text-slate-500">No hay campos definidos para esta cabecera.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500">
+        <p>Campos: <span class="font-medium text-slate-300">{{ fields|length }}</span></p>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if not mutations_blocked %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("form.codas-field-delete-form").forEach(function (form) {
+    var btn = form.querySelector(".codas-field-delete-btn");
+    var msg = form.getAttribute("data-codas-delete-msg");
+    if (!btn || !msg || typeof window.codasConfirmWarning !== "function") return;
+    btn.addEventListener("click", function () {
+      window.codasConfirmWarning(msg, function () {
+        form.submit();
+      });
+    });
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

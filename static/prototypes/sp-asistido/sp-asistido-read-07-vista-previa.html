@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · READ · Paso 7 de 7 · Vista previa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400"><span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-sky-300">Leer (READ)</span></span></div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a><h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nueva consulta · SELECT</h1></header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Columnas</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Filtros</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Orden</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-sky-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/30 text-white">7</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">7 · Script generado (READ)</h2>
+      <pre class="mt-4 max-h-[min(60vh,28rem)] overflow-auto rounded-xl border border-slate-700 bg-slate-900 p-4 text-left text-xs leading-relaxed text-sky-200/90"><code>CREATE OR REPLACE PROCEDURE R1DATA.SELCUS00 (
+    IN  P_ESTADO CHAR(1),
+    OUT P_ERROR_CODE INTEGER,
+    OUT P_ERROR_MSG VARCHAR(200)
+)
+LANGUAGE SQL
+READS SQL DATA
+DYNAMIC RESULT SETS 1
+SPECIFIC SELCUS0SP1
+BEGIN
+    DECLARE c_result CURSOR WITH HOLD WITH RETURN FOR
+        SELECT CUSNBR, CUSNAME, CUSTATUS
+        FROM R1DATA.CUSMAS
+        WHERE CUSTATUS = P_ESTADO
+        ORDER BY CUSNBR ASC
+        FETCH FIRST 100 ROWS ONLY;
+
+    DECLARE v_sqlstate CHAR(5) DEFAULT '00000';
+    DECLARE v_msg VARCHAR(200) DEFAULT '';
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+      GET DIAGNOSTICS CONDITION 1 v_sqlstate = RETURNED_SQLSTATE, v_msg = MESSAGE_TEXT;
+      SET P_ERROR_CODE = -1;
+      SET P_ERROR_MSG = 'Error SQLSTATE=' CONCAT v_sqlstate CONCAT ' - ' CONCAT v_msg;
+    END;
+
+    OPEN c_result;
+    SET P_ERROR_CODE = 0;
+    SET P_ERROR_MSG = 'OK';
+END;</code></pre>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto max-w-3xl"><div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><a href="sp-asistido-read-06-firma.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a><a href="sp-asistido-list-demo.html" class="rounded-md bg-codas-accent px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:bg-codas-hover">Volver al listado</a></div><p class="mt-2 text-center sm:text-left"><a href="sp-asistido-read-01-name-sp.html" class="text-sm text-codas-accent/90 no-underline hover:underline">Nuevo asistente READ desde cero</a></p></div></footer>
+</body>
+</html>

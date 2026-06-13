@@ -1,0 +1,79 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Suscripciones{% endblock %}
+{% block header_title %}Suscripciones{% endblock %}
+
+{% block billing_content %}
+<p class="mb-4 text-sm text-gray-500">
+    <a href="{% url 'billing:hub' %}" class="text-codas-blue-accent no-underline hover:underline">← Facturación</a>
+</p>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h2 class="text-base font-semibold text-white">Listado de suscripciones</h2>
+        <p class="mt-1 text-sm text-gray-500">Una suscripción por compañía.</p>
+    </div>
+    {% if can_crud %}
+    <a href="{% url 'billing:subscription_create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">+ Nueva suscripción</a>
+    {% endif %}
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[900px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Compañía</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Plan</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Inicio</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Fin</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Estado</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-center font-semibold text-gray-300">Auto-renov.</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for s in subscriptions %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3">
+                        <span class="font-medium text-white">{{ s.company.name_short }}</span>
+                        <span class="block text-xs text-gray-500">{{ s.company.name_long }}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-gray-200">{{ s.plan.name }}</span>
+                        <span class="ml-1 font-mono text-xs text-codas-blue-accent">{{ s.plan.code }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400">{{ s.start_date|date:"Y-m-d" }}</td>
+                    <td class="px-4 py-3 text-gray-400">{{ s.end_date|date:"Y-m-d" }}</td>
+                    <td class="px-4 py-3">
+                        {% if s.status == 'active' %}
+                        <span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">{{ s.get_status_display }}</span>
+                        {% elif s.status == 'expired' %}
+                        <span class="inline-flex rounded-full bg-gray-600/40 px-2 py-0.5 text-xs text-gray-400">{{ s.get_status_display }}</span>
+                        {% elif s.status == 'canceled' %}
+                        <span class="inline-flex rounded-full bg-rose-500/20 px-2 py-0.5 text-xs text-rose-300">{{ s.get_status_display }}</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200">{{ s.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-center text-gray-300">{% if s.auto_renew %}Sí{% else %}No{% endif %}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{% url 'billing:subscription_detail' s.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        {% if can_crud %}
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:subscription_update' s.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:subscription_delete' s.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-500">No hay suscripciones.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+Create Table &LIB/SEGFFAUT19
+(TXML         XML        NOT NULL WITH DEFAULT
+) RcdFmt SEG19R;
+
+Label On Table &LIB/SEGFFAUT19 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT19
+(TXML    TEXT IS 'TXML'
+ );
+
+Label On Column &LIB/SEGFFAUT19
+(TXML         Is 'T_XML'
+ );

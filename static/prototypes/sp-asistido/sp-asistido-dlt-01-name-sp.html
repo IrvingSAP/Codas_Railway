@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · DLT · Paso 1 de 6 · Identificación</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-rose-300">Borrar (DLT)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · DELETE</h1>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 font-medium text-rose-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-rose-500/30 text-white">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> WHERE</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Modo</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Confirmación</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">1 · Identificación de la rutina</h2>
+      <p class="mt-1 text-sm text-slate-500">Defina la identidad del SP DELETE. Los tres primeros campos son obligatorios.</p>
+      <p id="dlt01-error" class="mt-3 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+      <form id="dlt01-form" class="mt-5 space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-4" novalidate>
+        <div><label for="procedure_schema" class="mb-1 block text-xs text-slate-400">Esquema / librería (máx. 10) *</label><input id="procedure_schema" required maxlength="10" pattern="[A-Za-z0-9#]{1,10}" value="R1DATA" class="h-9 w-full max-w-sm rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-codas-accent"></div>
+        <div><label for="procedure_name_short" class="mb-1 block text-xs text-slate-400">Nombre corto SP (máx. 10) *</label><input id="procedure_name_short" required maxlength="10" pattern="[A-Za-z0-9_#]{1,10}" value="DELCUS00" class="h-9 w-full max-w-xs rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-codas-accent"></div>
+        <div><label for="procedure_name_long" class="mb-1 block text-xs text-slate-400">Nombre largo (máx. 50) *</label><input id="procedure_name_long" required maxlength="50" value="Baja de cliente por clave (DELETE)" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5"></div>
+        <div><label for="procedure_comment" class="mb-1 block text-xs text-slate-400">Comentario descriptivo (opcional)</label><input id="procedure_comment" maxlength="200" value="Operación sensible; requiere WHERE y confirmación explícita." class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5"></div>
+      </form>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row sm:justify-between"><a href="sp-asistido-list-demo.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-sm text-slate-300">Cancelar</a><button id="dlt01-btn-next" type="button" class="rounded-md bg-codas-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-codas-hover">Siguiente · Tabla</button></div></footer>
+  <script>(function(){var f=document.getElementById("dlt01-form"),e=document.getElementById("dlt01-error");document.getElementById("dlt01-btn-next").addEventListener("click",function(){["procedure_schema","procedure_name_short","procedure_name_long"].forEach(function(id){var el=document.getElementById(id);el.value=el.value.trim();});if(!f.checkValidity()){e.textContent="Complete esquema, nombre corto y nombre largo.";e.classList.remove("hidden");f.reportValidity();return;}e.classList.add("hidden");window.location.href="sp-asistido-dlt-02-tabla.html";});})();</script>
+</body>
+</html>

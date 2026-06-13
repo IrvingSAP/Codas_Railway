@@ -1,0 +1,50 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Pago #{{ payment.pk }}{% endblock %}
+{% block header_title %}Pago — {{ payment.amount }}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'billing:payment_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Pago</h2>
+</div>
+
+<dl class="max-w-2xl space-y-4 text-sm">
+    <div>
+        <dt class="font-medium text-gray-400">Compañía / suscripción</dt>
+        <dd class="mt-1 text-gray-200">{{ payment.subscription.company.name_short }} — {{ payment.subscription.plan.name }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Monto</dt>
+        <dd class="mt-1 text-xl font-semibold text-white">{{ payment.amount }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Fecha de pago</dt>
+        <dd class="mt-1 text-gray-200">{{ payment.payment_date|date:"Y-m-d H:i" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Método</dt>
+        <dd class="mt-1 text-gray-200">{{ payment.get_method_display }} <span class="text-gray-500">({{ payment.method }})</span></dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">ID de transacción</dt>
+        <dd class="mt-1 font-mono text-sm text-gray-300">{{ payment.transaction_id|default:"—" }}</dd>
+    </div>
+    {% if payment.created_by %}
+    <div>
+        <dt class="font-medium text-gray-400">Registrado por</dt>
+        <dd class="mt-1 text-gray-400">{{ payment.created_by.get_username }}</dd>
+    </div>
+    {% endif %}
+</dl>
+
+{% if can_crud %}
+<div class="mt-8 flex flex-wrap gap-3">
+    <a href="{% url 'billing:payment_update' payment.pk %}" class="inline-flex rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'billing:payment_delete' payment.pk %}" class="inline-flex rounded-md border border-rose-500/50 px-4 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endif %}
+{% endblock %}

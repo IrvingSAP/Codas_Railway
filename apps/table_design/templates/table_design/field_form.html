@@ -1,0 +1,31 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table_design/detail_field_form.css' %}">
+{% endblock %}
+
+{% block title %}CODAS — {{ step_title }}{% endblock %}
+{% block header_title %}Campos · {{ header.table_name_short }}{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'table_design:field_list' header.pk %}" class="text-codas-blue-accent no-underline hover:underline">← Listado de campos</a>
+    <span class="text-gray-600"> · </span>
+    <span class="text-gray-500">Paso 1 de 2 · <code class="rounded bg-gray-800 px-1 text-xs text-emerald-400/90">DetailTable</code></span>
+</p>
+
+<div class="mb-4 rounded-lg border border-white/10 bg-slate-900/40 px-4 py-3 text-xs text-gray-500">
+    Defina el núcleo del campo (<code class="text-emerald-400/90">DetailTable</code>).
+    Los atributos DB2 (<code class="text-amber-200/80">DetailTableDb2Attributes</code>) se configuran desde el listado de campos.
+</div>
+
+{% include "table_design/includes/detail_field_form.html" %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ detail_field_js_config|json_script:"codas-detail-field-config" }}
+<script src="{% static 'js/table_design/detail_field_form.js' %}" defer></script>
+{% endblock %}

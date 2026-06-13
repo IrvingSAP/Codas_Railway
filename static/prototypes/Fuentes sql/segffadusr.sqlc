@@ -1,0 +1,19 @@
+CREATE TABLE &LIB/SEGFFADUSR (
+ CodAcc            Numeric     (1)    ,
+ Perusr            Char        (10)    ,
+ NomRol            Char        (150)
+)
+RCDFMT  RADUSR;
+
+LABEL ON TABLE &LIB/SEGFFADUSR  Is
+'Usuarios para activas y desactivar';
+
+LABEL ON &LIB/SEGFFADUSR (
+CodAcc             Text Is  'Cod Accion',
+Perusr             Text Is  'Perfil Usr ',
+NomRol             Text Is  'Nombre Rol');
+
+LABEL ON COLUMN &LIB/SEGFFADUSR (
+CodAcc                  Is  'Cod Accion',
+Perusr                  Is  'Perfil Usr ',
+NomRol                  Is  'Nombre Rol');

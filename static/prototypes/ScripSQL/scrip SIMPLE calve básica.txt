@@ -1,0 +1,94 @@
+scrip - SIMPLE - con calve básica
+
+
+se define como clave basica cuando el usuario selecciono
+de detailtable los campos y orden de la clave
+
+-- Crear TABLA Línea de Negocio
+CREATE OR REPLACE TABLE LIBIACP.XAnalysis_Maestro_PF_SRC
+                   FOR SYSTEM NAME CTRTBXAMPF(
+
+-- Definición de campos
+
+   ID_BUSINELINE              FOR COLUMN IDBUSINELI
+                              INTEGER ,
+
+   LINE_COMPONENT             FOR COLUMN LINECOMPON
+                              CHAR(3) CCSID 284 NOT NULL DEFAULT '',
+
+   SOURCE_FILES                FOR COLUMN SOURCEFILE
+                              CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+
+   IFS_DESTINATION            FOR COLUMN IFSDESTI
+                              CHAR(150) CCSID 284 NOT NULL DEFAULT '',
+
+   COMPONENT_STATUS           FOR COLUMN COMPSTATUS
+                              CHAR(1) CCSID 284 NOT NULL DEFAULT '',
+
+   PROCESSES_STATUS           FOR COLUMN PROCSTATUS
+                              CHAR(2) CCSID 284 NOT NULL DEFAULT '',
+
+   REG_ADD_UPD                FOR COLUMN REGADDUPD
+                              CHAR(1) CCSID 284 NOT NULL DEFAULT '',
+
+   START_PROCESS              FOR COLUMN STARTPROCE TIMESTAMP
+                              NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+
+   END_PROCESS                 FOR COLUMN ENDPROCESS TIMESTAMP
+                              NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+
+   RECORDS_PROCESSED          FOR COLUMN RECORDPROC
+                              NUMERIC(9)  DEFAULT 0 ,
+
+   USER_CREATION              FOR COLUMN USERCREA
+                              CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+
+   CREATION_DATE              FOR COLUMN CREADATE TIMESTAMP
+                              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+   USER_UPDATE                FOR COLUMN USERUPDATE
+                              CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+
+   UPDATE_DATE                FOR COLUMN UPDATEDATE TIMESTAMP
+                              NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+
+   CONSTRAINT CTRTBXAMPF_PK PRIMARY KEY ( ID_BUSINELINE, LINE_COMPONENT,
+               SOURCE_FILES )
+   );
+
+-- Etiqueta de la tabla
+   Label On Table LIBIACP/CTRTBXAMPF Is
+   'XANALYSIS PF-SRC' ;
+
+   COMMENT On Table LIBIACP/CTRTBXAMPF Is
+   'XANALYSIS PF-SRC' ;
+
+-- Atributo de texto de los campos
+   Label On Column  LIBIACP/CTRTBXAMPF
+   (
+    ID_BUSINELINE           Is    'Línea               Negocio',
+    LINE_COMPONENT          Is    'Componente          Asociado',
+    SOURCE_FILES            Is    'Archivos            Fuente',
+    IFS_DESTINATION         Is    'IFS                 Destino',
+    COMPONENT_STATUS        Is    'Estado              Componente',
+    PROCESSES_STATUS        Is    'Estado del          Proceso',
+    USER_CREATION           Is    'Usuario             Creador',
+    CREATION_DATE           Is    'Fecha               Creación',
+    USER_UPDATE             Is    'Usuario             Actualizador',
+    UPDATE_DATE             Is    'Fecha               Actualización'
+    );
+
+-- Atributo de texto de los campos
+   Label On Column LIBIACP/CTRTBXAMPF
+   (
+    ID_BUSINELINE            Text Is   'Línea de Negocio',
+    LINE_COMPONENT           Text Is   'Componente Asociado',
+    SOURCE_FILES             Text Is   'Archivos Fuentes',
+    IFS_DESTINATION          Text Is   'Ruta IFS-ISERIE Destino',
+    COMPONENT_STATUS         Text Is   'Est.Reg. Activo/Inactivo',
+    PROCESSES_STATUS         Text Is   'Est.Pro- PP, PE, DG, XA, NW',
+    USER_CREATION            Text Is   'Usuario Creador',
+    CREATION_DATE            Text Is   'Fecha de Creación',
+    USER_UPDATE              Text Is   'Usuario Actualizador',
+    UPDATE_DATE              Text Is   'Fecha de Actualización'
+    );

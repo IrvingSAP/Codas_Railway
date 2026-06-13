@@ -1,0 +1,30 @@
+{% extends "dashboard/dashboard_base.html" %}
+{# Inicio /panel/ para UserProfile.user_type = US (usuario). #}
+
+{% block title %}CODAS — Panel usuario{% endblock %}
+{% block header_title %}Panel de usuario{% endblock %}
+
+{% block content %}
+<p class="mb-6 max-w-2xl text-sm text-gray-400">
+    Bienvenido. Los módulos específicos para su tipo de usuario (<strong class="text-gray-300">{{ profile.get_user_type_display }}</strong>) se irán enlazando aquí.
+</p>
+
+<div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    <a href="{% url 'table_design:header_list' %}" class="rounded-xl border border-white/10 bg-slate-900/70 p-6 shadow-sm transition hover:border-codas-blue-accent/35">
+        <h2 class="m-0 text-base font-semibold text-white">Diseño de tablas</h2>
+        <p class="mt-2 text-sm text-gray-400">Crear y administrar tablas BD2.</p>
+    </a>
+    <a href="{% url 'sp_asistido:list' %}" class="rounded-xl border border-white/10 bg-slate-900/70 p-6 shadow-sm transition hover:border-codas-blue-accent/35">
+        <h2 class="m-0 text-base font-semibold text-white">Store procedures</h2>
+        <p class="mt-2 text-sm text-gray-400">Definir y gestionar SP empresariales.</p>
+    </a>
+    <a href="{% url 'maintenance_builder:list_view' %}" class="rounded-xl border border-white/10 bg-slate-900/70 p-6 shadow-sm transition hover:border-codas-blue-accent/35 sm:col-span-2 xl:col-span-1">
+        <h2 class="m-0 text-base font-semibold text-white">Mantenimientos</h2>
+        <p class="mt-2 text-sm text-gray-400">Generar mantenimientos listos para producción.</p>
+    </a>
+    <a href="{% url 'sources:list' %}" class="block rounded-xl border border-white/10 bg-slate-900/70 p-6 shadow-sm transition hover:border-codas-blue-accent/35 sm:col-span-2 xl:col-span-1">
+        <h2 class="m-0 text-base font-semibold text-white">Plantillas</h2>
+        <p class="mt-2 text-sm text-gray-400">Generar plantillas base.</p>
+    </a>
+</div>
+{% endblock %}

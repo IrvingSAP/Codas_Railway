@@ -1,0 +1,14 @@
+# Entornos virtuales (nunca versionar)
+.venv/
+venv/
+env/
+.env
+*.pyc
+__pycache__/
+*.sqlite3
+db.sqlite3
+staticfiles/
+media/
+
+# Node (Tailwind / front)
+node_modules/

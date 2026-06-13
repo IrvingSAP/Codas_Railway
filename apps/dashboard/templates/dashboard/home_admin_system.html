@@ -1,0 +1,120 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{# Inicio /panel/ para UserProfile.user_type = AS (administrador de sistema). #}
+
+
+
+{% block title %}CODAS — Panel administrador de sistema{% endblock %}
+
+{% block header_title %}Panel administrador de sistema{% endblock %}
+
+
+
+{% block content %}
+
+<h2 class="mb-2 text-base font-semibold text-white">Resumen de su compañía</h2>
+
+{% if profile.company %}
+
+<p class="mb-8 text-sm text-gray-500">
+
+    {{ profile.company.name_short }} — {{ profile.company.name_long }}
+
+</p>
+
+{% else %}
+
+<p class="mb-8 text-sm text-amber-400/90">
+
+    Su perfil no tiene compañía asignada; los totales se muestran en cero.
+
+</p>
+
+{% endif %}
+
+
+
+<section class="mb-10" aria-labelledby="as-metrics-table-design">
+
+    <h3 id="as-metrics-table-design" class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+
+        Diseños de tablas
+
+    </h3>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Activas" metric_value=metrics.header_tables.active %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="En proceso" metric_value=metrics.header_tables.process %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Inactivas" metric_value=metrics.header_tables.inactive %}
+
+    </div>
+
+</section>
+
+
+
+<section class="mb-10" aria-labelledby="as-metrics-sp">
+
+    <h3 id="as-metrics-sp" class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+
+        Store Procedure
+
+    </h3>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Activas" metric_value=metrics.stored_procedures.active %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Borrador" metric_value=metrics.stored_procedures.draft %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Inactivas" metric_value=metrics.stored_procedures.inactive %}
+
+    </div>
+
+</section>
+
+
+
+<section class="mb-10" aria-labelledby="as-metrics-maintenance">
+
+    <h3 id="as-metrics-maintenance" class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+
+        Mantenimientos
+
+    </h3>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Activas" metric_value=metrics.maintenance_definitions.active metric_hint="Estado generado (G) en el sistema" %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Borrador" metric_value=metrics.maintenance_definitions.draft %}
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Inactivas" metric_value=metrics.maintenance_definitions.inactive metric_hint="Incluye registros en error (E)" %}
+
+    </div>
+
+</section>
+
+
+
+<section aria-labelledby="as-metrics-users">
+
+    <h3 id="as-metrics-users" class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+
+        Usuarios
+
+    </h3>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        {% include "dashboard/includes/dashboard_metric_card.html" with metric_label="Usuarios (tipo US)" metric_value=total_users metric_hint="Perfiles de usuario final en su compañía" %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+

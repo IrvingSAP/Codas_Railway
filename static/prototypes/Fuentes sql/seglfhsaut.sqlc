@@ -1,0 +1,12 @@
+-- *?************************************************************************
+-- *  Programa:?SEGLFHSAUT                                                  *
+-- *  Descripcion:Componente Autorizador indice de LOG Historico          ?*
+-- *                                                                       ?*
+-- *  Autor:?Rigoberto Ríos Bola¦os                                         *
+-- *  Empresa:?PersonalSoft S.A.S                                           *
+-- *  Fecha Creacion:?30 - Mayo  2011                                       *
+-- *?************************************************************************
+
+CREATE INDEX SEGLFHSAUT
+  ON SEGFFHSAUT ( LGFECHA);
+

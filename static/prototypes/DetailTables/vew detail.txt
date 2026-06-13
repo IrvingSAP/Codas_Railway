@@ -1,0 +1,415 @@
+
+
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import HeaderTable, DetailTable
+
+from .validateEntry import validate_header_table, validate_field, validate_order_key
+from .validateData import validate_header_duplicates, validate_header_duplicates_edit, validate_field_duplicates, validate_order_key_dup, validate_field_duplicates_edit, validate_order_key_dup_edit
+from .defDetTables import get_next_order_reg, normalize_order_reg
+from .utils import generate_db2_script
+
+def has_key_fields(header, company):
+    """
+    Retorna True si la tabla (header) tiene al menos un campo clave.
+    La búsqueda está filtrada por compañía.
+    """
+    return DetailTable.objects.filter(
+        header=header,
+        header__company=company,
+        status="A",
+        is_key=True
+    ).exists()
+
+def update_header_key_status(header, company):
+    """
+    Actualiza el campo is_field_key del HeaderTable según si la tabla
+    tiene al menos un campo clave en DetailTable.
+    """
+    clave_reg = has_key_fields(header, company)
+
+    # Actualizar el campo en el modelo HeaderTable
+    header.is_field_key = clave_reg
+    header.save(update_fields=["is_field_key"])
+
+    return clave_reg
+
+
+
+
+
+# Bloque Detalle
+def field_create(request, table_id):
+    profile = request.user.userprofile
+
+    if profile.user_type not in ["U"]:
+        messages.error(request, "No tiene permisos para agregar campos.")
+        return redirect("table_list")
+
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+
+    # Valores iniciales
+    context = {
+        "header": header,
+        "fields": header.fields.all().order_by("order_reg"),
+        "FIELD_TYPES": DetailTable.FIELD_TYPES,
+        "field_name_long": "",
+        "field_name_short": "",
+        "field_type": "",
+        "length": "",
+        "decimals": "",
+        "is_null": "N",
+        "field_description":"",
+        "notes": "",
+        "is_key": False,
+        "order_key": 0,
+    }
+
+    if request.method == "POST":
+        field_name_long = request.POST.get("field_name_long", "").strip()
+        field_name_short = request.POST.get("field_name_short", "").strip()
+        field_type = request.POST.get("field_type")
+        length = request.POST.get("length")
+        decimals = request.POST.get("decimals")
+        is_null = request.POST.get("is_null", "N")
+        notes = request.POST.get("notes", "")
+        is_key = request.POST.get("is_key") == "Y"
+        order_key = request.POST.get("order_key")
+        field_description = request.POST.get("field_description", "").strip()
+
+        # Guardar valores en contexto
+        context.update({
+            "field_name_long": field_name_long,
+            "field_name_short": field_name_short,
+            "field_type": field_type,
+            "length": length,
+            "decimals": decimals,
+            "is_null": is_null,
+            "notes": notes,
+            "is_key": is_key,
+            "order_key": order_key,
+        })
+
+        # VALIDACIÓN GENERAL
+        validation = validate_field(
+            field_name_long,
+            field_name_short,
+            field_type,
+            length,
+            decimals,
+            is_null,
+            is_key,
+            order_key
+        )
+
+        if not validation["ok"]:
+            for err in validation["errors"]:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # VALIDAR DUPLICADOS EN LA MISMA TABLA
+        dup = validate_field_duplicates(header, field_name_long, field_name_short)
+
+        if not dup["ok"]:
+            for err in dup["errors"]:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+        
+        # Validación de order_key
+        order_key_errors = validate_order_key(is_key, order_key)
+        if order_key_errors:
+            for err in order_key_errors:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # Validación de order_key_Duplicate
+        order_key_errors = validate_order_key_dup(header, order_key)
+        if order_key_errors:
+            for err in order_key_errors:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # Calcular order_reg
+        order_reg = get_next_order_reg(header)
+
+        # Crear campo
+        DetailTable.objects.create(
+            header=header,
+            field_name_long=field_name_long,
+            field_name_short=field_name_short,
+            field_type=field_type,
+            field_description=field_description,
+
+            # Nombres correctos del modelo
+            field_length=length or 0,
+            decimal_places=decimals or 0,
+            nullable=(is_null == "Y"),
+
+            notes=notes,
+            is_key=is_key,
+            order_key=order_key or None,
+            order_reg=order_reg,
+            status = 'A',
+            
+            created_by=request.user,
+            updated_by=request.user,
+        )
+
+
+        messages.success(request, "Campo agregado correctamente.")
+        return redirect("field_create", table_id=header.id)
+
+    return render(request, "dbdesigner/table_detail.html", context)
+
+
+def field_edit(request, table_id, field_id):
+    profile = request.user.userprofile
+
+    if profile.user_type not in ["U"]:
+        messages.error(request, "No tiene permisos para editar campos.")
+        return redirect("table_list")
+
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+    field = get_object_or_404(DetailTable, id=field_id, header=header)
+
+    # Contexto inicial con valores del registro
+    context = {
+        "header": header,
+        "fields": header.fields.all().order_by("order_reg"),
+        "FIELD_TYPES": DetailTable.FIELD_TYPES,
+
+        # Valores precargados
+        "field_name_long": field.field_name_long,
+        "field_name_short": field.field_name_short,
+        "field_type": field.field_type,
+        "length": field.field_length,
+        "decimals": field.decimal_places,
+        "is_null": "Y" if field.nullable else "N",
+        "notes": field.notes or "",
+        "is_key": field.is_key,
+        "order_key": field.order_key or 0,
+        "field_description":field.field_description,
+
+        # Modo edición
+        "edit_mode": True,
+        "field_id": field.id,
+    }
+
+    if request.method == "POST":
+        # Captura de datos
+        field_name_long = request.POST.get("field_name_long", "").strip()
+        field_name_short = request.POST.get("field_name_short", "").strip()
+        field_type = request.POST.get("field_type")
+        length = request.POST.get("length")
+        decimals = request.POST.get("decimals")
+        is_null = request.POST.get("is_null", "N")
+        notes = request.POST.get("notes", "")
+        is_key = request.POST.get("is_key") == "Y"
+        order_key = request.POST.get("order_key")
+        field_description = request.POST.get("field_description", "").strip()
+        
+
+        # Actualizar contexto
+        context.update({
+            "field_name_long": field_name_long,
+            "field_name_short": field_name_short,
+            "field_type": field_type,
+            "length": length,
+            "decimals": decimals,
+            "is_null": is_null,
+            "notes": notes,
+            "is_key": is_key,
+            "order_key": order_key,
+            "field_description":field_description,
+        })
+
+        # VALIDACIÓN GENERAL
+        validation = validate_field(
+            field_name_long,
+            field_name_short,
+            field_type,
+            length,
+            decimals,
+            is_null,
+            is_key,
+            order_key
+        )
+
+        if not validation["ok"]:
+            for err in validation["errors"]:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # VALIDAR DUPLICADOS (EXCLUYENDO EL MISMO REGISTRO)
+        dup = validate_field_duplicates_edit(header, field, field_name_long, field_name_short)
+
+        if not dup["ok"]:
+            for err in dup["errors"]:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # Validación de order_key
+        order_key_errors = validate_order_key(is_key, order_key)
+        if order_key_errors:
+            for err in order_key_errors:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # Validación de duplicado de order_key (excluyendo el mismo campo)
+        order_key_errors = validate_order_key_dup_edit(header, field, order_key)
+        if order_key_errors:
+            for err in order_key_errors:
+                messages.error(request, err)
+            return render(request, "dbdesigner/table_detail.html", context)
+
+        # ACTUALIZAR REGISTRO
+        field.field_name_long = field_name_long
+        field.field_name_short = field_name_short
+        field.field_type = field_type
+        field.field_length = length or 0
+        field.decimal_places = decimals or 0
+        field.nullable = (is_null == "Y")
+        field.notes = notes
+        field.is_key = is_key
+        field.order_key = order_key or None
+        field.field_description = field_description
+        field.updated_by = request.user
+        field.save()
+
+        messages.success(request, "Campo actualizado correctamente.")
+        return redirect("field_create", table_id=header.id)
+
+    return render(request, "dbdesigner/table_detail.html", context)
+
+
+def field_delete(request, table_id, field_id):
+    profile = request.user.userprofile
+
+    if profile.user_type not in ["U"]:
+        messages.error(request, "No tiene permisos para eliminar campos.")
+        return redirect("table_list")
+
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+    field = get_object_or_404(DetailTable, id=field_id, header=header)
+
+    # Eliminar el campo
+    field.delete()
+
+    # Normalizar orden
+    normalize_order_reg(header)
+
+    messages.success(request, "Campo eliminado correctamente.")
+    return redirect("field_create", table_id=header.id)
+
+
+
+def field_move_up(request, table_id, field_id):
+    profile = request.user.userprofile
+
+    if profile.user_type not in ["U"]:
+        messages.error(request, "No tiene permisos para modificar el orden.")
+        return redirect("table_list")
+
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+    field = get_object_or_404(DetailTable, id=field_id, header=header)
+
+    previous_field = (
+        DetailTable.objects
+        .filter(header=header, order_reg__lt=field.order_reg)
+        .order_by("-order_reg")
+        .first()
+    )
+
+    if not previous_field:
+        messages.warning(request, "El campo ya está en la primera posición.")
+        return redirect("field_create", table_id=header.id)
+
+    # Paso 1: valor temporal
+    temp = -1
+    field.order_reg = temp
+    field.save()
+
+    # Paso 2: mover el anterior al lugar del actual
+    old_order = previous_field.order_reg
+    previous_field.order_reg = old_order + 1
+    previous_field.save()
+
+    # Paso 3: mover el actual al lugar del anterior
+    field.order_reg = old_order
+    field.save()
+
+    messages.success(request, "Campo movido hacia arriba.")
+    return redirect("field_create", table_id=header.id)
+
+
+def field_move_down(request, table_id, field_id):
+    profile = request.user.userprofile
+
+    if profile.user_type not in ["U"]:
+        messages.error(request, "No tiene permisos para modificar el orden.")
+        return redirect("table_list")
+
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+    field = get_object_or_404(DetailTable, id=field_id, header=header)
+
+    next_field = (
+        DetailTable.objects
+        .filter(header=header, order_reg__gt=field.order_reg)
+        .order_by("order_reg")
+        .first()
+    )
+
+    if not next_field:
+        messages.warning(request, "El campo ya está en la última posición.")
+        return redirect("field_create", table_id=header.id)
+
+    # Paso 1: valor temporal
+    temp = -1
+    field.order_reg = temp
+    field.save()
+
+    # Paso 2: mover el siguiente al lugar del actual
+    old_order = next_field.order_reg
+    next_field.order_reg = old_order - 1
+    next_field.save()
+
+    # Paso 3: mover el actual al lugar del siguiente
+    field.order_reg = old_order
+    field.save()
+
+    messages.success(request, "Campo movido hacia abajo.")
+    return redirect("field_create", table_id=header.id)
+
+
+def table_script(request, table_id):
+    profile = request.user.userprofile
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+
+    script = generate_db2_script(header)
+
+    return render(request, "dbdesigner/table_script.html", {
+        "header": header,
+        "script": script
+    })
+
+
+def table_detail_with_script(request, table_id):
+    profile = request.user.userprofile
+    header = get_object_or_404(HeaderTable, id=table_id, company=profile.company)
+
+    fields = header.fields.all().order_by("order_reg")
+
+    # Generar script DB2
+    script = generate_db2_script(header)
+
+    company = request.user.userprofile.company
+    clave_reg = update_header_key_status(header, company)
+
+    return render(request, "dbdesigner/table_detail_with_script.html", {
+        "header": header,
+        "fields": fields,
+        "script": script,
+        "edit_mode": False,
+    })
+

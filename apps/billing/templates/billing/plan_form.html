@@ -1,0 +1,56 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar plan{% else %}Nuevo plan{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar plan{% else %}Nuevo plan{% endif %}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% if is_edit %}{% url 'billing:plan_detail' plan.pk %}{% else %}{% url 'billing:plan_list' %}{% endif %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos del plan</h2>
+</div>
+
+<form method="post" class="max-w-3xl space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.name.id_for_label }}" class="codas-label">{{ form.name.label }} <span class="text-rose-400">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.code.id_for_label }}" class="codas-label">{{ form.code.label }} <span class="text-rose-400">*</span></label>
+            {{ form.code }}
+            {% if form.code.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.code.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+    <div>
+        <label for="{{ form.billing_period.id_for_label }}" class="codas-label">{{ form.billing_period.label }}</label>
+        {{ form.billing_period }}
+        {% if form.billing_period.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.billing_period.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+        <label for="{{ form.description.id_for_label }}" class="codas-label">{{ form.description.label }}</label>
+        {{ form.description }}
+        {% if form.description.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.description.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="flex items-center gap-3">
+        {{ form.is_active }}
+        <label for="{{ form.is_active.id_for_label }}" class="text-sm text-gray-300">{{ form.is_active.label }}</label>
+    </div>
+    {% if form.is_active.errors %}<p class="text-xs text-rose-400">{{ form.is_active.errors.0 }}</p>{% endif %}
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% if is_edit %}{% url 'billing:plan_detail' plan.pk %}{% else %}{% url 'billing:plan_list' %}{% endif %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

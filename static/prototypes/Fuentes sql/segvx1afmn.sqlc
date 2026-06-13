@@ -1,0 +1,45 @@
+-------------------------------------------------------------------
+ SCRIPT....: SEGVX1AFMN                                          --
+ón.........: Asignacion de Funciones por menu y usuario
+to.........: VIEW                                                --
+ento.......: PMO31385-Asignacion Masiva Funciones por menu       --
+o..........: Transversales Iseries                               --
+Creación...: Agosto 11-2020.                                     --
+...........: Pedro Pimienta - Carlos Rojas                       --
+atos relacional:  DB2 for i                                      --
+-------------------------------------------------------------------
+IONES:                                                           --
+Modificación :                                                   --
+...........  :                                                   --
+ón ......... :                                                   --
+ento.........:                                                   --
+-------------------------------------------------------------------
+PLACE VIEW &LIB.Asignacion_Funciones_Menu FOR SYSTEM NAME SEGVW1AFMN
+
+odBanco, UCODAP CodAplic, UTIPMN TipoMenu,
+ubt_Menu, UOPCIO Opcion, UODESC Descrip_Opcion,
+rograma, ULIBRE Libreria, UFUNSI Funcion,
+USER Autorizado, UPUPRF Usuario,
+escrip_Usr, CURRENT_SERVER Servidor
+IONSYSR.UMNU LEFT OUTER JOIN VISIONSYSR.UOPNM ON UFUNSI=UOFUNC
+ER JOIN VISIONSYSR.SAUTH ON UCODBC=SACOMP AND UFUNSI= SAFUNC
+ER JOIN &LIB.SEGFFDSUSR ON ( SAUSER=UPUPRF OR SAUSER=UPGRPF OR
+UBSTR(UPSUPG,1,10) OR
+UBSTR(UPSUPG,11,10) OR SAUSER=SUBSTR(UPSUPG,  21,10) OR
+UBSTR(UPSUPG,11,10) OR SAUSER=SUBSTR(UPSUPG,  21,10) OR
+UBSTR(UPSUPG,31,10) OR SAUSER=SUBSTR(UPSUPG,  41,10) OR
+UBSTR(UPSUPG,51,10) OR SAUSER=SUBSTR(UPSUPG,  61,10) OR
+UBSTR(UPSUPG,71,10) OR SAUSER=SUBSTR(UPSUPG,  81,10) OR
+UBSTR(UPSUPG,91,10) OR SAUSER=SUBSTR(UPSUPG, 101,10) OR
+UBSTR(UPSUPG,111,10) OR SAUSER=SUBSTR(UPSUPG,121,10) OR
+UBSTR(UPSUPG,131,10) OR SAUSER=SUBSTR(UPSUPG,141,10) )
+FUNSI <> ' ' AND UPROGR <> ' '
+SEGVW1AFM;
+
+y comentarios
+
+ABLE  &LIB.Asignacion_Funciones_Menu
+Vista: Consulta Asinacion de Funciones';
+ABLE  &LIB.Asignacion_Funciones_Menu
+Vista: Consulta Asinacion de Funciones';
+

@@ -1,0 +1,231 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block title %}CODAS — SP Asistido · Listado{% endblock %}
+{% block header_title %}SP Asistido{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div class="max-w-3xl">
+        <h2 class="text-base font-semibold text-white">Procedimientos almacenados (definiciones)</h2>
+    </div>
+    <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-stretch sm:justify-end">
+        <div class="relative min-w-[min(100%,280px)]">
+            <label class="mb-1.5 block text-xs font-medium text-gray-500 sm:sr-only" for="new-sp-select">Nuevo procedimiento</label>
+            <select id="new-sp-select" class="h-[44px] w-full cursor-pointer rounded-md border-2 border-codas-blue-accent/50 bg-codas-blue-accent/10 px-3 pr-8 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-codas-blue-accent" title="Asistente en panel para READ, ADD, UPD y DLT">
+                <option value="">+ Nuevo procedimiento…</option>
+                <option value="{% url 'sp_asistido:read_step1' %}">Leer (READ) — consulta</option>
+                <option value="{% url 'sp_asistido:add_step1' %}">Añadir (ADD) — INSERT</option>
+                <option value="{% url 'sp_asistido:upd_step1' %}">Cambiar (UPD) — UPDATE</option>
+                <option value="{% url 'sp_asistido:dlt_step1' %}">Borrar (DLT) — DELETE</option>
+            </select>
+        </div>
+        <div class="flex items-end gap-2">
+            <a href="{% url 'sp_asistido:list_export_csv' %}{% if export_csv_qs %}?{{ export_csv_qs }}{% endif %}" class="inline-flex h-[44px] items-center rounded-md border border-gray-600 bg-slate-900/50 px-4 text-sm font-medium text-gray-200 no-underline hover:border-codas-blue-accent/40 hover:bg-codas-blue-accent/10 hover:text-white" title="Descarga CSV con los mismos filtros que el listado (todas las filas, sin paginar)">Exportar CSV</a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('new-sp-select')?.addEventListener('change', function () {
+    if (this.value) window.location.href = this.value;
+});
+</script>
+
+<div class="mb-6 flex flex-wrap gap-2" aria-label="Inicio rápido por operación">
+    <span class="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:w-auto sm:mr-2">Inicio rápido</span>
+    <a href="{% url 'sp_asistido:read_step1' %}" class="inline-flex items-center gap-1.5 rounded-md border border-sky-500/30 bg-sky-950/40 px-3 py-2 text-xs font-medium text-sky-200 no-underline hover:bg-sky-500/20">Leer (READ)</a>
+    <a href="{% url 'sp_asistido:add_step1' %}" class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-950/40 px-3 py-2 text-xs font-medium text-emerald-200 no-underline hover:bg-emerald-500/20">Añadir (ADD)</a>
+    <a href="{% url 'sp_asistido:upd_step1' %}" class="inline-flex items-center gap-1.5 rounded-md border border-codas-blue-accent/35 bg-codas-blue-dark/45 px-3 py-2 text-xs font-medium text-sky-100/95 [text-shadow:0_0_8px_rgba(30,144,255,0.2)] no-underline shadow-[0_0_12px_rgba(30,144,255,0.08)] transition hover:border-codas-blue-accent/50 hover:bg-codas-blue-accent/10">Cambiar (UPD)</a>
+    <a href="{% url 'sp_asistido:dlt_step1' %}" class="inline-flex items-center gap-1.5 rounded-md border border-rose-500/30 bg-rose-950/40 px-3 py-2 text-xs font-medium text-rose-200 no-underline hover:bg-rose-500/20">Borrar (DLT)</a>
+</div>
+
+<div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">En ámbito (filtros)</p>
+        <p class="mt-1 text-2xl font-semibold text-white">{{ stats.total }}</p>
+        <p class="mt-0.5 text-xs text-gray-500">Definiciones con filtros actuales</p>
+    </div>
+    <div class="rounded-xl border border-sky-500/15 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Leer (READ)</p>
+        <p class="mt-1 text-2xl font-semibold text-sky-300">{{ stats.read }}</p>
+    </div>
+    <div class="rounded-xl border border-emerald-500/15 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Script generado</p>
+        <p class="mt-1 text-2xl font-semibold text-emerald-400">{{ stats.script_ok }}</p>
+        <p class="mt-0.5 text-xs text-gray-500">Cabecera con script confirmado</p>
+    </div>
+    <div class="rounded-xl border border-amber-500/15 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Borradores</p>
+        <p class="mt-1 text-2xl font-semibold text-amber-200">{{ stats.drafts }}</p>
+    </div>
+</div>
+
+<form method="get" action="{% url 'sp_asistido:list' %}" class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4" aria-label="Filtros de listado">
+    <input type="hidden" name="page" value="1">
+    <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
+        <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Filtros</span>
+        <span class="text-xs text-gray-600">Operación, tabla de diseño, texto, orden y tamaño de página</span>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
+        <div class="min-w-0 xl:col-span-2">
+            <label class="mb-1 block text-xs font-medium text-gray-400" for="id_q">Buscar texto</label>
+            <input id="id_q" type="search" name="q" value="{{ q_filter }}" placeholder="Nombre SP, esquema, tabla de diseño…" class="h-[38px] w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-gray-600 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs font-medium text-gray-400" for="id_operation">Operación</label>
+            <select id="id_operation" name="operation" class="h-[38px] w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+                <option value="">Todas</option>
+                {% for val, label in operation_choices %}
+                <option value="{{ val }}" {% if operation_filter == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="mb-1 block text-xs font-medium text-gray-400" for="id_header_table">Tabla de diseño</label>
+            <select id="id_header_table" name="header_table" class="h-[38px] w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+                <option value="">Todas</option>
+                {% for hid, schema, tshort, tlong in header_filter_rows %}
+                <option value="{{ hid }}" {% if header_table_filter == hid|stringformat:"d" %}selected{% endif %}>{{ tshort }} — {{ schema }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="mb-1 block text-xs font-medium text-gray-400" for="id_ordering">Ordenar</label>
+            <select id="id_ordering" name="ordering" class="h-[38px] w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+                {% for val, label in ordering_options %}
+                <option value="{{ val }}" {% if ordering == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="mb-1 block text-xs font-medium text-gray-400" for="id_per_page">Por página</label>
+            <select id="id_per_page" name="per_page" class="h-[38px] w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+                {% for n in allowed_per_page %}
+                <option value="{{ n }}" {% if current_per_page == n %}selected{% endif %}>{{ n }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">Aplicar filtros</button>
+        <a href="{% url 'sp_asistido:list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Limpiar</a>
+    </div>
+</form>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[960px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Procedimiento</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-400">Operación</th>
+                    <th class="min-w-[9rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Tabla diseño</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-400">Estado</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Script</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Creado</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">Actualizado</th>
+                    <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-400">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for d in definitions %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-3 py-3">
+                        <p class="font-mono text-sm font-medium text-codas-blue-accent">{{ d.schema_name }}.{{ d.procedure_name_short }}</p>
+                        <p class="mt-0.5 truncate text-xs text-gray-500" title="{{ d.procedure_name_long }}">{{ d.procedure_name_long }}</p>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        {% if d.operation == "READ" %}
+                        
+                        <span class="mt-1 inline-flex items-center gap-1 rounded border border-cyan-500/30 bg-cyan-950/40 px-2 py-0.5 text-[11px] font-medium text-cyan-200">
+                            {% if d.read_mode == "R" %}READ-R{% else %}READ-C{% endif %}
+                        </span>
+                        {% elif d.operation == "ADD" %}
+                        <span class="inline-flex items-center gap-1 rounded border border-emerald-500/35 bg-emerald-950/50 px-2 py-1 text-xs font-medium text-emerald-200">Añadir</span>
+                        {% elif d.operation == "UPD" %}
+                        <span class="inline-flex items-center gap-1 rounded border border-amber-500/35 bg-amber-950/50 px-2 py-1 text-xs font-medium text-amber-200">Cambiar</span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 rounded border border-rose-500/40 bg-rose-950/50 px-2 py-1 text-xs font-medium text-rose-200">Borrar</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3">
+                        <p class="font-mono text-xs text-gray-300">{{ d.header_table.table_name_short }}</p>
+                        <p class="truncate text-xs text-gray-500" title="{{ d.header_table.table_name_long }}">{{ d.header_table.table_name_long }}</p>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        {% if d.status == "A" %}
+                        <span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">{{ d.get_status_display }}</span>
+                        {% elif d.status == "D" %}
+                        <span class="inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200">{{ d.get_status_display }}</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full border border-white/10 bg-slate-700/40 px-2 py-0.5 text-xs text-gray-300">{{ d.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-center text-xs">
+                        {% if d.script_generated %}
+                        <span class="text-emerald-400">Sí</span>
+                        {% if d.script_date %}<span class="block text-gray-500">{{ d.script_date|date:"Y-m-d" }}</span>{% endif %}
+                        {% else %}
+                        <span class="text-gray-500">No</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-xs text-gray-500">{{ d.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="px-3 py-3 text-xs text-gray-500">{{ d.updated_at|date:"Y-m-d H:i" }}</td>
+                    <td class="px-3 py-3 text-right text-xs whitespace-nowrap">
+                        <a href="{% url 'sp_asistido:detail' d.pk %}" class="font-medium text-codas-blue-accent no-underline hover:underline">Abrir</a>
+                        <span class="text-gray-600" aria-hidden="true">·</span>
+                        <a href="{% url 'sp_asistido:edit' d.pk %}" class="font-medium text-amber-200/90 no-underline hover:underline">Editar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-500">No hay definiciones que coincidan con los filtros</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="flex flex-col gap-3 border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+        <p>
+            <span class="text-gray-500">Coincidencias:</span>
+            <span class="font-medium text-gray-300">{{ page_obj.paginator.count }}</span>
+            {% if page_obj.paginator.count %}
+            <span class="mx-2 text-gray-600">·</span>
+            Mostrando <span class="font-medium text-gray-300">{{ page_obj.start_index }}–{{ page_obj.end_index }}</span> de <span class="font-medium text-gray-300">{{ page_obj.paginator.count }}</span>
+            {% endif %}
+        </p>
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="flex flex-wrap items-center justify-end gap-1" aria-label="Paginación">
+            {% if page_obj.has_previous %}
+            <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.previous_page_number }}" class="rounded border border-gray-600 px-2 py-1 text-gray-300 no-underline hover:bg-white/5">« Anterior</a>
+            {% else %}
+            <span class="rounded border border-gray-600 px-2 py-1 text-gray-600 opacity-60">« Anterior</span>
+            {% endif %}
+            {% if page_obj.paginator.num_pages <= 12 %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <span class="rounded border border-codas-blue-accent bg-codas-blue-accent/20 px-2.5 py-1 font-medium text-codas-blue-accent">{{ num }}</span>
+                    {% else %}
+                    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ num }}" class="rounded border border-gray-600 px-2.5 py-1 text-gray-300 no-underline hover:bg-white/5">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <span class="px-2 text-gray-400">Página {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.next_page_number }}" class="rounded border border-gray-600 px-2 py-1 text-gray-300 no-underline hover:bg-white/5">Siguiente »</a>
+            {% else %}
+            <span class="rounded border border-gray-600 px-2 py-1 text-gray-600 opacity-60">Siguiente »</span>
+            {% endif %}
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<p class="mt-6 text-xs text-gray-500">
+    <a href="{% static 'prototypes/sp-asistido/sp-asistido-list-demo.html' %}" class="text-codas-blue-accent no-underline hover:underline">Demo visual de listado (HTML de referencia)</a>
+</p>
+</div>
+{% endblock %}

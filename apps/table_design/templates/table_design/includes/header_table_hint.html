@@ -1,0 +1,23 @@
+{% comment %}
+  Fragmento de ayuda para alta/edición/detalle de cabecera.
+  Variables: hint ("long"|"short"|"schema"), header_rules, opcionalmente form.
+{% endcomment %}
+{% if hint == "long" %}
+  {% if form %}
+  <p class="mt-1 text-xs {% if form.table_name_long.errors %}text-rose-400/80{% else %}text-gray-500{% endif %}">{{ header_rules.long_min }}–{{ header_rules.long_max }} caracteres: letras A–Z, a–z y guion bajo (_).</p>
+  {% else %}
+  <p class="mt-1 text-xs text-gray-500">{{ header_rules.long_min }}–{{ header_rules.long_max }} caracteres: letras A–Z, a–z y guion bajo (_).</p>
+  {% endif %}
+{% elif hint == "short" %}
+  {% if form %}
+  <p class="mt-1 text-xs {% if form.table_name_short.errors %}text-rose-400/80{% else %}text-gray-500{% endif %}">{{ header_rules.short_min }}–{{ header_rules.short_max }} caracteres: letras mayúsculas (A–Z) y dígitos (0–9). Se normaliza a mayúsculas al guardar.</p>
+  {% else %}
+  <p class="mt-1 text-xs text-gray-500">{{ header_rules.short_min }}–{{ header_rules.short_max }} caracteres: letras mayúsculas (A–Z) y dígitos (0–9).</p>
+  {% endif %}
+{% elif hint == "schema" %}
+  {% if form %}
+  <p class="mt-1 text-xs {% if form.schema.errors %}text-rose-400/80{% else %}text-gray-500{% endif %}">Obligatorio. Máximo {{ header_rules.schema_max }} caracteres (librería / esquema IBM i).</p>
+  {% else %}
+  <p class="mt-1 text-xs text-gray-500">En alta y edición es obligatorio; máximo {{ header_rules.schema_max }} caracteres.</p>
+  {% endif %}
+{% endif %}

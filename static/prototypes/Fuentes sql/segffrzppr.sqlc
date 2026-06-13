@@ -1,0 +1,50 @@
+CREATE TABLE &LIB/SEGFFRZPPR (
+ idProceso         Numeric     (10)    ,
+ idFrecuencia      Numeric     (10)    ,
+ Proceso           Char        (10)    ,
+ NombreProceso     VarChar     (50)    ,
+ Producto          VarChar     (50)    ,
+ UsuarioCreacion   Char        (10)    ,
+ FechaCreacion     TimeStamp           ,
+ UsuarioCambio     Char        (10)    ,
+ FechaCambio       TimeStamp           ,
+ LogicaNegocio     Char        (10)    ,
+ LibLogicaNegocio  Char        (10)    ,
+ SentenciaSQL      Varchar     (300)   ,
+ Estado            Varchar     (01)    ,
+CONSTRAINT PK_RZPPR PRIMARY KEY (idProceso))
+RCDFMT   REGRZPPR;
+
+
+LABEL ON TABLE &LIB/SEGFFRZPPR  Is
+'Razonabilidad de Cifras - Productos - Procesos';
+
+LABEL ON &LIB/SEGFFRZPPR (
+idProceso        Text Is  'Id. Proceso',
+idFrecuencia     Text Is  'Id. Frecuencia',
+Proceso          Text Is  'Proceso',
+NombreProceso    Text Is  'Nombre Proceso',
+Producto         Text Is  'Producto',
+UsuarioCreacion  Text Is  'Usuario Creación',
+FechaCreacion    Text Is  'Fecha Creacion',
+UsuarioCambio    Text Is  'Usuario Cambio',
+FechaCambio      Text Is  'Fecha Cambio',
+LogicaNegocio    Text Is  'Pgm. Logica Negocio',
+LibLogicaNegocio    Text Is  'Lib. Logica Negocio',
+SentenciaSQL     Text Is  'Sentencia SQL',
+Estado           Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZPPR (
+idProceso             Is  'Id. Proceso',
+idFrecuencia          Is  'Id. Frecuencia',
+Proceso               Is  'Proceso',
+NombreProceso         Is  'Nombre Proceso',
+Producto              Is  'Producto',
+UsuarioCreacion       Is  'Usuario Creación',
+FechaCreacion         Is  'Fecha Creacion',
+UsuarioCambio         Is  'Usuario Cambio',
+FechaCambio           Is  'Fecha Cambio',
+LogicaNegocio         Is  'Pgm. Logica Negocio',
+LibLogicaNegocio         Is  'Lib. Logica Negocio',
+SentenciaSQL          Is  'Sentencia SQL',
+Estado                Is  'Estado');

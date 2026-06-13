@@ -1,0 +1,205 @@
+-------------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBISAPN.                                          --
+-- Descripcion.........: SEG-Tablas Temporal de novedades a aplicas de sap  --
+--                     : convierte el archivo de Empleados.txt a tabla.sql  --
+-- Tipo Objeto.........: TABLE                                              --
+-- Requerimiento.......: PMO31385-aplicacion de novedades                   --
+-- Subdominio..........: Transversales Iseries                              --
+-- Fecha De Creacion...: Abril - 05 - 2023.                                 --
+-- Autor...............: Carlos Rojas                                       --
+-- Base de datos relacional:  DB2 for i                                      --
+-------------------------------------------------------------------------------
+-- MODIFICACIONES:                                                           --
+-- Fecha de Modificacion :                                                   --
+-- Autor...............  :                                                   --
+-- Descripcion ......... :                                                   --
+-- Requerimiento.........:                                                   --
+-------------------------------------------------------------------------------
+
+-- CreaTablas Consultas a generada
+--  CREATE OR REPLACE  &LIB/SEGTBISAPN
+CREATE OR REPLACE TABLE &LIB.Tablas_Novedades_Sap
+			FOR SYSTEM NAME SEGTBISAPN(
+Documento_Identidad             FOR COLUMN NROID CHAR(30)
+			        CCSID 284 ,
+Tipo_Doc_Empleado_descrp        FOR COLUMN TIPOID CHAR(40)
+			        CCSID 284 ,
+Numero_Personal                 FOR COLUMN NROPER CHAR(08)
+			        CCSID 284 ,
+Primer_Apellido                 FOR COLUMN APELL1 CHAR(40)
+			        CCSID 284 ,
+Segundo_Apellido                FOR COLUMN APELL2 CHAR(40)
+			        CCSID 284 ,
+Primer_Nombre                   FOR COLUMN NOMBR1 CHAR(40)
+			        CCSID 284 ,
+Segundo_Nombre                  FOR COLUMN NOMBR2 CHAR(40)
+			        CCSID 284 ,
+Nombre_Completo                 FOR COLUMN NOMBRE CHAR(40)
+			        CCSID 284 ,
+Usuario_Red                     FOR COLUMN USURED CHAR(30)
+			        CCSID 284 ,
+Email_Usuario                   FOR COLUMN EMAILP CHAR(241)
+			        CCSID 284 ,
+Codigo_Sociedad                 FOR COLUMN CODSOC CHAR(4)
+			        CCSID 284 ,
+Descripcion_Sociedad            FOR COLUMN DESSOC CHAR(25)
+			        CCSID 284 ,
+Codigo_Regional                 FOR COLUMN CODREG CHAR(4)
+			        CCSID 284 ,
+Descripcion_Regional            FOR COLUMN DESREG CHAR(30)
+			        CCSID 284 ,
+Cod_Grupo_Personal              FOR COLUMN CODGRP CHAR(01)
+			        CCSID 284 ,
+Descrip_Grupo_Personal          FOR COLUMN DESGRP CHAR(20)
+			        CCSID 284 ,
+Codigo_Area                     FOR COLUMN CODARA CHAR(02)
+			        CCSID 284 ,
+Descripcion_Area                FOR COLUMN DESARA CHAR(20)
+			        CCSID 284 ,
+Codigo_Dependencia              FOR COLUMN CODDEP CHAR(08)
+			        CCSID 284 ,
+Descrip_Dependencia             FOR COLUMN DESDEP CHAR(40)
+			        CCSID 284 ,
+Cod_Vicepresidencia             FOR COLUMN CODVIC CHAR(08)
+			        CCSID 284 ,
+Desc_Vicepresidencia            FOR COLUMN DESVIC CHAR(45)
+			        CCSID 284 ,
+Desc_Tipo_Doc_Jefe              FOR COLUMN TIPIDJ CHAR(40)
+			        CCSID 284 ,
+Docum_Id_Jefe                   FOR COLUMN NROIDJ CHAR(30)
+			        CCSID 284 ,
+Nombre_Jefe                     FOR COLUMN NOMJEF CHAR(40)
+			        CCSID 284 ,
+Usuario_Red_Jefe                FOR COLUMN USUREJ CHAR(30)
+			        CCSID 284 ,
+Mail_del_Jefe                   FOR COLUMN EMAILJ CHAR(241)
+			        CCSID 284 ,
+Telefono_Empleado               FOR COLUMN TELEMP CHAR(14)
+			        CCSID 284 ,
+Tipo_Direccion                  FOR COLUMN CODTDI CHAR(01)
+			        CCSID 284 ,
+Desc_Tipo_Direccion             FOR COLUMN DESTDI CHAR(60)
+			        CCSID 284 ,
+Cod_Direc_Ubicacion             FOR COLUMN CODDIU CHAR(06)
+			        CCSID 284 ,
+Desc_Direc_Ubicacion            FOR COLUMN DESDIU CHAR(50)
+			        CCSID 284 ,
+Numero_Piso                     FOR COLUMN NROPIS CHAR(02)
+			        CCSID 284 ,
+Cod_Cargo_Empleado              FOR COLUMN CODCAE CHAR(08)
+			        CCSID 284 ,
+Desc_Cargo_Empleado             FOR COLUMN DESCAE CHAR(40)
+			        CCSID 284 ,
+Grupo_Sanguineo                 FOR COLUMN GRUSAN CHAR(10)
+			        CCSID 284 ,
+Factor_RH                       FOR COLUMN RH CHAR(10)
+			        CCSID 284 ,
+Cod_Funcion_Empleado            FOR COLUMN CODFUN CHAR(08)
+			        CCSID 284 ,
+Descripcion_Funcion             FOR COLUMN DESFUN CHAR(40)
+			        CCSID 284 ,
+Cod_Centro_Costos               FOR COLUMN CODCCO CHAR(10)
+			        CCSID 284 ,
+Des_Centro_Costos               FOR COLUMN DESCCO CHAR(40)
+			        CCSID 284 ,
+Codigo_Pais                     FOR COLUMN CODPAI CHAR(03)
+			        CCSID 284 ,
+Descripcion_Pais                FOR COLUMN DESPAI CHAR(50)
+			        CCSID 284 ,
+Cod_Area_Empleado               FOR COLUMN CODARE CHAR(03)
+			        CCSID 284 ,
+Desc_Area_Empleado              FOR COLUMN DESARE CHAR(20)
+			        CCSID 284 ,
+Cod_Ciudad_Empleado             FOR COLUMN CODCIU CHAR(06)
+			        CCSID 284 ,
+Desc_Ciudad_Empleado            FOR COLUMN DESCIU CHAR(20)
+			        CCSID 284 ,
+Calle_Direccion                 FOR COLUMN CALLE CHAR(60)
+			        CCSID 284 ,
+Complemento_Direc               FOR COLUMN COMDIR CHAR(40)
+			        CCSID 284 ,
+Cod_Tipo_Doc_Emp                FOR COLUMN CODTDE CHAR(02)
+			        CCSID 284 ,
+Cod_Tipo_Doc_Jefe               FOR COLUMN CODTDJ CHAR(02)
+			        CCSID 284 ,
+Cod_Motivo_Ausencia             FOR COLUMN CODAUS CHAR(04)
+			        CCSID 284 ,
+Desc_Motivo_Ausencia            FOR COLUMN DESAUS CHAR(25)
+			        CCSID 284 ,
+Fecha_Inicio_Ausencia           FOR COLUMN FEIAUS CHAR(10)
+			        CCSID 284 ,
+Fecha_Fin_Ausencia              FOR COLUMN FEFAUS CHAR(10)
+			        CCSID 284 ,
+Fecha_Retiro                    FOR COLUMN FECRET CHAR(10)
+			        CCSID 284 ,
+Codigo_Proveedor                FOR COLUMN CODPRV CHAR(03)
+			        CCSID 284 ,
+Descrip_Proveedor               FOR COLUMN DESPRV CHAR(20))
+
+RCDFMT RSEGTBISAP;
+
+-- Etiqueta de la tabla
+
+LABEL ON TABLE &LIB.Tablas_Novedades_Sap Is
+'SEG-Tablas Temporal Novedades Sap';
+
+-- Atributo de texto de los campos
+LABEL ON &LIB.Tablas_Novedades_Sap
+(Documento_Identidad            Text Is  'Documento de Identidad..........',
+Tipo_Doc_Empleado_descrp        Text Is  'Tipo Doc. Empleado Descrpcion...',
+Numero_Personal                 Text Is  'Numero de Personal..............',
+Primer_Apellido                 Text Is  'Primer Apellido.................',
+Segundo_Apellido                Text Is  'Segundo Apellido................',
+Primer_Nombre                   Text Is  'Primer Nombre...................',
+Segundo_Nombre                  Text Is  'Segundo Nombre..................',
+Nombre_Completo                 Text Is  'Nombres Completo................',
+Usuario_Red                     Text Is  'Usuario de Red..................',
+Email_Usuario                   Text Is  'Email del Usuario...............',
+Codigo_Sociedad                 Text Is  'Codigo Sociedad.................',
+Descripcion_Sociedad            Text Is  'Descripcion Sociedad............',
+Codigo_Regional                 Text Is  'Codigo de Regional..............',
+Descripcion_Regional            Text Is  'Descripcion de la Regional......',
+Cod_Grupo_Personal              Text Is  'Codigo Grupo Personal...........',
+Descrip_Grupo_Personal          Text Is  'Descripcion Grupo_Personal......',
+Codigo_Area                     Text Is  'Codigo de Area..................',
+Descripcion_Area                Text Is  'Descripcion del Area............',
+Codigo_Dependencia              Text Is  'Codigo Dependencia..............',
+Descrip_Dependencia             Text Is  'Descripcion de la Dependencia...',
+Cod_Vicepresidencia             Text Is  'Codigo de Vicepresidencia.......',
+Desc_Vicepresidencia            Text Is  'Descripcion Vicepresidencia.....',
+Desc_Tipo_Doc_Jefe              Text Is  'Descripcion Tipo Documento Jefe.',
+Docum_Id_Jefe                   Text Is  'Docum_Id_Jefe...................',
+Nombre_Jefe                     Text Is  'Nombre del Jefe.................',
+Usuario_Red_Jefe                Text Is  'Usuario de Red del Jefe.........',
+Mail_del_Jefe                   Text Is  'Mail del Jefe...................',
+Telefono_Empleado               Text Is  'Telefono del  Empleado..........',
+Tipo_Direccion                  Text Is  'Tipo Direccion..................',
+Desc_Tipo_Direccion             Text Is  'Descripcion de Tipo Direccion...',
+Cod_Direc_Ubicacion             Text Is  'Codigo Direccion Ubicacion......',
+Desc_Direc_Ubicacion            Text Is  'Descripcion Direccion Ubicacion.',
+Numero_Piso                     Text Is  'Numero de Piso..................',
+Cod_Cargo_Empleado              Text Is  'Codigo de Cargo Empleado........',
+Desc_Cargo_Empleado             Text Is  'Descripcion de Cargo Empleado...',
+Grupo_Sanguineo                 Text Is  'Grupo Sanguineo.................',
+Factor_RH                       Text Is  'Factor RH.......................',
+Cod_Funcion_Empleado            Text Is  'Codigo Funcion del Empleado.....',
+Descripcion_Funcion             Text Is  'Descripcion Funcion.............',
+Cod_Centro_Costos               Text Is  'Codigo Centro de Costos.........',
+Des_Centro_Costos               Text Is  'Descripcion Centro de Costos....',
+Codigo_Pais                     Text Is  'Codigo Pais.....................',
+Descripcion_Pais                Text Is  'Descripcion Pais................',
+Cod_Area_Empleado               Text Is  'Codigo Area del Empleado........',
+Desc_Area_Empleado              Text Is  'Descripcion Cod. Area Empleado..',
+Cod_Ciudad_Empleado             Text Is  'Codigo Ciudad del Empleado......',
+Desc_Ciudad_Empleado            Text Is  'Descripcion Ciudad del Empleado.',
+Calle_Direccion                 Text Is  'Calle...........................',
+Complemento_Direc               Text Is  'Complemento Direccion...........',
+Cod_Tipo_Doc_Emp                Text Is  'Codigo Tipo Documento Empleado..',
+Cod_Tipo_Doc_Jefe               Text Is  'Codigo Tipo Documento Jefe......',
+Cod_Motivo_Ausencia             Text Is  'Codigo de Motivo Ausencia.......',
+Desc_Motivo_Ausencia            Text Is  'Descripcion de Motivo Ausencia..',
+Fecha_Inicio_Ausencia           Text Is  'Fecha Inicio Ausencia...........',
+Fecha_Fin_Ausencia              Text Is  'Fecha Fin Ausencia..............',
+Fecha_Retiro                    Text Is  'Fecha de Retiro.................',
+Codigo_Proveedor                Text Is  'Codigo Proveedor................',
+Descrip_Proveedor               Text Is  'Descripcion del Proveedor.......')

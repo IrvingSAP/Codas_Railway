@@ -1,0 +1,61 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Contactos de suscripción{% endblock %}
+{% block header_title %}Contactos{% endblock %}
+
+{% block billing_content %}
+<p class="mb-4 text-sm text-gray-500">
+    <a href="{% url 'billing:hub' %}" class="text-codas-blue-accent no-underline hover:underline">← Facturación</a>
+</p>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h2 class="text-base font-semibold text-white">Contactos de suscripción</h2>
+        <p class="mt-1 text-sm text-gray-500">Máximo 3 por suscripción.</p>
+    </div>
+    {% if can_crud %}
+    <a href="{% url 'billing:subscriptioncontact_create' %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline shadow transition hover:bg-codas-accent-hover">+ Nuevo contacto</a>
+    {% endif %}
+</div>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/80">
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Compañía</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Nombre</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Teléfono</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Correo</th>
+                    <th class="whitespace-nowrap px-4 py-3 font-semibold text-gray-300">Rol</th>
+                    <th class="whitespace-nowrap px-4 py-3 text-right font-semibold text-gray-300">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for c in contacts %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="px-4 py-3 text-xs text-gray-400">{{ c.subscription.company.name_short }}</td>
+                    <td class="px-4 py-3 font-medium text-white">{{ c.full_name }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ c.phone }}</td>
+                    <td class="px-4 py-3 text-codas-blue-accent">{{ c.email|default:"—" }}</td>
+                    <td class="px-4 py-3 text-gray-400">{{ c.role|default:"—" }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{% url 'billing:subscriptioncontact_detail' c.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        {% if can_crud %}
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:subscriptioncontact_update' c.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-gray-600"> · </span>
+                        <a href="{% url 'billing:subscriptioncontact_delete' c.pk %}" class="text-rose-400 no-underline hover:underline">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500">No hay contactos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

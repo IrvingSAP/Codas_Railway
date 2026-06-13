@@ -1,0 +1,72 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — {{ source.name }}{% endblock %}
+{% block header_title %}Plantilla source — {{ source.name }}{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'sources:list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Detalle de plantilla fuente</h2>
+</div>
+
+<div class="max-w-4xl space-y-5 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <p class="text-xs text-gray-500">Nombre</p>
+            <p class="text-sm text-white">{{ source.name }}</p>
+        </div>
+        <div>
+            <p class="text-xs text-gray-500">Archivo</p>
+            <p class="text-sm text-white">{{ source.filename|default:"—" }}</p>
+        </div>
+    </div>
+    <div class="grid gap-5 sm:grid-cols-3">
+        <div>
+            <p class="text-xs text-gray-500">Tipo</p>
+            <p class="text-sm text-white">{{ source.get_source_type_display }}</p>
+        </div>
+        <div>
+            <p class="text-xs text-gray-500">Versión</p>
+            <p class="text-sm text-white">{{ source.version }}</p>
+        </div>
+        <div>
+            <p class="text-xs text-gray-500">Estado</p>
+            {% if source.status == 'A' %}
+            <p><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span></p>
+            {% else %}
+            <p><span class="inline-flex rounded-full bg-gray-600/40 px-2 py-0.5 text-xs text-gray-400">Inactivo</span></p>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <p class="text-xs text-gray-500">Descripción</p>
+        <p class="text-sm text-gray-300">{{ source.description|default:"—" }}</p>
+    </div>
+    <div>
+        <p class="mb-1 text-xs text-gray-500">Contenido de la plantilla</p>
+        <pre
+            class="m-0 overscroll-contain rounded-md border border-emerald-700 bg-[#07120a] p-3 font-mono text-xs leading-relaxed text-emerald-400"
+            style="max-height: min(28rem, 65vh); overflow: auto;"
+        >{{ source.source_text }}</pre>
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <p class="text-xs text-gray-500">Creado por</p>
+            <p class="text-sm text-white">{{ source.created_by|default:"—" }}</p>
+        </div>
+        <div>
+            <p class="text-xs text-gray-500">Actualizado por</p>
+            <p class="text-sm text-white">{{ source.updated_by|default:"—" }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="mt-6 flex flex-wrap gap-3">
+    <a href="{% url 'sources:update' source.pk %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'sources:list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Volver al listado</a>
+    <a href="{% url 'sources:delete' source.pk %}" class="inline-flex items-center rounded-md border border-rose-500/50 px-5 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endblock %}

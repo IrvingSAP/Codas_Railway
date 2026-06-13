@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+/* Rutas relativas a este archivo (static/src/) */
+@source "../../templates/**/*.html";
+@source "../../apps/**/*.html";
+
+/* Tras añadir o cambiar utilidades Tailwind en plantillas HTML, regenerar el bundle:
+   npm run build:css   (o npm run watch:css en desarrollo). Si no, el navegador seguirá
+   sirviendo static/css/tailwind.css sin las nuevas clases y los estilos no se verán. */
+
+/* ============================================================
+   CODAS — tokens corporativos (Tailwind v4 @theme)
+   Inspirado en codas.css original; unificado en tema oscuro actual.
+   ============================================================ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-codas-blue-dark: #0a1a2f;
+  --color-codas-blue-accent: #1e90ff;
+  --color-codas-accent-hover: #1877d3;
+  --color-codas-gray-light: #f5f5f5;
+  --color-codas-gray-dark: #2e2e2e;
+  --color-codas-surface: #111827;
+  --color-codas-elevated: #1f2937;
+  --color-codas-border: #374151;
+  --color-codas-text-muted: #cbd5e1;
+  --color-codas-highlight: #4db8ff;
+}
+
+@layer base {
+  /* Panel: altura acotada al viewport para que flex + overflow-y-auto en <main> desplacen bien */
+  html {
+    height: 100dvh;
+    max-height: 100dvh;
+    @apply min-h-0 antialiased;
+  }
+
+  body {
+    height: 100%;
+    @apply min-h-0;
+  }
+}
+
+/* ============================================================
+   Componentes reutilizables (landing, formularios, dashboard)
+   ============================================================ */
+@layer components {
+  /* Header / nav */
+  .codas-nav-link {
+    @apply font-medium text-white/90 no-underline transition hover:text-codas-blue-accent;
+  }
+
+  .codas-btn-login {
+    @apply rounded-md bg-codas-blue-accent px-[18px] py-2 text-sm font-medium text-white no-underline shadow-sm transition hover:bg-codas-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-codas-blue-accent;
+  }
+
+  /* Botones hero / CTAs */
+  .codas-btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-codas-blue-accent px-6 py-3 text-base font-medium text-white no-underline shadow-md transition hover:bg-codas-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-codas-blue-accent;
+  }
+
+  .codas-btn-outline-light {
+    @apply inline-flex items-center justify-center rounded-lg border border-white/80 bg-transparent px-6 py-3 text-base font-medium text-white no-underline transition hover:bg-white hover:text-codas-blue-dark;
+  }
+
+  .codas-btn-outline-dark {
+    @apply inline-flex items-center justify-center rounded-md border border-codas-border bg-transparent px-4 py-2 text-sm font-medium text-gray-200 no-underline transition hover:border-codas-blue-accent hover:text-white;
+  }
+
+  /* Panel dashboard (logo acotado; área de trabajo centrada) */
+  .codas-dashboard-logo {
+    height: 2.25rem;
+    width: auto;
+    max-width: 9rem;
+    object-fit: contain;
+    display: block;
+  }
+
+  .codas-dashboard-work {
+    @apply mx-auto w-full max-w-6xl;
+  }
+
+  /*
+   * TableDesign — listado de cabeceras (pastillas tipo/estado).
+   * Definidas aquí con @apply para que entren siempre en tailwind.css al compilar este
+   * archivo, aunque no se ejecute un escaneo reciente de las plantillas HTML.
+   */
+  .codas-header-type-pill--physical {
+    @apply inline-flex rounded bg-slate-700/60 px-2 py-0.5 text-xs font-medium text-slate-200;
+  }
+  .codas-header-type-pill--logical {
+    @apply inline-flex rounded bg-violet-500/15 px-2 py-0.5 text-xs font-medium text-violet-200;
+  }
+  .codas-header-type-pill--other {
+    @apply inline-flex rounded border border-white/15 bg-slate-800/50 px-2 py-0.5 text-xs font-medium text-slate-300;
+  }
+  .codas-header-status-pill--active {
+    @apply inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-300;
+  }
+  .codas-header-status-pill--process {
+    @apply inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-200;
+  }
+  .codas-header-status-pill--inactive {
+    @apply inline-flex rounded-full bg-slate-600/40 px-2 py-0.5 text-xs font-medium text-slate-400;
+  }
+  .codas-header-model-pill--simple {
+    @apply inline-flex rounded border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 text-xs font-medium text-emerald-300;
+  }
+  .codas-header-model-pill--advanced {
+    @apply inline-flex rounded border border-amber-500/30 bg-amber-950/30 px-2 py-0.5 text-xs font-medium text-amber-200;
+  }
+  .codas-header-model-pill--expert {
+    @apply inline-flex rounded border border-fuchsia-500/30 bg-fuchsia-950/30 px-2 py-0.5 text-xs font-medium text-fuchsia-200;
+  }
+  .codas-header-key-pill {
+    @apply rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200;
+  }
+  .codas-header-key-pill--auto {
+    @apply rounded bg-sky-500/15 px-1.5 py-0.5 text-sky-200;
+  }
+  .codas-header-key-empty {
+    @apply inline-flex rounded bg-slate-600/40 px-1.5 py-0.5 text-slate-400;
+  }
+
+  /* Navegación lateral — variante corporativa (barra activa izquierda, iconos en caja) */
+  .codas-dashboard-nav-item {
+    @apply flex items-center gap-3 rounded-md py-3 pl-3 pr-2 text-sm no-underline transition;
+  }
+
+  .codas-dashboard-nav-item--active {
+    @apply border-l-4 border-codas-blue-accent bg-white/10 text-white;
+  }
+
+  .codas-dashboard-nav-item--inactive {
+    @apply border-l-4 border-transparent text-gray-300 hover:bg-white/10 hover:text-white;
+  }
+
+  .codas-dashboard-nav-icon-box {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-lg leading-none;
+  }
+
+  .codas-dashboard-nav-icon-box--active {
+    @apply bg-codas-blue-accent/20;
+  }
+
+  .codas-dashboard-nav-icon-box--inactive {
+    @apply bg-white/5;
+  }
+
+  .codas-dashboard-nav-section {
+    @apply mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500;
+  }
+
+  .codas-dashboard-card-metric {
+    @apply rounded-xl border border-white/10 bg-slate-900/70 p-6 text-center shadow-sm;
+  }
+
+  /* Hero */
+  .codas-hero {
+    @apply border-b border-white/10 bg-gradient-to-br from-codas-blue-dark via-[#152a45] to-codas-gray-dark py-16 md:py-24;
+  }
+
+  .codas-hero-title {
+    @apply text-[2rem] font-semibold leading-tight tracking-tight text-white md:text-4xl lg:text-[2.625rem];
+  }
+
+  .codas-hero-subtitle {
+    @apply mt-3 text-lg text-[#dcdcdc] md:text-xl;
+  }
+
+  /* Secciones (sustituto de .section-gray / benefits en modo oscuro mejorado) */
+  .codas-section-elevated {
+    @apply border-b border-white/5 bg-slate-800/45 py-16 text-center;
+  }
+
+  .codas-section-benefits {
+    @apply border-t border-white/5 py-16 text-center;
+    background-color: rgba(10, 26, 47, 0.35);
+  }
+
+  /* Tarjetas módulo */
+  .codas-module-card {
+    @apply rounded-lg border border-white/10 bg-slate-900/35 p-6 shadow-md transition duration-200 ease-out hover:-translate-y-1 hover:border-codas-blue-accent/35 hover:shadow-lg hover:shadow-codas-blue-dark/25;
+  }
+
+  /* Títulos de bloque (formularios / paneles) */
+  .codas-section-title {
+    @apply mb-5 border-l-4 border-codas-blue-accent bg-codas-elevated py-2 pl-3.5 text-sm font-semibold uppercase tracking-wide text-gray-100;
+  }
+
+  .codas-subsection-title {
+    @apply mb-2.5 border-l-4 border-codas-highlight pl-2.5 text-[1.05rem] font-semibold text-codas-highlight;
+  }
+
+  /* Formularios (sin Bootstrap) */
+  .codas-label {
+    @apply mb-1 block text-sm font-medium text-gray-300;
+  }
+
+  .codas-input {
+    @apply h-[38px] w-full rounded-md border border-codas-border bg-codas-elevated px-2.5 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent;
+  }
+
+  .codas-input-number {
+    @apply h-[38px] max-w-[120px] rounded-md border border-codas-border bg-codas-elevated px-2.5 text-sm text-white outline-none transition focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent;
+  }
+
+  .codas-textarea {
+    @apply min-h-[70px] w-full resize-y rounded-md border border-codas-border bg-codas-elevated px-2.5 py-1.5 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent;
+  }
+
+  .codas-field-highlight {
+    @apply border-2 border-codas-highlight shadow-[0_0_8px_rgba(77,184,255,0.45)];
+  }
+
+  .codas-badge-info {
+    @apply ml-1.5 inline rounded px-1.5 py-0.5 text-[0.75rem] font-medium text-black;
+    background-color: #4db8ff;
+  }
+
+  .codas-badge-status {
+    display: inline-flex;
+    min-width: 74px;
+    justify-content: center;
+    border-radius: 9999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .codas-badge-status-active {
+    color: #6ee7b7;
+    background-color: rgba(16, 185, 129, 0.2);
+  }
+
+  .codas-badge-status-inactive {
+    color: #cbd5e1;
+    background-color: rgba(71, 85, 105, 0.4);
+  }
+
+  /* Dashboard */
+  .codas-dashboard-body {
+    @apply min-h-screen bg-[#0d1117] text-white;
+  }
+
+  .codas-sidebar {
+    @apply min-h-screen w-60 bg-codas-surface py-5;
+  }
+
+  .codas-sidebar-logo {
+    @apply mx-auto mb-8 block w-[140px];
+  }
+
+  .codas-sidebar-item {
+    @apply block px-5 py-3 text-[15px] text-codas-text-muted no-underline transition hover:bg-codas-elevated hover:text-white;
+  }
+
+  .codas-dashboard-header {
+    @apply border-b border-codas-border bg-codas-elevated px-6 py-4;
+  }
+
+  .codas-dashboard-section {
+    @apply p-8;
+  }
+
+  .codas-dashboard-card {
+    @apply rounded-[10px] border border-codas-border bg-codas-elevated p-5;
+  }
+
+  /* Login */
+  .codas-login-body {
+    @apply flex flex-1 flex-col items-center justify-center py-12;
+  }
+
+  .codas-login-container {
+    @apply w-full max-w-[420px] px-5;
+  }
+
+  .codas-login-box {
+    @apply rounded-xl border border-[#1f2937] bg-codas-surface p-9 shadow-xl;
+  }
+
+  .codas-login-logo {
+    @apply mx-auto mb-6 block w-40 drop-shadow-[0_0_4px_rgba(255,255,255,0.08)];
+  }
+
+  /* Utilidades extra */
+  .codas-btn-purple {
+    @apply rounded-md bg-[#6f42c1] px-3.5 py-1.5 text-sm font-medium text-white no-underline transition hover:bg-[#59359a];
+  }
+}
+
+/* Modal corporativo (marcado #msgModal) — listo para partials sin Bootstrap */
+@layer components {
+  #msgModal .codas-modal-panel {
+    @apply rounded-lg border border-gray-300 bg-white text-gray-900 shadow-xl;
+  }
+
+  #msgModal .codas-modal-header {
+    @apply border-b border-gray-300;
+  }
+
+  #msgModal .codas-modal-body {
+    @apply bg-white text-gray-900;
+  }
+
+  #msgModal .codas-modal-message {
+    @apply text-gray-900;
+  }
+
+  #msgModal .codas-modal-footer {
+    @apply border-t border-gray-300 bg-white;
+  }
+}

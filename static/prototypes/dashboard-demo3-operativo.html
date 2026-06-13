@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Demo 3 · Layout operativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-200 antialiased">
+
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo:</span>
+    <a href="dashboard-demo1-corporativo.html" class="ml-2 hover:text-codas-accent underline">Demo 1 · Corporativo</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="dashboard-demo2-saas.html" class="hover:text-codas-accent underline">Demo 2 · SaaS</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="dashboard-demo3-operativo.html" class="ml-2 font-semibold text-codas-accent underline">Demo 3 · Operativo</a>
+  </div>
+
+  <!-- Topbar con buscador (placeholder) -->
+  <header class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 bg-codas-dark px-4 md:px-5">
+    <a href="#" class="flex shrink-0 items-center gap-2 no-underline">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="hidden shrink-0 text-base font-semibold text-white lg:block lg:w-52">
+      Dashboard del Sistema
+    </h1>
+    <div class="min-w-0 flex-1 px-2">
+      <label class="sr-only" for="q">Buscar en el sistema</label>
+      <input id="q" type="search" placeholder="Buscar módulos, compañías, usuarios…" readonly
+        class="w-full max-w-xl rounded-lg border border-white/15 bg-slate-900/80 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-codas-accent focus:outline-none focus:ring-1 focus:ring-codas-accent">
+    </div>
+    <div class="flex shrink-0 items-center gap-2 md:gap-3">
+      <span class="hidden text-sm text-slate-300 xl:inline">AdminCodas</span>
+      <button type="button" aria-label="Notificaciones" class="rounded-md p-2 text-slate-300 hover:bg-white/10">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </button>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white hover:border-codas-accent hover:bg-codas-accent/15">
+        Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 min-w-0 flex-1 flex-row">
+    <!-- Sidebar por secciones con más aire -->
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-6 overflow-y-auto p-4 text-sm" aria-label="Menú principal">
+        <div>
+          <p class="mb-3 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Principal</p>
+          <div class="flex flex-col gap-2">
+            <a href="#" class="flex items-center gap-3 rounded-lg border border-codas-accent/40 bg-codas-accent/15 py-2.5 pl-3 pr-2 text-white no-underline">
+              <span class="text-lg" aria-hidden="true">🏠</span>
+              <span>Inicio / panel</span>
+            </a>
+          </div>
+        </div>
+        <div>
+          <p class="mb-3 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Administración</p>
+          <div class="flex flex-col gap-2">
+            <a href="#" class="flex items-center gap-3 rounded-lg py-2.5 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+              <span class="text-lg" aria-hidden="true">🏢</span>
+              <span>Compañías</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 rounded-lg py-2.5 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+              <span class="text-lg" aria-hidden="true">👥</span>
+              <span>Usuarios</span>
+            </a>
+          </div>
+        </div>
+        <div>
+          <p class="mb-3 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Sistema</p>
+          <div class="flex flex-col gap-2">
+            <a href="#" class="flex items-center gap-3 rounded-lg py-2.5 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+              <span class="text-lg" aria-hidden="true">🔧</span>
+              <span>Django admin</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 rounded-lg py-2.5 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+              <span class="text-lg" aria-hidden="true">📊</span>
+              <span>Auditoría</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 min-w-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-white">Resumen del sistema</h2>
+            <p class="text-sm text-slate-500">Indicadores rápidos y accesos (ejemplo operativo)</p>
+          </div>
+          <button type="button" class="self-start rounded-md bg-codas-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-hover">
+            Acción rápida
+          </button>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg border-l-4 border-codas-accent bg-slate-900/80 p-4 shadow-sm">
+            <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Compañías</p>
+            <p class="mt-2 text-2xl font-bold text-codas-accent">0</p>
+          </div>
+          <div class="rounded-lg border-l-4 border-emerald-500/80 bg-slate-900/80 p-4 shadow-sm">
+            <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Usuarios</p>
+            <p class="mt-2 text-2xl font-bold text-emerald-400">1</p>
+          </div>
+          <div class="rounded-lg border-l-4 border-amber-500/80 bg-slate-900/80 p-4 shadow-sm">
+            <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Admins compañía</p>
+            <p class="mt-2 text-2xl font-bold text-amber-400">0</p>
+          </div>
+          <div class="rounded-lg border border-dashed border-white/20 bg-slate-900/40 p-4 text-center text-sm text-slate-500 sm:col-span-2 lg:col-span-1">
+            Espacio para widget / atajo
+          </div>
+        </div>
+        <p class="mt-8 text-xs text-slate-500">Demo 3 — Buscador en cabecera, sidebar por bloques, KPIs con acento de color e icono de notificaciones (decorativo).</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

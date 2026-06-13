@@ -1,0 +1,114 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Crear mantenimiento · Paso 9{% endblock %}
+{% block header_title %}Crear mantenimiento{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+    <nav class="mb-4 text-xs text-gray-500" aria-label="Migas de pan">
+        <a href="{% url 'maintenance_builder:list_view' %}" class="text-codas-blue-accent no-underline hover:underline">Generador de mantenimiento</a>
+        <span class="mx-1.5">/</span>
+        <span class="text-gray-300">Crear</span>
+        <span class="mx-1.5">/</span>
+        <span class="font-medium text-gray-400">Paso 9 de 9</span>
+    </nav>
+
+    <div class="mb-4 overflow-x-auto rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2">
+        <ol class="flex min-w-[980px] items-center gap-2 text-[11px]">
+            <li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">1</span><span class="text-emerald-300/90">Base</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">2</span><span class="text-emerald-300/90">READ-C</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">3</span><span class="text-emerald-300/90">ADD</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">4</span><span class="text-emerald-300/90">READ-R</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">5</span><span class="text-emerald-300/90">UPD</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">6</span><span class="text-emerald-300/90">DLT</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">7</span><span class="text-emerald-300/90">DSPF</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200">8</span><span class="text-emerald-300/90">SQLRPGLE</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-codas-blue-accent bg-codas-blue-accent/25 text-cyan-100">9</span><span class="text-codas-blue-accent">Resumen</span></li>
+        </ol>
+    </div>
+
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold text-white">Resumen del mantenimiento</h2>
+    </div>
+
+    <div class="rounded-2xl border border-codas-blue-accent/20 bg-gradient-to-b from-slate-900/70 to-slate-950/90 p-4 shadow-lg shadow-codas-blue-accent/10 md:p-5">
+        <section class="rounded-lg border border-white/10 bg-slate-900/50 p-3.5">
+            <h3 class="text-[11px] font-semibold uppercase tracking-wider text-codas-blue-accent">Paso 1 — Base del mantenimiento</h3>
+            <dl class="mt-2 grid gap-2 text-sm sm:grid-cols-2">
+                <div>
+                    <dt class="text-[11px] uppercase text-gray-500">Identificador</dt>
+                    <dd class="font-mono text-white">{{ maintenance.name_short }}</dd>
+                </div>
+                <div>
+                    <dt class="text-[11px] uppercase text-gray-500">HeaderTable</dt>
+                    <dd class="font-mono text-cyan-100">{{ maintenance.header_table.schema }}.{{ maintenance.header_table.table_name_short }}</dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="mt-3 rounded-lg border border-white/10 bg-slate-900/40 p-3.5">
+            <h3 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">SP Asistido</h3>
+            <div class="grid gap-1 text-sm">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">READ-C</span>
+                    <span class="font-mono text-slate-300">{% if readc_selection and readc_selection.sp_definition_id %}{{ readc_selection.sp_definition_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if readc_selection and readc_selection.sp_definition_id %}{{ readc_selection.sp_definition.procedure_name_short }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">ADD</span>
+                    <span class="font-mono text-slate-300">{% if add_selection and add_selection.sp_definition_id %}{{ add_selection.sp_definition_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if add_selection and add_selection.sp_definition_id %}{{ add_selection.sp_definition.procedure_name_short }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">READ-R</span>
+                    <span class="font-mono text-slate-300">{% if readr_selection and readr_selection.sp_definition_id %}{{ readr_selection.sp_definition_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if readr_selection and readr_selection.sp_definition_id %}{{ readr_selection.sp_definition.procedure_name_short }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">UPD</span>
+                    <span class="font-mono text-slate-300">{% if upd_selection and upd_selection.sp_definition_id %}{{ upd_selection.sp_definition_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if upd_selection and upd_selection.sp_definition_id %}{{ upd_selection.sp_definition.procedure_name_short }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">DLT</span>
+                    <span class="font-mono text-slate-300">{% if dlt_selection and dlt_selection.sp_definition_id %}{{ dlt_selection.sp_definition_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if dlt_selection and dlt_selection.sp_definition_id %}{{ dlt_selection.sp_definition.procedure_name_short }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-3 rounded-lg border border-white/10 bg-slate-900/40 p-3.5">
+            <h3 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Plantillas base</h3>
+            <div class="grid gap-1 text-sm">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">DSPF</span>
+                    <span class="font-mono text-slate-300">{% if dspf_selection %}{{ dspf_selection.source_template_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if dspf_selection %}{{ dspf_selection.source_template.name }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="min-w-[88px] text-xs text-slate-500">SQLRPGLE</span>
+                    <span class="font-mono text-slate-300">{% if sqlrpgle_selection %}{{ sqlrpgle_selection.source_template_id }}{% else %}—{% endif %}</span>
+                    <span class="text-slate-400">{% if sqlrpgle_selection %}{{ sqlrpgle_selection.source_template.name }}{% else %}— (no seleccionado){% endif %}</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% if not can_generate %}
+    <p class="mt-4 rounded-lg border border-amber-500/30 bg-amber-950/40 px-3 py-2 text-sm text-amber-100/90">
+        Faltan datos obligatorios. Verifique READ-C, DSPF y SQLRPGLE.
+    </p>
+    {% endif %}
+
+    <form method="post" action="{% url 'maintenance_builder:wizard_step9' maintenance.pk %}">
+        {% csrf_token %}
+        <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-wrap gap-2">
+                <a href="{% url 'maintenance_builder:list_view' %}" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-rose-500/30 bg-rose-950/30 px-4 py-2.5 text-sm text-rose-200 no-underline hover:bg-rose-950/50">Cancelar</a>
+                <a href="{% url 'maintenance_builder:wizard_step8' maintenance.pk %}" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-slate-600 px-4 py-2.5 text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+            </div>
+            <button type="submit" {% if not can_generate %}disabled{% endif %} class="inline-flex min-h-[44px] min-w-[180px] items-center justify-center rounded-md bg-codas-blue-accent px-5 text-sm font-medium text-white hover:bg-codas-accent-hover disabled:cursor-not-allowed disabled:opacity-60">Generar Script</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

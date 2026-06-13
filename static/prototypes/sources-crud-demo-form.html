@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · Alta / edición plantilla source</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo CRUD Sources ·</span>
+    <a href="sources-crud-demo-list.html" class="ml-1 hover:text-codas-accent underline">Listado</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-detail.html" class="hover:text-codas-accent underline">Detalle</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-form.html" class="font-semibold text-codas-accent underline">Alta / edición</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-delete.html" class="hover:text-codas-accent underline">Confirmar borrado</a>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+    <div class="mx-auto w-full max-w-4xl">
+      <p class="mb-6 text-sm text-slate-500">
+        <a href="sources-crud-demo-list.html" class="text-codas-accent no-underline hover:underline">← Volver al listado</a>
+      </p>
+      <div class="mb-6 border-l-4 border-codas-accent bg-slate-900/60 py-2 pl-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-200">Datos de la plantilla fuente</h2>
+      </div>
+
+      <form class="space-y-5 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-300">Tipo de fuente</label>
+            <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+              <option selected>DSPF</option>
+              <option>SQLRPGLE</option>
+              <option>RPGLE</option>
+              <option>CLLE</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-300">Versión</label>
+            <input type="number" min="1" value="3" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+          </div>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-300">Nombre de plantilla</label>
+            <input type="text" value="Pantalla maestro clientes" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-300">Nombre de archivo</label>
+            <input type="text" value="CUSTMST.dspf" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-300">Descripción</label>
+          <input type="text" value="Plantilla base para mantenimiento de clientes." class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-300">Contenido de la plantilla</label>
+          <textarea rows="10" class="w-full rounded-md border border-emerald-700 bg-[#07120a] px-2.5 py-2 font-mono text-sm text-emerald-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">A          R CUSTREC
+A            CUSCOD        10A  B  5  2
+A            CUSNAM        40A  B  6  2
+A                                  24 2'F3=Salir F5=Refrescar'</textarea>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-300">Estado</label>
+            <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+              <option selected>Activo</option>
+              <option>Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+          <button type="button" class="rounded-md bg-codas-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-codas-hover">Guardar</button>
+          <a href="sources-crud-demo-list.html" class="inline-flex items-center rounded-md border border-slate-600 px-5 py-2.5 text-sm text-slate-300 no-underline hover:border-slate-500 hover:bg-white/5">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

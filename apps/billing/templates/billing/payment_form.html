@@ -1,0 +1,50 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar pago{% else %}Nuevo pago{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar pago{% else %}Nuevo pago{% endif %}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% if is_edit %}{% url 'billing:payment_detail' payment.pk %}{% else %}{% url 'billing:payment_list' %}{% endif %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<form method="post" class="max-w-3xl space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div>
+        <label for="{{ form.subscription.id_for_label }}" class="codas-label">{{ form.subscription.label }} <span class="text-rose-400">*</span></label>
+        {{ form.subscription }}
+        {% if form.subscription.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.subscription.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.amount.id_for_label }}" class="codas-label">{{ form.amount.label }} <span class="text-rose-400">*</span></label>
+            {{ form.amount }}
+            {% if form.amount.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.amount.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.method.id_for_label }}" class="codas-label">{{ form.method.label }}</label>
+            {{ form.method }}
+            {% if form.method.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.method.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+    <div>
+        <label for="{{ form.transaction_id.id_for_label }}" class="codas-label">{{ form.transaction_id.label }}</label>
+        {{ form.transaction_id }}
+        {% if form.transaction_id.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.transaction_id.errors.0 }}</p>{% endif %}
+    </div>
+    {% if is_edit %}
+    <p class="text-xs text-gray-500">La fecha de pago se fijó al crear el registro (<code class="text-gray-600">auto_now_add</code>).</p>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% if is_edit %}{% url 'billing:payment_detail' payment.pk %}{% else %}{% url 'billing:payment_list' %}{% endif %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

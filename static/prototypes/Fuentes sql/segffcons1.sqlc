@@ -1,0 +1,41 @@
+CREATE TABLE SEGLIBPR/SEGFFCONS1 (
+ Usuario           Char        (10)  NOT NULL DEFAULT '' ,
+ Documento         Char        (15)  NOT NULL DEFAULT '' ,
+ Nombre            Char        (40)  NOT NULL DEFAULT '' ,
+ CodApli_ORG       Char        (03)  NOT NULL DEFAULT '' ,
+ CodMenu_ORG       Char        (02)  NOT NULL DEFAULT '' ,
+ CodSubMenu_ORG    Char        (02)  NOT NULL DEFAULT '' ,
+ CodOpcion_ORG     Numeric     (04)  NOT NULL DEFAULT '' ,
+ DescOpcion        Char        (40)  NOT NULL DEFAULT '' ,
+ UsuarioProcesa    Char        (04)  NOT NULL DEFAULT '' ,
+ Fechaejecuta      TimeStamp         NOT NULL DEFAULT ''
+)
+RCDFMT   RCons1;
+
+LABEL ON TABLE SEGLIBPR/SEGFFCONS1  Is
+'Registro de consultas 1';
+
+LABEL ON SEGLIBPR/SEGFFCONS1 (
+Usuario            Text Is  'Usuario ',
+Documento          Text Is  'Documento ',
+Nombre             Text Is  'Nombre ',
+CodApli_ORG        Text Is  'Cod Aplicacion menu',
+CodMenu_ORG        Text Is  'Cod Menu ',
+CodSubMenu_ORG     Text Is  'Cod Sub Menu',
+CodOpcion_ORG      Text Is  'Cod Opcion',
+DescOpcion         Text Is  'Descripcion de opcion',
+UsuarioProcesa     Text Is  'Usuario que Procesa',
+Fechaejecuta       Text Is  'Fecha Ejecucion ');
+
+
+LABEL ON COLUMN SEGLIBPR/SEGFFCONS1 (
+Usuario                 Is  'Usuario ',
+Documento               Is  'Documento ',
+Nombre                  Is  'Nombre ',
+CodApli_ORG             Is  'Cod Aplicacion menu',
+CodMenu_ORG             Is  'Cod Menu ',
+CodSubMenu_ORG          Is  'Cod Sub Menu',
+CodOpcion_ORG           Is  'Cod Opcion',
+DescOpcion              Is  'Descripcion de opcion',
+UsuarioProcesa          Is  'Usuario que Procesa',
+Fechaejecuta            Is  'Fecha Ejecucion ');

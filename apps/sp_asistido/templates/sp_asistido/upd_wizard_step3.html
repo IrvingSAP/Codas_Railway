@@ -1,0 +1,78 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · UPD · Paso 3{% endblock %}
+{% block header_title %}SP Asistido · UPD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-codas-blue-accent/90">Columnas SET (E.3)</p>
+            <h2 class="mt-1 text-lg font-semibold text-white">¿Qué columnas actualiza?</h2>
+            <p class="mt-1 text-sm text-gray-500">Marque al menos una columna no IDENTITY y defina origen (IN, literal, NULL o expresión) por cada una marcada.</p>
+        </div>
+        <a href="{% url 'sp_asistido:list' %}" class="text-sm text-codas-blue-accent no-underline hover:underline">Listado</a>
+    </div>
+    {% include "sp_asistido/includes/upd_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if not columns %}
+    <p class="rounded-lg border border-codas-blue-accent/25 bg-codas-blue-dark/40 px-4 py-3 text-sm text-sky-100/90">No hay columnas actualizables (activas y no IDENTITY) para esta cabecera.</p>
+    {% else %}
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <div class="w-full overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full min-w-[880px] text-left text-sm">
+                <thead>
+                    <tr class="border-b border-white/10 bg-slate-900/80">
+                        <th class="w-12 px-3 py-2.5 text-xs text-gray-400">SET</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Columna</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Tipo</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Origen</th>
+                        <th class="min-w-[200px] px-3 py-2.5 text-xs text-gray-400">Valor / parámetro</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for row in column_rows %}
+                    {% with d=row.detail %}
+                    <tr class="{% if d.is_key %}bg-amber-950/20 hover:bg-amber-900/20{% else %}hover:bg-white/5{% endif %}">
+                        <td class="px-3 py-2.5 align-top">
+                            <input type="checkbox" name="col_{{ d.pk }}" value="1" class="mt-1 h-4 w-4 accent-[#1e90ff] {% if d.is_key %}cursor-not-allowed opacity-60{% endif %}" {% if row.checked %}checked{% endif %} {% if d.is_key %}disabled{% endif %}>
+                        </td>
+                        <td class="px-3 py-2.5 align-top font-mono {% if d.is_key %}text-amber-200{% else %}text-white{% endif %}">
+                            {{ d.field_name_short }}
+                            {% if d.is_key %}
+                            <span class="ml-1.5 inline rounded border border-amber-400/40 bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">Clave</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-3 py-2.5 align-top text-xs text-gray-500">{{ d.get_field_type_display }}</td>
+                        <td class="px-3 py-2.5 align-top">
+                            <select name="origin_{{ d.pk }}" class="h-9 w-full min-w-[7rem] rounded-md border border-gray-600 bg-slate-900 px-2 text-xs text-white outline-none focus:border-codas-blue-accent {% if d.is_key %}cursor-not-allowed opacity-60{% endif %}" {% if d.is_key %}disabled{% endif %}>
+                                <option value="in" {% if row.origin == "in" %}selected{% endif %}>IN</option>
+                                <option value="literal" {% if row.origin == "literal" %}selected{% endif %}>Literal</option>
+                                <option value="null" {% if row.origin == "null" %}selected{% endif %}>NULL</option>
+                                <option value="expr" {% if row.origin == "expr" %}selected{% endif %}>Expresión</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2.5 align-top">
+                            <input type="text" name="detail_{{ d.pk }}" value="{{ row.value }}" maxlength="255" class="h-9 w-full rounded-md border border-gray-600 bg-slate-900 px-2 font-mono text-xs text-codas-blue-accent outline-none focus:border-codas-blue-accent {% if d.is_key %}cursor-not-allowed opacity-60{% endif %}" placeholder="P_CAMPO o literal" {% if d.is_key %}readonly{% endif %}>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-xs text-amber-200/90">Los campos marcados como <span class="font-semibold">Clave</span> son solo de referencia y no se pueden seleccionar en SET.</p>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:list' %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Salir al listado</a>
+            <button type="submit" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-codas-blue-accent/40 bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white [text-shadow:0_0_8px_rgba(165,220,255,0.5),0_0_12px_rgba(30,144,255,0.35)] shadow-[0_0_18px_rgba(30,144,255,0.2)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-codas-blue-accent/50">Siguiente · WHERE obligatorio</button>
+        </div>
+    </form>
+    {% endif %}
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

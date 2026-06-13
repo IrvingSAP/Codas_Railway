@@ -1,0 +1,37 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · ADD · Paso 5{% endblock %}
+{% block header_title %}SP Asistido · ADD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <h2 class="text-lg font-semibold text-white">Revisar obligatorios / nullabilidad</h2>
+        <p class="mt-1 text-sm text-gray-500">Compruebe que las columnas NOT NULL no usan origen NULL (C.5).</p>
+    </div>
+    {% include "sp_asistido/includes/add_wizard_stepper.html" %}
+
+    <ul class="w-full space-y-2.5 rounded-xl border border-white/10 bg-slate-900/40 p-5 text-sm">
+        {% for r in review_rows %}
+        <li class="flex items-start gap-2.5">
+            {% if r.ok %}<span class="text-emerald-400">✓</span>{% else %}<span class="text-amber-300">!</span>{% endif %}
+            <span>
+                <code class="text-codas-blue-accent">{{ r.detail.field_name_short }}</code>
+                — {% if r.detail.nullable %}nullable{% else %}obligatoria (NOT NULL){% endif %},
+                origen: <code class="text-gray-300">{{ r.assignment.get_source_kind_display }}</code>
+                {% if r.assignment.source_kind != "NULL" %}
+                · <code class="text-emerald-200/90">{{ r.assignment.source_value }}</code>
+                {% endif %}
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" class="flex w-full flex-col gap-2 sm:flex-row sm:justify-between">
+        {% csrf_token %}
+        <a href="{% url 'sp_asistido:add_step' definition.pk 4 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+        {% if review_rows|length %}
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white hover:opacity-95">Confirmar y continuar · Firma</button>
+        {% endif %}
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar plantilla source{% else %}Nueva plantilla source{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar plantilla source{% else %}Nueva plantilla source{% endif %}{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'sources:list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos de la plantilla fuente</h2>
+</div>
+
+<form method="post" class="max-w-4xl space-y-5" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}
+    <div
+        role="alert"
+        class="rounded-md border border-amber-500/50 bg-amber-950/40 px-4 py-3 text-sm text-amber-100"
+    >
+        <strong class="font-medium">No se guardó la plantilla.</strong>
+        Revise los campos con avisos en rojo y pulse Guardar de nuevo.
+    </div>
+    {% endif %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.source_type.id_for_label }}" class="codas-label">{{ form.source_type.label }} <span class="text-rose-400">*</span></label>
+            {{ form.source_type }}
+            {% if form.source_type.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.source_type.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.version.id_for_label }}" class="codas-label">{{ form.version.label }} <span class="text-rose-400">*</span></label>
+            {{ form.version }}
+            {% if form.version.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.version.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.name.id_for_label }}" class="codas-label">{{ form.name.label }} <span class="text-rose-400">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.filename.id_for_label }}" class="codas-label">{{ form.filename.label }}</label>
+            {{ form.filename }}
+            {% if form.filename.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.filename.errors.0 }}</p>{% endif %}
+            {% if form.filename.help_text %}<p class="mt-1 text-xs text-gray-500">{{ form.filename.help_text }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div>
+        <label for="{{ form.description.id_for_label }}" class="codas-label">{{ form.description.label }}</label>
+        {{ form.description }}
+        {% if form.description.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.description.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div>
+        <label for="{{ form.source_text.id_for_label }}" class="codas-label">{{ form.source_text.label }} <span class="text-rose-400">*</span></label>
+        {{ form.source_text }}
+        <p class="mt-1 text-xs text-gray-500">Vista estilo IBM i para mejorar lectura del fuente.</p>
+        {% if form.source_text.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.source_text.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.status.id_for_label }}" class="codas-label">{{ form.status.label }} <span class="text-rose-400">*</span></label>
+            {{ form.status }}
+            {% if form.status.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.status.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% url 'sources:list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

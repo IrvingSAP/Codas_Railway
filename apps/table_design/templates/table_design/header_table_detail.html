@@ -1,0 +1,192 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Ver cabecera de diseño de tabla{% endblock %}
+{% block header_title %}Ver cabecera de diseño de tabla{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'table_design:header_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Consulta de cabecera</h2>
+    <p class="mt-1 text-xs text-gray-500">
+        Ámbito: compañía de su perfil (<strong class="text-gray-400">{% if profile.company %}{{ profile.company.name_short }}{% else %}—{% endif %}</strong>).
+        <span class="text-gray-600"> · </span><span class="font-mono text-gray-400">{{ header.table_name_short }}</span>
+    </p>
+    <p class="mt-1 text-xs text-gray-500">Solo lectura; los mismos datos que en edición, sin modificar.</p>
+</div>
+
+<div class="max-w-4xl space-y-5">
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <p class="codas-label">Modelo de tabla</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">
+                {% if header.table_model == "S" %}
+                <span class="codas-header-model-pill--simple">{{ header.get_table_model_display }}</span>
+                {% elif header.table_model == "A" %}
+                <span class="codas-header-model-pill--advanced">{{ header.get_table_model_display }}</span>
+                {% else %}
+                <span class="codas-header-model-pill--expert">{{ header.get_table_model_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <p class="codas-label">Tipo de tabla</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">
+                {% if header.table_type == "PHYSICAL" %}
+                <span class="codas-header-type-pill--physical">{{ header.get_table_type_display }}</span>
+                {% elif header.table_type == "LOGICAL" %}
+                <span class="codas-header-type-pill--logical">{{ header.get_table_type_display }}</span>
+                {% else %}
+                <span class="codas-header-type-pill--other">{{ header.get_table_type_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <p class="codas-label">Nombre largo de la tabla</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{{ header.table_name_long }}</div>
+            {% include "table_design/includes/header_table_hint.html" with hint="long" %}
+        </div>
+        <div>
+            <p class="codas-label">Nombre corto de la tabla</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{{ header.table_name_short }}</div>
+            {% include "table_design/includes/header_table_hint.html" with hint="short" %}
+        </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <p class="codas-label">Esquema / librería</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if header.schema %}{{ header.schema }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+            {% include "table_design/includes/header_table_hint.html" with hint="schema" %}
+        </div>
+        <div>
+            <p class="codas-label">Estado</p>
+            <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">
+                {% if header.status == "A" %}
+                <span class="codas-header-status-pill--active">{{ header.get_status_display }}</span>
+                {% elif header.status == "P" %}
+                <span class="codas-header-status-pill--process">{{ header.get_status_display }}</span>
+                {% else %}
+                <span class="codas-header-status-pill--inactive">{{ header.get_status_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+        <h3 class="mb-3 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+            Script DDL (cabecera)
+        </h3>
+        <p class="mb-4 text-xs text-gray-500">
+            Valores usados en la generación SQL. Si <span class="text-amber-200/80">constraint PK</span> está vacío, no se emite cláusula nominada
+            <code class="rounded bg-gray-800 px-1 text-[10px] text-emerald-400/90">CONSTRAINT … PRIMARY KEY</code>.
+        </p>
+        <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+                <p class="codas-label">Nombre del constraint de PK</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if header.pk_constraint_name %}{{ header.pk_constraint_name }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+                <p class="mt-1 text-xs text-gray-500">Máx. 30 · A–Z, 0–9, _. Unicidad global si tiene valor.</p>
+            </div>
+            <div>
+                <p class="codas-label">Nombre record format (RCDFMT)</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if header.record_format_name %}{{ header.record_format_name }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+                <p class="mt-1 text-xs text-gray-500">Si está vacío, no se emite <code class="text-emerald-400/90">RCDFMT</code>.</p>
+            </div>
+        </div>
+        <p class="mb-2 mt-5 text-[11px] font-semibold uppercase tracking-wide text-gray-500">Parámetros IDENTITY (configuración autogenerada)</p>
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {% if header.auto_key_config %}
+            {% with auto_key=header.auto_key_config %}
+            <div>
+                <p class="codas-label">IDENTITY: START WITH</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if auto_key.identity_start is not None %}{{ auto_key.identity_start }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+            </div>
+            <div>
+                <p class="codas-label">IDENTITY: INCREMENT BY</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if auto_key.identity_increment is not None %}{{ auto_key.identity_increment }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+            </div>
+            <div>
+                <p class="codas-label">IDENTITY: CACHE</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{% if auto_key.identity_cache is not None %}{{ auto_key.identity_cache }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+            </div>
+            <div class="flex flex-col justify-end pb-0.5">
+                <p class="codas-label mb-1">IDENTITY: CYCLE</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">
+                    {% if auto_key.identity_cycle %}<span class="text-emerald-400/90">Sí</span>{% else %}<span class="text-gray-500">No</span>{% endif %}
+                </div>
+            </div>
+            {% endwith %}
+            {% else %}
+            <div class="sm:col-span-2 lg:col-span-4 text-sm text-gray-500">Sin configuración de llave autogenerada.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <p class="codas-label">Notas</p>
+        <div class="min-h-[6rem] w-full whitespace-pre-wrap rounded-md border border-gray-600 bg-gray-900/90 px-2.5 py-2 text-sm text-gray-200">{% if header.notes %}{{ header.notes }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+    </div>
+
+    <div class="space-y-4 border-t border-white/10 pt-6">
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Script y metadatos</h3>
+        <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+                <p class="codas-label">Script generado</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">
+                    {% if header.script_generated %}
+                    <span class="text-emerald-400">Sí</span>
+                    {% else %}
+                    <span class="text-gray-500">No</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <p class="codas-label">Fecha de script</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">{% if header.script_date %}{{ header.script_date|date:"Y-m-d" }}{% else %}<span class="text-gray-500">—</span>{% endif %}</div>
+            </div>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+                <p class="codas-label">Campos (detalle)</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 font-mono text-sm text-gray-200">{{ header.field_count }}</div>
+            </div>
+            <div>
+                <p class="codas-label">Actualizado el</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">{{ header.updated_at|date:"Y-m-d H:i" }}</div>
+            </div>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+                <p class="codas-label">Creado el</p>
+                <div class="flex min-h-[38px] w-full items-center rounded-md border border-gray-600 bg-gray-900/90 px-2.5 text-sm text-gray-200">{{ header.created_at|date:"Y-m-d H:i" }}</div>
+            </div>
+            <div>
+                <p class="codas-label">Tiene llave / autogenerada</p>
+                <div class="flex min-h-[38px] w-full flex-wrap items-center gap-2 rounded-md border border-gray-600 bg-gray-900/90 px-2.5 py-1.5 text-sm text-gray-200">
+                    {% if header.is_field_key %}<span class="codas-header-key-pill">PK</span>{% endif %}
+                    {% if header.is_auto_key %}<span class="codas-header-key-pill--auto">AUTO</span>{% endif %}
+                    {% if not header.is_field_key and not header.is_auto_key %}<span class="text-gray-500">—</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <a href="{% url 'table_design:header_list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Volver al listado</a>
+        <a href="{% url 'table_design:field_list' header.pk %}" class="inline-flex items-center rounded-md border border-white/10 bg-codas-blue-accent/90 px-5 py-2.5 text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">Campos de tabla</a>
+        <a href="{% url 'table_design:header_script' header.pk %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-200 no-underline hover:border-gray-500 hover:bg-white/5">Script DDL</a>
+        {% if header.status != "I" %}
+        <a href="{% url 'table_design:header_update' header.pk %}" class="inline-flex items-center rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">Editar cabecera</a>
+        {% else %}
+        <span class="inline-flex cursor-not-allowed items-center rounded-md border border-gray-600 bg-gray-800/40 px-5 py-2.5 text-sm text-gray-500" title="No disponible: cabecera inactiva.">Editar cabecera</span>
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}

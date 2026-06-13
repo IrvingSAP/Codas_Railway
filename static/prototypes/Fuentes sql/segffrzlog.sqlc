@@ -1,0 +1,29 @@
+CREATE TABLE &LIB/SEGFFRZLOG (
+ idProceso         Numeric     (10)    ,
+ Opcion            Char        (20)    ,
+ ValorAnt          Char       (300)    ,
+ ValorNew          Char       (300)    ,
+ Usuario           Char        (10)    ,
+ FechaCambio       TIMESTAMP   ,
+CONSTRAINT PK_RZLOG PRIMARY KEY (idProceso))
+RCDFMT   REGRZLOG;
+
+
+LABEL ON TABLE &LIB/SEGFFRZLOG  Is
+'Razonabilidad de Cifras - LOG';
+
+LABEL ON &LIB/SEGFFRZLOG (
+idProceso          Text Is  'Id. Proceso',
+Opcion             Text Is  'Opcion',
+ValorAnt           Text Is  'Valor Anterior',
+ValorNew           Text Is  'Valor Nuevo',
+Usuario            Text Is  'Usuario Cambio',
+FechaCambio        Text Is  'Fecha Cambio');
+
+LABEL ON COLUMN &LIB/SEGFFRZLOG (
+idProceso               Is  'Id. Proceso',
+Opcion                  Is  'Opcion',
+ValorAnt                Is  'Valor Anterior',
+ValorNew                Is  'Valor Nuevo',
+Usuario                 Is  'Usuario Cambio',
+FechaCambio             Is  'Fecha Cambio');

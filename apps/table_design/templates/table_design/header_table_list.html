@@ -1,0 +1,264 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Diseño de tablas{% endblock %}
+{% block header_title %}Diseño de tablas DB2 for i{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div class="max-w-3xl">
+        <h2 class="text-base font-semibold text-white">Cabeceras de diseño de tabla</h2>
+        <p class="mt-1 text-sm text-gray-500">
+            Listado acotado a la compañía de su perfil (<strong class="text-gray-400">{% if profile.company %}{{ profile.company.name_short }}{% else %}—{% endif %}</strong>).
+            Solo se muestran registros con <code class="rounded bg-gray-800 px-1 text-xs text-emerald-400/90">company_id</code> igual al suyo.
+        </p>
+    </div>
+    <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <a href="{% url 'table_design:header_create' %}" class="rounded-md border border-white/10 bg-codas-blue-accent/90 px-4 py-2.5 text-center text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">
+            + Nueva cabecera
+        </a>
+        <button type="button" disabled class="cursor-not-allowed rounded-md border border-gray-600 px-4 py-2.5 text-sm text-gray-500" title="Disponible en un paso posterior">
+            Exportar vista (CSV)
+        </button>
+    </div>
+</div>
+
+<div class="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Diseños en ámbito</p>
+        <p class="mt-1 text-2xl font-semibold text-white">{{ stats.total }}</p>
+        <p class="mt-0.5 text-xs text-gray-500">Con los filtros actuales aplicados</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Estado activo</p>
+        <p class="mt-1 text-2xl font-semibold text-emerald-400">{{ stats.active }}</p>
+        <p class="mt-0.5 text-xs text-gray-500"><code class="text-gray-400">status=A</code></p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">En proceso</p>
+        <p class="mt-1 text-2xl font-semibold text-amber-400">{{ stats.process }}</p>
+        <p class="mt-0.5 text-xs text-gray-500"><code class="text-gray-400">status=P</code></p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Sin script generado</p>
+        <p class="mt-1 text-2xl font-semibold text-sky-400">{{ stats.no_script }}</p>
+        <p class="mt-0.5 text-xs text-gray-500"><code class="text-gray-400">script_generated=False</code></p>
+    </div>
+</div>
+
+<form method="get" class="mb-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-slate-900/40 p-3" aria-label="Filtros de listado">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-white/5 pb-2">
+        <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Filtros</span>
+        <span class="text-xs text-gray-600">Coinciden con índices / listados previstos en backend.</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div class="flex min-w-[min(100%,18rem)] flex-[1_1_260px] items-center gap-2">
+            <label for="id_q" class="w-14 shrink-0 text-xs font-medium text-gray-400">Buscar</label>
+            <input id="id_q" name="q" type="search" value="{{ request.GET.q|default:'' }}" placeholder="Nombre corto, largo o librería (ej. CUSMAS, R1DATA)…" autocomplete="off"
+                class="h-9 min-w-0 flex-1 rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-white placeholder:text-gray-600 outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="id_table_model" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Modelo</label>
+            <select id="id_table_model" name="table_model" title="Modelo de tabla"
+                class="h-9 min-w-[9rem] max-w-[13rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="">Todos</option>
+                {% for val, label in table_model_choices %}
+                <option value="{{ val }}" {% if request.GET.table_model == val %}selected{% endif %}>{{ label }} ({{ val }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="id_table_type" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Tipo</label>
+            <select id="id_table_type" name="table_type" title="Tipo de tabla"
+                class="h-9 min-w-[8.5rem] max-w-[12rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="">Todos</option>
+                {% for val, label in table_type_choices %}
+                <option value="{{ val }}" {% if request.GET.table_type == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="id_status" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Estado</label>
+            <select id="id_status" name="status"
+                class="h-9 min-w-[8.5rem] max-w-[11rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="">Todos</option>
+                {% for val, label in status_choices %}
+                <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="id_script_generated" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Script</label>
+            <select id="id_script_generated" name="script_generated" title="Script generado"
+                class="h-9 min-w-[7rem] max-w-[10rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="">Todos</option>
+                <option value="1" {% if request.GET.script_generated == "1" %}selected{% endif %}>Sí</option>
+                <option value="0" {% if request.GET.script_generated == "0" %}selected{% endif %}>No</option>
+            </select>
+        </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div class="flex items-center gap-2">
+            <label for="id_is_field_key" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Llave</label>
+            <select id="id_is_field_key" name="is_field_key" title="Tiene llave"
+                class="h-9 min-w-[7rem] max-w-[10rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="">Todas</option>
+                <option value="1" {% if request.GET.is_field_key == "1" %}selected{% endif %}>Sí</option>
+                <option value="0" {% if request.GET.is_field_key == "0" %}selected{% endif %}>No</option>
+            </select>
+        </div>
+        <div class="flex min-w-0 flex-[1_1_14rem] items-center gap-2">
+            <label for="id_ordering" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Ordenar</label>
+            <select id="id_ordering" name="ordering"
+                class="h-9 min-w-[12rem] max-w-[min(100%,22rem)] flex-1 rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                <option value="table_name_short" {% if ordering == "table_name_short" %}selected{% endif %}>Nombre corto (A→Z)</option>
+                <option value="-table_name_short" {% if ordering == "-table_name_short" %}selected{% endif %}>Nombre corto (Z→A)</option>
+                <option value="-updated_at" {% if ordering == "-updated_at" %}selected{% endif %}>Actualizado (reciente primero)</option>
+                <option value="updated_at" {% if ordering == "updated_at" %}selected{% endif %}>Actualizado (antiguo primero)</option>
+                <option value="table_type" {% if ordering == "table_type" %}selected{% endif %}>Tipo de tabla (A→Z)</option>
+                <option value="-table_type" {% if ordering == "-table_type" %}selected{% endif %}>Tipo de tabla (Z→A)</option>
+                <option value="status" {% if ordering == "status" %}selected{% endif %}>Estado (A→Z)</option>
+                <option value="-status" {% if ordering == "-status" %}selected{% endif %}>Estado (Z→A)</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="id_per_page" class="w-auto shrink-0 text-xs font-medium whitespace-nowrap text-gray-400">Por página</label>
+            <select id="id_per_page" name="per_page"
+                class="h-9 min-w-[4.5rem] rounded-md border border-gray-600 bg-gray-900 px-2 text-sm text-white outline-none focus:border-codas-blue-accent focus:ring-1 focus:ring-codas-blue-accent">
+                {% for n in allowed_per_page %}
+                <option value="{{ n }}" {% if current_per_page == n %}selected{% endif %}>{{ n }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="flex flex-wrap gap-2 border-t border-white/5 pt-2">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-codas-accent-hover">Aplicar filtros</button>
+        <a href="{% url 'table_design:header_list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-4 py-1.5 text-sm text-gray-300 no-underline hover:bg-white/5">Limpiar</a>
+    </div>
+</form>
+
+<div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full min-w-[1180px] border-collapse text-left text-sm">
+            <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                    <th class="sticky left-0 z-10 bg-slate-900/95 px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        <a href="{{ sort_url_table_name_short }}" class="inline-flex items-center gap-1 text-slate-300 no-underline hover:text-white">Nombre corto<span class="text-xs {% if sort_cols.table_name_short.active %}text-codas-blue-accent{% else %}text-slate-600{% endif %}">{{ sort_cols.table_name_short.glyph }}</span></a>
+                    </th>
+                    <th class="min-w-[12rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre largo</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Librería</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Modelo</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Llave</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Script</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        <a href="{{ sort_url_status }}" class="inline-flex w-full items-center justify-center gap-1 text-slate-300 no-underline hover:text-white">Estado<span class="text-xs {% if sort_cols.status.active %}text-codas-blue-accent{% else %}text-slate-600{% endif %}">{{ sort_cols.status.glyph }}</span></a>
+                    </th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400" title="Conteo de campos por cabecera">Campos</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        <a href="{{ sort_url_updated_at }}" class="inline-flex items-center gap-1 text-slate-300 no-underline hover:text-white">Actualizado<span class="text-xs {% if sort_cols.updated_at.active %}text-codas-blue-accent{% else %}text-slate-600{% endif %}">{{ sort_cols.updated_at.glyph }}</span></a>
+                    </th>
+                    <th class="sticky right-0 z-10 bg-slate-900/95 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for h in headers %}
+                <tr class="hover:bg-white/[0.03]">
+                    <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3 font-mono text-sm font-medium">
+                        <a href="{% url 'table_design:header_update' h.pk %}" class="text-codas-blue-accent no-underline hover:underline" title="Editar cabecera">{{ h.table_name_short }}</a>
+                    </td>
+                    <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="{{ h.table_name_long }}">{{ h.table_name_long }}</td>
+                    <td class="px-3 py-3 font-mono text-xs text-slate-400">{% if h.schema %}{{ h.schema }}{% else %}<span class="text-slate-500" title="Sin librería / esquema">—</span>{% endif %}</td>
+                    <td class="px-3 py-3 text-xs">
+                        {% if h.table_model == "S" %}
+                        <span class="codas-header-model-pill--simple">{{ h.get_table_model_display }}</span>
+                        {% elif h.table_model == "A" %}
+                        <span class="codas-header-model-pill--advanced">{{ h.get_table_model_display }}</span>
+                        {% else %}
+                        <span class="codas-header-model-pill--expert">{{ h.get_table_model_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-center text-xs">
+                        <span class="inline-flex flex-wrap justify-center gap-1">
+                            {% if h.is_field_key %}<span class="codas-header-key-pill" title="Tiene llave">PK</span>{% endif %}
+                            {% if h.is_auto_key %}<span class="codas-header-key-pill--auto" title="Llave autogenerada">AUTO</span>{% endif %}
+                            {% if not h.is_field_key and not h.is_auto_key %}<span class="codas-header-key-empty">—</span>{% endif %}
+                        </span>
+                    </td>
+                    <td class="px-3 py-3 text-xs">
+                        {% if h.script_generated %}
+                        <span class="text-emerald-400">Generado</span>
+                        <span class="block text-slate-500">{% if h.script_date %}{{ h.script_date|date:"Y-m-d" }}{% else %}—{% endif %}</span>
+                        {% else %}
+                        <span class="text-slate-500">Pendiente</span>
+                        <span class="block text-slate-600">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        {% if h.status == "A" %}
+                        <span class="codas-header-status-pill--active">{{ h.get_status_display }}</span>
+                        {% elif h.status == "P" %}
+                        <span class="codas-header-status-pill--process">{{ h.get_status_display }}</span>
+                        {% else %}
+                        <span class="codas-header-status-pill--inactive">{{ h.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 text-center font-mono text-slate-300">{{ h.field_count }}</td>
+                    <td class="px-3 py-3 text-xs text-slate-500">{{ h.updated_at|date:"Y-m-d H:i" }}</td>
+                    <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                        <a href="{% url 'table_design:header_detail' h.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver</a>
+                        <span class="text-slate-600"> · </span>
+                        <a href="{% url 'table_design:header_update' h.pk %}" class="text-codas-blue-accent no-underline hover:underline">Editar</a>
+                        <span class="text-slate-600"> · </span>
+                        <a href="{% url 'table_design:field_list' h.pk %}" class="text-codas-blue-accent no-underline hover:underline">Campos</a>
+                        <span class="text-slate-600"> · </span>
+                        <a href="{% url 'table_design:header_script' h.pk %}" class="text-codas-blue-accent no-underline hover:underline" title="Generar o ver script DDL">Script</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11" class="px-4 py-8 text-center text-sm text-slate-500">No hay cabeceras que coincidan con los filtros</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="flex flex-col gap-3 border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <p>
+            <span class="text-slate-500">Coincidencias:</span>
+            <span class="font-medium text-slate-300">{{ page_obj.paginator.count }}</span>
+            <span class="mx-2 text-slate-600">·</span>
+            {% if page_obj.paginator.count %}
+            Mostrando <span class="font-medium text-slate-300">{{ page_obj.start_index }}–{{ page_obj.end_index }}</span> de <span class="font-medium text-slate-300">{{ page_obj.paginator.count }}</span>
+            {% else %}
+            Mostrando <span class="font-medium text-slate-300">0</span> de <span class="font-medium text-slate-300">0</span>
+            {% endif %}
+        </p>
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="flex flex-wrap items-center justify-end gap-1" aria-label="Paginación">
+            {% if page_obj.has_previous %}
+            <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.previous_page_number }}" class="rounded border border-slate-600 px-2 py-1 text-slate-300 no-underline hover:bg-white/5">« Anterior</a>
+            {% else %}
+            <span class="rounded border border-slate-600 px-2 py-1 text-slate-600 opacity-60">« Anterior</span>
+            {% endif %}
+            {% if page_obj.paginator.num_pages <= 12 %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <span class="rounded border border-codas-blue-accent bg-codas-blue-accent/20 px-2.5 py-1 font-medium text-codas-blue-accent">{{ num }}</span>
+                    {% else %}
+                    <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ num }}" class="rounded border border-slate-600 px-2.5 py-1 text-slate-300 no-underline hover:bg-white/5">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <span class="px-2 text-slate-400">Página {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a href="?{% if pagination_qs %}{{ pagination_qs }}&{% endif %}page={{ page_obj.next_page_number }}" class="rounded border border-slate-600 px-2 py-1 text-slate-300 no-underline hover:bg-white/5">Siguiente »</a>
+            {% else %}
+            <span class="rounded border border-slate-600 px-2 py-1 text-slate-600 opacity-60">Siguiente »</span>
+            {% endif %}
+        </nav>
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}

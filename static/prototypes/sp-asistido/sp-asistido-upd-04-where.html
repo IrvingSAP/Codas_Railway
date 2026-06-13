@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · UPD · Paso 4 de 6 · WHERE obligatorio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400"><span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-amber-300">Cambiar (UPD)</span></span></div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a><h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · UPDATE</h1></header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> SET</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-amber-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/30 text-white">4</span> WHERE</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Concurrencia</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-5xl">
+      <h2 class="text-lg font-semibold text-white">4 · WHERE obligatorio</h2>
+      <p class="mt-1 text-sm text-slate-500">No se permite generar UPDATE sin predicado de búsqueda.</p>
+      <div class="mt-4 overflow-hidden rounded-xl border border-white/10">
+        <p class="mb-2 text-xs text-slate-500">Prototipo: casillas, AND entre predicados; al marcar con origen <strong>Parámetro IN</strong> se sugiere <span class="font-mono">P_</span> + nombre de columna (editable).</p>
+        <table class="w-full min-w-[900px] text-left text-sm" id="upd04-table">
+          <thead><tr class="border-b border-white/10 bg-slate-900/90"><th class="w-12 px-2 py-2 text-xs text-slate-400">○</th><th class="px-3 py-2 text-xs text-slate-400">Campo</th><th class="px-3 py-2 text-xs text-slate-400">Tipo</th><th class="px-3 py-2 text-xs text-slate-400">Operador</th><th class="px-3 py-2 text-xs text-slate-400">Origen</th><th class="px-3 py-2 text-xs text-slate-400">Valor/IN</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr class="js-row opacity-60" data-field-short="CUSNBR"><td class="px-2 py-2"><input type="checkbox" class="js-pick" value="1"></td><td class="px-3 py-2 font-mono text-codas-accent">CUSNBR</td><td class="px-3 py-2 text-xs">DECIMAL(9)</td><td class="px-3 py-2"><select class="js-op h-9 rounded border border-slate-600 bg-slate-900 px-2 text-xs" disabled><option value="=">=</option><option value="<>"><></option></select></td><td class="px-3 py-2"><select class="js-or h-9 rounded border border-slate-600 bg-slate-900 px-2 text-xs" disabled><option value="in">Parámetro IN</option><option value="literal">Literal</option></select></td><td class="px-3 py-2"><input class="js-val h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs" value="" placeholder="P_CAMPO" disabled></td></tr>
+            <tr class="js-row opacity-60" data-field-short="CUSNAME"><td class="px-2 py-2"><input type="checkbox" class="js-pick" value="1"></td><td class="px-3 py-2 font-mono text-codas-accent">CUSNAME</td><td class="px-3 py-2 text-xs">VARCHAR(40)</td><td class="px-3 py-2"><select class="js-op h-9 rounded border border-slate-600 bg-slate-900 px-2 text-xs" disabled><option value="=">=</option><option value="LIKE">LIKE</option></select></td><td class="px-3 py-2"><select class="js-or h-9 rounded border border-slate-600 bg-slate-900 px-2 text-xs" disabled><option value="in">Parámetro IN</option><option value="literal">Literal</option></select></td><td class="px-3 py-2"><input class="js-val h-9 w-full max-w-[14rem] rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs" value="" placeholder="P_CAMPO" disabled></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p id="upd04-error" class="mt-3 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-upd-03-set.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><button id="upd04-btn-next" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · Concurrencia</button></div></footer>
+  <script>(function(){
+    var t=document.getElementById("upd04-table"),rows=[].slice.call(t.querySelectorAll(".js-row")),err=document.getElementById("upd04-error");
+    var MAX=30;
+    function suggestP(r){
+      if(!r.querySelector(".js-pick").checked)return;
+      var v=r.querySelector(".js-val");
+      if(v.getAttribute("data-user-touched")==="1")return;
+      if(r.querySelector(".js-or").value!=="in")return;
+      var s=(r.getAttribute("data-field-short")||"").trim();
+      if(!s)return;
+      s="P_"+s.toUpperCase();
+      if(s.length>MAX)s=s.substring(0,MAX);
+      v.value=s;
+    }
+    function ui(){
+      rows.forEach(function(r){
+        var on=r.querySelector(".js-pick").checked;
+        r.classList.toggle("opacity-60",!on);
+        r.querySelectorAll(".js-op,.js-or,.js-val").forEach(function(e){e.disabled=!on;});
+      });
+    }
+    t.addEventListener("change",function(e){
+      var g=e.target;
+      if(g.classList && g.classList.contains("js-pick")){
+        var r=g.closest(".js-row");
+        if(g.checked)suggestP(r);
+        ui();
+      }else if(g.classList && g.classList.contains("js-or")&&g.value==="in"&&g.closest(".js-row").querySelector(".js-pick").checked){
+        var r2=g.closest(".js-row"),v2=r2.querySelector(".js-val");
+        if(v2 && v2.getAttribute("data-user-touched")!=="1")suggestP(r2);
+      }
+    });
+    t.addEventListener("input",function(e){if(e.target&&e.target.classList.contains("js-val"))e.target.setAttribute("data-user-touched","1");});
+    ui();
+    function okParam(x){return /^P_[A-Z0-9_#]+$/i.test((x||"").trim());}
+    document.getElementById("upd04-btn-next").addEventListener("click",function(){
+      var any=false;rows.forEach(function(r){if(r.querySelector(".js-pick").checked)any=true;});
+      if(!any){err.textContent="Seleccione al menos un campo para el WHERE (predicados unidos con AND en producto).";err.classList.remove("hidden");return;}
+      for(var i=0;i<rows.length;i++){
+        var r=rows[i];if(!r.querySelector(".js-pick").checked)continue;
+        var o=r.querySelector(".js-or").value,x=r.querySelector(".js-val").value.trim();
+        if(!x){err.textContent="En cada fila marcada, el valor/IN no puede quedar vacío.";err.classList.remove("hidden");return;}
+        if(o==="in"&&!okParam(x)){err.textContent="Parámetro IN inválido en fila "+(i+1)+". Use prefijo P_.";err.classList.remove("hidden");return;}
+      }
+      err.classList.add("hidden");window.location.href="sp-asistido-upd-05-concurrencia.html";
+    });
+  })();</script>
+</body>
+</html>

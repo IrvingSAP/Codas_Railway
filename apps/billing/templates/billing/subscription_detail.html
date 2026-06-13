@@ -1,0 +1,83 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Suscripción {{ subscription.company.name_short }}{% endblock %}
+{% block header_title %}Suscripción — {{ subscription.company.name_short }}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'billing:subscription_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Suscripción</h2>
+</div>
+
+<dl class="max-w-2xl space-y-4 text-sm">
+    <div>
+        <dt class="font-medium text-gray-400">Compañía</dt>
+        <dd class="mt-1 text-white">{{ subscription.company.name_long }} <span class="text-gray-500">({{ subscription.company.name_short }})</span></dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Plan</dt>
+        <dd class="mt-1 text-gray-200">{{ subscription.plan.name }} <span class="font-mono text-codas-blue-accent">{{ subscription.plan.code }}</span></dd>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+            <dt class="font-medium text-gray-400">Fecha de inicio</dt>
+            <dd class="mt-1 text-gray-200">{{ subscription.start_date|date:"Y-m-d" }}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-400">Fecha de fin</dt>
+            <dd class="mt-1 text-gray-200">{{ subscription.end_date|date:"Y-m-d" }}</dd>
+        </div>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Estado</dt>
+        <dd class="mt-1 text-gray-200">{{ subscription.get_status_display }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Renovación automática</dt>
+        <dd class="mt-1 text-gray-200">{% if subscription.auto_renew %}Sí{% else %}No{% endif %}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Huella de integridad (HMAC)</dt>
+        <dd class="mt-1 break-all font-mono text-xs text-gray-400">{{ subscription.integrity_signature }}</dd>
+        <dd class="mt-1 text-xs text-gray-500">Firma válida: {% if license_info.signature_valid %}<span class="text-emerald-400">sí</span>{% else %}<span class="text-rose-400">no</span>{% endif %} · Vencida por fecha: {% if license_info.is_expired %}<span class="text-amber-200">sí</span>{% else %}<span class="text-gray-400">no</span>{% endif %}</dd>
+    </div>
+</dl>
+
+<div class="mt-10 border-t border-white/10 pt-8">
+    <h3 class="mb-3 text-sm font-semibold text-gray-300">Contactos (máx. 3)</h3>
+    <ul class="space-y-2 text-sm">
+        {% for c in subscription.contacts.all %}
+        <li class="rounded-lg border border-white/10 bg-slate-900/40 px-3 py-2">
+            <a href="{% url 'billing:subscriptioncontact_detail' c.pk %}" class="font-medium text-codas-blue-accent no-underline hover:underline">{{ c.full_name }}</a>
+            <span class="text-gray-500"> — {{ c.phone }}{% if c.email %} · {{ c.email }}{% endif %}</span>
+        </li>
+        {% empty %}
+        <li class="text-sm text-gray-500">Sin contactos registrados.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="mt-8 border-t border-white/10 pt-8">
+    <h3 class="mb-3 text-sm font-semibold text-gray-300">Pagos recientes</h3>
+    <ul class="space-y-2 text-sm">
+        {% for p in subscription.payments.all %}
+        <li class="rounded-lg border border-white/10 bg-slate-900/40 px-3 py-2">
+            <a href="{% url 'billing:payment_detail' p.pk %}" class="text-codas-blue-accent no-underline hover:underline">{{ p.amount }}</a>
+            <span class="text-gray-500">{{ p.get_method_display }} · {{ p.payment_date|date:"Y-m-d H:i" }}</span>
+        </li>
+        {% empty %}
+        <li class="text-sm text-gray-500">Sin pagos registrados.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% if can_crud %}
+<div class="mt-8 flex flex-wrap gap-3">
+    <a href="{% url 'billing:subscription_update' subscription.pk %}" class="inline-flex rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'billing:subscription_delete' subscription.pk %}" class="inline-flex rounded-md border border-rose-500/50 px-4 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endif %}
+{% endblock %}

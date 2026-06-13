@@ -1,0 +1,66 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · Editar · {{ definition.pk }}{% endblock %}
+{% block header_title %}SP Asistido · Editar definición{% endblock %}
+
+{% block content %}
+<div class="pb-10">
+    <p class="mb-6 text-sm text-gray-500">
+        <a href="{% url 'sp_asistido:detail' definition.pk %}" class="text-codas-blue-accent no-underline hover:underline">← Volver a la ficha</a>
+        <span class="text-gray-600"> · </span>
+        <a href="{% url 'sp_asistido:list' %}" class="text-codas-blue-accent no-underline hover:underline">Listado</a>
+    </p>
+
+    <div class="mb-6">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Solo metadatos</p>
+        <h2 class="mt-1 text-lg font-semibold text-white">Identificación y estado</h2>
+        <p class="mt-2 text-sm text-gray-500">Operación: <span class="text-gray-300">{{ operation_display }}</span> · Tabla: <span class="font-mono text-codas-blue-accent/90">{{ table_label }}</span></p>
+    </div>
+    {% if definition.script_generated %}
+    <div class="mb-6 rounded-lg border border-yellow-500/35 bg-yellow-950/20 p-4 text-sm text-yellow-100">
+        <p class="mb-3">Esta definición ya tiene script generado. Si necesitas ajustar campos o condicionales, reabre el asistente en modo borrador.</p>
+        <form method="post" action="{% url 'sp_asistido:reopen' definition.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="rounded-md border border-yellow-500/45 bg-yellow-950/35 px-4 py-2 text-sm font-medium text-yellow-200 hover:bg-yellow-500/20">Reabrir asistente</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="mt-6 w-full max-w-2xl space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5">
+        {% csrf_token %}
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_status">Estado de la definición</label>
+            <select id="id_status" name="status" class="h-10 w-full max-w-sm rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+                {% for val, label in status_choices %}
+                <option value="{{ val }}"{% if status == val %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_schema_name">Esquema / librería (máx. 10) *</label>
+            <input id="id_schema_name" name="schema_name" maxlength="10" required value="{{ schema_name }}" class="h-10 w-full max-w-sm rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-codas-blue-accent outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_name_short">Nombre corto SP (máx. 10) *</label>
+            <input id="id_procedure_name_short" name="procedure_name_short" maxlength="10" required value="{{ procedure_name_short }}" class="h-10 w-full max-w-xs rounded-md border border-gray-600 bg-slate-900 px-2.5 font-mono text-sm text-codas-blue-accent outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_name_long">Nombre largo (máx. 50) *</label>
+            <input id="id_procedure_name_long" name="procedure_name_long" maxlength="50" required value="{{ procedure_name_long }}" class="h-10 w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+        </div>
+        <div>
+            <label class="mb-1 block text-xs text-gray-400" for="id_procedure_comment">Comentario (opcional)</label>
+            <input id="id_procedure_comment" name="procedure_comment" maxlength="200" value="{{ procedure_comment }}" class="h-10 w-full rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+        </div>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:detail' definition.pk %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Cancelar</a>
+            <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white hover:opacity-95">Guardar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

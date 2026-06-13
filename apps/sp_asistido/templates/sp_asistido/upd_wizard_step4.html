@@ -1,0 +1,134 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · UPD · Paso 4{% endblock %}
+{% block header_title %}SP Asistido · UPD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-codas-blue-accent/90">WHERE obligatorio (E.4)</p>
+            <h2 class="mt-1 text-lg font-semibold text-white">Condición de actualización</h2>
+            <p class="mt-1 text-sm text-gray-500">Marque una o más columnas; al activar una fila con origen <span class="text-gray-300">Parámetro IN</span> se sugiere <span class="font-mono text-codas-blue-accent/80">P_</span> + nombre de columna (puede editarlo). Los predicados se unen con AND.</p>
+        </div>
+        <a href="{% url 'sp_asistido:list' %}" class="text-sm text-codas-blue-accent no-underline hover:underline">Listado</a>
+    </div>
+    {% include "sp_asistido/includes/upd_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if not where_rows %}
+    <p class="rounded-lg border border-codas-blue-accent/25 bg-codas-blue-dark/40 px-4 py-3 text-sm text-sky-100/90">No hay columnas activas en el detalle.</p>
+    {% else %}
+    <form method="post" id="upd-where-form" class="w-full space-y-4" novalidate>
+        {% csrf_token %}
+        <div class="overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full min-w-[900px] text-left text-sm" id="upd-where-table" data-upd-where>
+                <thead>
+                    <tr class="border-b border-white/10 bg-slate-900/90">
+                        <th class="w-12 px-2 py-2.5 text-xs text-gray-400" title="Incluir en WHERE">○</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Campo</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Tipo</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Operador</th>
+                        <th class="min-w-[8rem] px-3 py-2.5 text-xs text-gray-400">Origen</th>
+                        <th class="min-w-[12rem] px-3 py-2.5 text-xs text-gray-400">Valor / IN</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for row in where_rows %}
+                    {% with d=row.detail %}
+                    <tr class="js-where-row transition {% if not row.checked %}opacity-50{% endif %}" data-did="{{ d.pk }}" data-field-short="{{ d.field_name_short|default:'' }}">
+                        <td class="px-2 py-2.5 align-middle">
+                            <input type="checkbox" name="where_col_{{ d.pk }}" value="1" class="js-where-pick h-4 w-4 cursor-pointer rounded border-slate-600 bg-slate-900 accent-[#1e90ff]" {% if row.checked %}checked{% endif %}>
+                        </td>
+                        <td class="px-3 py-2.5 font-mono text-codas-blue-accent align-middle">{{ d.field_name_short }}</td>
+                        <td class="px-3 py-2.5 text-xs text-gray-500 align-middle">{{ d.get_field_type_display }}</td>
+                        <td class="px-3 py-2.5 align-middle">
+                            <select name="where_op_{{ d.pk }}" class="js-where-ctl h-9 w-full min-w-[5.5rem] max-w-[7rem] rounded-md border border-gray-600 bg-slate-900 px-2 text-xs text-white outline-none focus:border-codas-blue-accent" aria-disabled="true">
+                                <option value="=" {% if row.operator == "=" %}selected{% endif %}>=</option>
+                                <option value="<>" {% if row.operator == "<>" %}selected{% endif %}>&lt;&gt;</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2.5 align-middle">
+                            <select name="where_origin_{{ d.pk }}" class="js-where-ctl js-where-origin h-9 w-full min-w-[9rem] max-w-[11rem] rounded-md border border-gray-600 bg-slate-900 px-2 text-xs text-white outline-none focus:border-codas-blue-accent" aria-disabled="true">
+                                <option value="in" {% if row.value_origin == "in" %}selected{% endif %}>Parámetro IN</option>
+                                <option value="literal" {% if row.value_origin == "literal" %}selected{% endif %}>Literal</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2.5 align-middle">
+                            <input name="where_val_{{ d.pk }}" value="{{ row.value_text }}" maxlength="255" class="js-where-ctl js-where-val h-9 w-full min-w-[10rem] max-w-[16rem] rounded-md border border-gray-600 bg-slate-900 px-2 font-mono text-xs text-codas-blue-accent outline-none focus:border-codas-blue-accent" placeholder="P_CAMPO" aria-disabled="true" autocomplete="off"{% if row.value_preserve %} data-where-preserve="1"{% endif %} {% if not row.checked %}tabindex="-1"{% endif %}>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:upd_step' definition.pk 3 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <button type="submit" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-codas-blue-accent/40 bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white [text-shadow:0_0_8px_rgba(165,220,255,0.5),0_0_12px_rgba(30,144,255,0.35)] shadow-[0_0_18px_rgba(30,144,255,0.2)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-codas-blue-accent/50">Siguiente · Concurrencia</button>
+        </div>
+    </form>
+    <script>
+    (function () {
+        var form = document.getElementById('upd-where-form');
+        var table = document.getElementById('upd-where-table');
+        if (!form || !table) return;
+        var MAX_IN = 30;
+        function suggestInParam(tr) {
+            if (!tr) return;
+            var pick = tr.querySelector('.js-where-pick');
+            if (!pick || !pick.checked) return;
+            var valInp = tr.querySelector('.js-where-val');
+            if (!valInp || valInp.getAttribute('data-user-touched') === '1') return;
+            var origin = tr.querySelector('.js-where-origin');
+            if (origin && origin.value !== 'in') return;
+            var short = (tr.getAttribute('data-field-short') || '').trim();
+            if (!short) return;
+            var s = 'P_' + short.toUpperCase();
+            if (s.length > MAX_IN) s = s.substring(0, MAX_IN);
+            valInp.value = s;
+        }
+        function sync() {
+            table.querySelectorAll('.js-where-row').forEach(function (tr) {
+                var on = tr.querySelector('.js-where-pick').checked;
+                tr.classList.toggle('opacity-50', !on);
+                tr.querySelectorAll('.js-where-ctl').forEach(function (el) {
+                    el.disabled = !on;
+                    if (on) { el.removeAttribute('tabindex'); } else { el.setAttribute('tabindex', '-1'); }
+                });
+            });
+        }
+        table.addEventListener('change', function (e) {
+            var t = e.target;
+            if (t && t.classList && t.classList.contains('js-where-pick')) {
+                var tr = t.closest('tr');
+                if (t.checked) {
+                    suggestInParam(tr);
+                }
+                sync();
+            }
+            if (t && t.classList && t.classList.contains('js-where-origin')) {
+                var tr2 = t.closest('tr');
+                if (t.value === 'in' && tr2 && tr2.querySelector('.js-where-pick').checked) {
+                    var vi = tr2.querySelector('.js-where-val');
+                    if (vi && vi.getAttribute('data-user-touched') !== '1' && vi.getAttribute('data-where-preserve') !== '1') {
+                        suggestInParam(tr2);
+                    }
+                }
+            }
+        });
+        table.addEventListener('input', function (e) {
+            if (e.target && e.target.classList && e.target.classList.contains('js-where-val')) {
+                e.target.setAttribute('data-user-touched', '1');
+            }
+        });
+        sync();
+    })();
+    </script>
+    {% endif %}
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

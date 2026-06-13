@@ -1,0 +1,13 @@
+-- *?************************************************************************
+-- *  Programa:?SEGLFPRAUT                                                  *
+-- *  Descripcion:Componente Autorizador indice de Parametrizacion de     ?*
+-- *              Objetos a Autorizar por AUPROCESO, AUOBJETO, AURUTAIFS  ?*
+-- *                                                                       ?*
+-- *  Autor:?Rigoberto Ríos Bola¦os                                         *
+-- *  Empresa:?PersonalSoft S.A.S                                           *
+-- *  Fecha Creacion:?24 - Mayo  2011                                       *
+-- *?************************************************************************
+
+CREATE INDEX SEGLFPRAUT
+  ON SEGFFPRAUT ( AUPROCESO, AUOBJETO, AURUTAIFS);
+

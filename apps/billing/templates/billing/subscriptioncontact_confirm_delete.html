@@ -1,0 +1,20 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Eliminar contacto{% endblock %}
+{% block header_title %}Eliminar contacto{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'billing:subscriptioncontact_detail' contact.pk %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<div class="max-w-lg rounded-xl border border-rose-500/30 bg-rose-950/20 p-6">
+    <h2 class="text-base font-semibold text-white">¿Eliminar este contacto?</h2>
+    <p class="mt-4 text-sm text-gray-400">{{ contact.full_name }} · {{ contact.subscription.company.name_short }}</p>
+    <form method="post" class="mt-6 flex flex-wrap gap-3">
+        {% csrf_token %}
+        <button type="submit" class="rounded-md bg-rose-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-rose-500">Confirmar eliminación</button>
+        <a href="{% url 'billing:subscriptioncontact_detail' contact.pk %}" class="inline-flex items-center rounded-md border border-gray-600 px-4 py-2.5 text-sm text-gray-300 no-underline hover:bg-white/5">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

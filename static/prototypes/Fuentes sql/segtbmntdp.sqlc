@@ -1,0 +1,63 @@
+--------------------------------------------------------------------
+-- Nombre De SCRIPT....: Tabla de Monitor de Depuracion Parametros--
+-- Descripción.........: ConFiguracion de de proceso a monitorear --
+-- Tipo Objeto.........: TABLE                                    --
+-- Requerimiento.......: EVC00032 - (Monitoreo de Depuracion )    --
+-- Subdominio..........:                                          --
+-- Fecha De Creación...: Mayo 16-2023.                            --
+-- Autor...............: Carlos Rojas                             --
+-- Base de datos relacional:  DB2 for i                           --
+--------------------------------------------------------------------
+-- MODIFICACIONES:                                                --
+-- Fecha de Modificación :                                        --
+-- Autor...............  :                                        --
+-- Descripción ......... :                                        --
+-- Requerimiento.........:                                        --
+--------------------------------------------------------------------
+
+-- Crear Tabla de Monitor de Depuracion Parametros.
+CREATE OR REPLACE TABLE &LIB.MONITOR_DEPURACION_PARAMETROS
+ FOR SYSTEM NAME SEGTBMNTDP(
+ Nombre_Proceso                 FOR COLUMN PROCESO CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+ Tipo_Depuracion 	        FOR COLUMN TIPDEPURAC CHAR(10)  CCSID 284 NOT NULL DEFAULT '',
+ Maximo_Run_Time                FOR COLUMN MAXRUNTIME NUM(5) NOT NULL DEFAULT 0,
+ Postegrar_Alerta   	        FOR COLUMN POSTALERTA NUM(5) NOT NULL DEFAULT 0,
+ Tipo_Correo 	                FOR COLUMN TIPOCORREO CHAR(1) CHECK (TIPOCORREO IN ('G','I', 'A')),
+ Codigo_Correo_Grupal 	        FOR COLUMN CODCORGRUP CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+ Codigo_Correo_Individual       FOR COLUMN CODCORREOI CHAR(10) CCSID 284 NOT NULL DEFAULT '',
+ Notificacion_Fuera_Servicio    FOR COLUMN NOTFUERASV CHAR(1) CHECK (NOTFUERASV IN ('S','N')),
+ Notificacion_Horario_Servicio	FOR COLUMN NOTHORASEV CHAR(1) CHECK (NOTHORASEV IN ('A','I')),
+ Estatus	                FOR COLUMN ESTADO CHAR(1) CHECK (ESTADO IN ('A','I')),
+ Fecha_Actualizacion    	FOR FECHORAUPD TIMESTAMP NOT NULL IMPLICITLY HIDDEN
+                                        GENERATED ALWAYS FOR EACH ROW ON UPDATE
+                                        AS ROW CHANGE TIMESTAMP,
+ Usuario_Actualizacion 	        FOR COLUMN USUARIOUPD CHAR(10) CCSID 284 NOT NULL DEFAULT ' ',
+ Id_Monitor_Depuracion          FOR COLUMN IDMNTDEPUR NUM(10) NOT NULL
+                        GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1,
+                        NO MINVALUE, MAXVALUE 9999999999
+                        CYCLE, NO ORDER,
+                        NO CACHE),
+ -- Clave Primaria
+CONSTRAINT &LIBNombre_Proceso_PK PRIMARY KEY (Nombre_Proceso))
+
+  -- Formato del Registro
+RCDFMT RSEGMNTDP;
+--
+LABEL ON TABLE &LIB.MONITOR_DEPURACION_PARAMETROS
+IS 'Tabla de Monitor de Depuracion Parametros';
+
+LABEL ON COLUMN &LIB.MONITOR_DEPURACION_PARAMETROS(
+ Nombre_Proceso                 TEXT IS 'NOMBRE DE PROCESO DEPURACION.........',
+ Tipo_Depuracion                TEXT IS 'TIPO DE DEPURACION (ARCHIVO o IFS....',
+ Maximo_Run_Time                TEXT IS 'MaxRunTime TIEMPO PROMEDIO EJECUCION.',
+ Postegrar_Alerta               TEXT IS 'POSTEGRAR TIEMPO DE ALERTA MINUTOS...',
+ Tipo_Correo                    TEXT IS 'TIPO DE CORREO(GRUPAL/INDIVID/AMBOS..',
+ Codigo_Correo_Grupal           TEXT IS 'CODIGO DE CORREO GRUPAL .............',
+ Codigo_Correo_Individual       TEXT IS 'CODIGO DE CORREO INDIVIDUA ..........',
+ Notificacion_Fuera_Servicio    TEXT IS 'NOTIFICACION FUERA HORARIO SERVICIO..',
+ Notificacion_Horario_Servicio  TEXT IS 'NOTIFICACION HORARIO SERVICIO........',
+ Estatus                        TEXT IS 'ESTATUS (ACTIVO=A - INACTIVO=I ......',
+ Fecha_Actualizacion            TEXT IS 'FECHA HORA DE ACTUALIZACIO...........',
+ Usuario_Actualizacion          TEXT IS 'USUARIO DE ACTUALIZACION ............',
+ Id_Monitor_Depuracion          TEXT IS 'ID_MONITOR_DEPURACION................'
+ );

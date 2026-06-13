@@ -1,0 +1,34 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · READ · Paso 7{% endblock %}
+{% block header_title %}SP Asistido · READ{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <h2 class="text-lg font-semibold text-white">Vista previa SQL</h2>
+        <p class="mt-1 text-sm text-gray-500">Procedimiento READ en modalidad {% if definition.read_mode == "R" %}READ-R{% else %}READ-C{% endif %}. Confirma para guardar versión e IN/OUT en CODAS.</p>
+    </div>
+    {% include "sp_asistido/includes/read_wizard_stepper.html" %}
+
+    <div class="mb-3 rounded-lg border border-white/5 bg-slate-900/50 px-3 py-2 text-sm">
+        <span class="text-gray-500">IN (desde WHERE):</span>
+        <span class="ml-1 break-words font-mono text-emerald-200/90">{% if in_line %}{{ in_line }}{% else %}<span class="text-gray-600">—</span>{% endif %}</span>
+    </div>
+
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <label class="block text-xs font-medium text-gray-400" for="id_preview_sql">Script (solo lectura)</label>
+        {% with download_basename="sp_read_"|add:definition.procedure_name_short|slugify %}
+        {% include "sp_asistido/includes/sql_preview_toolbar.html" %}
+        {% endwith %}
+        <textarea id="id_preview_sql" readonly rows="24" class="w-full resize-y rounded-lg border border-gray-700 bg-[#020b23] p-3 font-mono text-xs leading-relaxed text-gray-200 outline-none">{{ preview_sql }}</textarea>
+        <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:read_step' definition.pk 6 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <div class="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                <button type="submit" name="action" value="save_draft" class="inline-flex justify-center rounded-md border border-gray-500 bg-slate-800/60 px-4 py-2.5 text-sm text-gray-200 hover:bg-slate-800">Guardar borrador</button>
+                <button type="submit" name="action" value="confirm" class="rounded-md bg-sky-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-sky-500">Generar y persistir en CODAS</button>
+            </div>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

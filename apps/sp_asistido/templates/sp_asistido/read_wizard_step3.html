@@ -1,0 +1,59 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · READ · Paso 3{% endblock %}
+{% block header_title %}SP Asistido · READ{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold uppercase tracking-wide text-sky-400/90">{{ definition.procedure_name_short }} · {{ definition.header_table.table_name_short }}</p>
+            <h2 class="mt-1 text-lg font-semibold text-white">Columnas del SELECT</h2>
+            <p class="mt-1 text-sm text-gray-500">Elija al menos una columna (misma regla de “insertable” / elegibles; F.3).</p>
+        </div>
+        <a href="{% url 'sp_asistido:list' %}" class="shrink-0 text-sm text-codas-blue-accent no-underline hover:underline">← Listado</a>
+    </div>
+    {% include "sp_asistido/includes/read_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <div class="w-full overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full min-w-[720px] text-left text-sm">
+                <thead>
+                    <tr class="border-b border-white/10 bg-slate-900/80">
+                        <th class="w-12 px-3 py-2.5 text-xs text-gray-400">✓</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Corto</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Largo</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Tipo</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for c in columns %}
+                    <tr class="hover:bg-white/5">
+                        <td class="px-3 py-2">
+                            <input type="checkbox" name="columns" value="{{ c.pk }}" class="h-4 w-4 accent-sky-500" {% if c.pk in selected_ids %}checked{% endif %}>
+                        </td>
+                        <td class="px-3 py-2 font-mono text-sky-200/90">{{ c.field_name_short }}</td>
+                        <td class="px-3 py-2 text-gray-300">{{ c.field_name_long }}</td>
+                        <td class="px-3 py-2 text-gray-400">{{ c.get_field_type_display }}{% if c.field_length %}({{ c.field_length }}){% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="px-3 py-6 text-center text-gray-500">No hay columnas elegibles en esta cabecera.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:read_step2' %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            {% if columns %}
+            <button type="submit" class="rounded-md bg-sky-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-sky-500">Siguiente · WHERE</button>
+            {% endif %}
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

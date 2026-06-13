@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · ADD · Paso 5 de 6 · Firma (valores)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }
+  </script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · INSERT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso del asistente (paso 5 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Valores</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Revisión</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-xl">
+      <h2 class="text-lg font-semibold text-white">5 · Confirmar identificación en IBM i</h2>
+      <p class="mt-1 text-sm text-slate-500">En <strong class="text-slate-300">producción</strong>, los valores de este paso se rellenan con lo capturado en el <a class="text-codas-accent" href="sp-asistido-add-03-valores.html">paso 3</a> (misma pantalla, sin edición forzada aquí o con edición según regla de negocio). En <strong class="text-slate-300">demo estática</strong> se muestran datos de ejemplo; equivalía al bloque de identificación que antes solo repetíamos en <code class="text-slate-500">add-05-firma</code> — ahora convive en <strong class="text-codas-accent">add-05-valores</strong>.</p>
+
+      <div class="mt-6 space-y-4 rounded-xl border border-white/10 bg-slate-900/50 p-4" aria-label="Resumen de firma (read-only en demo)">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Esquema / librería</p>
+          <p class="mt-0.5 font-mono text-sm text-codas-accent">R1DATA</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">Nombre corto del SP (máx. 10)</p>
+          <p class="mt-0.5 font-mono text-sm text-codas-accent">INSCUS00</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">Nombre largo (descriptivo) (máx. 50)</p>
+          <p class="mt-0.5 text-sm text-slate-200">Alta de registro de cliente (INSERT)</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">Comentario descriptivo (opcional)</p>
+          <p class="mt-0.5 text-sm text-slate-500">— (sin comentario en el demo, o rellenar en paso 3 en producto)</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">SPECIFIC (nombre del objeto en el catálogo, IBM i)</p>
+          <p class="mt-0.5 break-all font-mono text-sm text-amber-200/90" title="En producto, validar longitud según entorno; ver CODAS_SP_ASISTIDO.md §9.3">INSCUS0SP1</p>
+          <p class="mt-1 text-[10px] text-slate-600">Alineado a la cláusula <code class="text-slate-500">SPECIFIC</code> en el <code class="text-slate-500">CREATE OR REPLACE PROCEDURE</code> (diferente del identificador externo corto si aplica en vuestra convención).</p>
+        </div>
+        <div class="border-t border-white/10 pt-3">
+          <p class="text-xs font-medium text-codas-accent/90">Parámetros IN <span class="font-normal text-slate-500">(read-only en demo)</span></p>
+          <p class="mt-2 break-all font-mono text-sm text-emerald-300/90">P_CUSNAME VARCHAR(40), P_CUSTATUS CHAR(1)</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-codas-accent/90">Parámetros OUT (plantilla corporativa CODAS · <span class="text-codas-accent">§9.2</span>)</p>
+          <p class="mt-2 break-all font-mono text-sm text-sky-300/90">P_ERROR_CODE INTEGER, P_ERROR_MSG VARCHAR(200)</p>
+        </div>
+        <div class="rounded-lg border border-amber-500/20 bg-amber-950/20 p-3">
+          <p class="text-xs font-medium text-amber-100/95">Incluir en el script (plantilla §9)</p>
+          <p class="mt-2 text-[11px] text-slate-500">En producto, el generador aplica u omite bloques según la definición. En el prototipo se asume <strong class="text-slate-300">siempre</strong> que la <strong class="text-slate-300">vista previa</strong> (paso 6) contiene:</p>
+          <ul class="mt-2 list-inside list-disc space-y-1.5 text-[11px] text-slate-400">
+            <li><code class="text-slate-500">OUT P_ERROR_CODE</code> y <code class="text-slate-500">OUT P_ERROR_MSG</code></li>
+            <li>Manejador <code class="text-slate-500">SQLSTATE 23505</code> (clave duplicada) y <code class="text-slate-500">SQLEXCEPTION</code> (general con <code class="text-slate-500">GET DIAGNOSTICS</code>)</li>
+            <li>Códigos: <code class="text-slate-500">0</code> (OK), <code class="text-slate-500">100</code> (duplicado), <code class="text-slate-500">-1</code> (error SQL; ver documento)</li>
+          </ul>
+          <div class="mt-3 flex flex-col gap-2" aria-label="Opciones de plantilla (ejemplo)">
+            <label class="flex cursor-default items-center gap-2 text-xs text-slate-300">
+              <input type="checkbox" class="h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 accent-codas-accent" checked disabled>
+              <span>Emitir parámetros de salida estándar (codificación 0 / mensaje al llamador)</span>
+            </label>
+            <label class="flex cursor-default items-center gap-2 text-xs text-slate-300">
+              <input type="checkbox" class="h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 accent-codas-accent" checked disabled>
+              <span>Emitir manejadores: duplicado (23505) y error SQL general</span>
+            </label>
+          </div>
+          <p class="mt-2 text-[10px] text-slate-600">Detalle: <code class="text-slate-500">docs/CODAS_SP_ASISTIDO.md</code> sección 9. Los checkboxes activos se representarán en <code class="text-slate-500">add-06-vista-previa</code> en el cuerpo SQL.</p>
+        </div>
+      </div>
+
+      <p class="mt-4 text-xs text-slate-600">Nombres de objeto: <code class="text-slate-500">R1DATA</code> + <code class="text-slate-500">.INSCUS00</code> o convención <code class="text-slate-500">R1DATA/INSCUS00</code> según estilo de calificación al generar el script. <code class="text-slate-500">SPECIFIC INSCUS0SP1</code> y salidas/ handlers según <strong class="text-slate-500">plantilla IBM i (§9)</strong>.</p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row sm:justify-between">
+      <a href="sp-asistido-add-04-validacion.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+      <a href="sp-asistido-add-06-vista-previa.html" class="inline-flex min-h-[2.5rem] shrink-0 items-center justify-center rounded-md border border-transparent bg-[#1e90ff] px-4 py-2.5 text-center text-sm font-medium text-white shadow-sm no-underline hover:bg-[#1877d3]">Siguiente · Vista previa</a>
+    </div>
+  </footer>
+</body>
+</html>

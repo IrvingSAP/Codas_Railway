@@ -1,0 +1,32 @@
+CREATE TABLE &LIB/SEGFFRZTPS (
+ idProceso         Numeric     (10)    ,
+ idTope            Numeric     (10)    ,
+ CodigoTope        Char        (10)    ,
+ ValorTope         Decimal   (10,2)    ,
+ PorcentajeTope    Decimal    (5,2)    ,
+ CodigoMensaje     Char        (10)    ,
+ Estado            Char        (01)    ,
+CONSTRAINT PK_RZTPS PRIMARY KEY (idTope))
+RCDFMT   REGRZTPS;
+
+
+LABEL ON TABLE &LIB/SEGFFRZTPS  Is
+'Razonabilidad de Cifras - Topes';
+
+LABEL ON &LIB/SEGFFRZTPS (
+idProceso          Text Is  'Id. Proceso',
+idTope             Text Is  'Id. Tope',
+CodigoTope         Text Is  'Codigo Tope',
+ValorTope          Text Is  'Valor Tope',
+PorcentajeTope     Text Is  'Porcentaje Tope',
+CodigoMensaje      Text Is  'Mensaje Asociado al Tope',
+Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZTPS (
+idProceso               Is  'Id. Proceso',
+idTope                  Is  'Id. Tope',
+CodigoTope              Is  'Codigo Tope',
+ValorTope               Is  'Valor Tope',
+PorcentajeTope          Is  'Porcentaje Tope',
+CodigoMensaje           Is  'Mensaje Asociado al Tope',
+Estado                  Is  'Estado');

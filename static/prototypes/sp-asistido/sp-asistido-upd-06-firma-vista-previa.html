@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · UPD · Paso 6 de 6 · Firma y vista previa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-amber-300">Cambiar (UPD)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · UPDATE</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso del asistente UPD (paso 6 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> SET</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> WHERE</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Concurrencia</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-amber-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/30 text-white">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-4xl">
+      <h2 class="text-lg font-semibold text-white">6 · Firma (resumen) y SQL de salida</h2>
+      <p class="mt-1 text-sm text-slate-500">Vista de solo lectura con contrato técnico UPD y script final de referencia.</p>
+
+      <div class="mt-6 space-y-4 rounded-2xl border border-slate-800 bg-[#020b23] p-5 shadow-[inset_0_0_0_1px_rgba(30,144,255,0.06)]">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p class="text-xs font-medium text-slate-500">Esquema / librería</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-accent">R1DATA</p>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-slate-500">Nombre corto del SP (máx. 10)</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-accent">UPDCUS00</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">Nombre largo (descriptivo) (máx. 50)</p>
+          <p class="mt-0.5 text-sm text-slate-200 break-words">Actualización de cliente por clave (UPDATE)</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">Comentario descriptivo (opcional)</p>
+          <p class="mt-0.5 text-sm text-slate-500">Actualiza datos de cliente con WHERE obligatorio y opción de concurrencia.</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500">SPECIFIC (objeto interno de catálogo IBM i)</p>
+          <p class="mt-0.5 font-mono text-sm text-amber-200/90">UPDCUS0SP1</p>
+          <p class="mt-1 text-[10px] text-slate-600">Alineado con la cláusula <code class="text-slate-500">SPECIFIC</code> del <code class="text-slate-500">CREATE OR REPLACE PROCEDURE</code>.</p>
+        </div>
+
+        <div class="rounded-lg border border-amber-500/20 bg-amber-950/20 p-3">
+          <p class="text-xs font-medium text-amber-100/95">Concurrencia (opcional, según paso 5)</p>
+          <p class="mt-2 text-xs text-slate-400">Si se activa, el SQL agrega condición extra de versión/timestamp en el <code class="text-slate-500">WHERE</code> para evitar sobrescribir cambios concurrentes.</p>
+        </div>
+
+        <div class="border-t border-slate-800 pt-3">
+          <p class="text-xs font-medium text-codas-accent/90">Parámetros IN <span class="font-normal text-slate-500">(SET + WHERE)</span></p>
+          <p class="mt-2 break-words font-mono text-sm text-emerald-300/90">P_CUSNBR DECIMAL(9), P_CUSNAME VARCHAR(40)</p>
+        </div>
+
+        <div class="rounded-lg border border-codas-accent/15 bg-[#06142f] p-3">
+          <p class="text-xs font-medium text-codas-accent/90">Parámetros OUT (plantilla CODAS §9.2)</p>
+          <p class="mt-2 break-words font-mono text-sm text-sky-300/90">P_ERROR_CODE INTEGER, P_ERROR_MSG VARCHAR(200)</p>
+        </div>
+      </div>
+
+      <pre class="mt-6 max-h-[22rem] overflow-auto rounded-xl border border-slate-700 bg-slate-900 p-4 text-xs leading-relaxed text-sky-200/90"><code>CREATE OR REPLACE PROCEDURE R1DATA.UPDCUS00 (
+    IN  P_CUSNBR DECIMAL(9),
+    IN  P_CUSNAME VARCHAR(40),
+    OUT P_ERROR_CODE INTEGER,
+    OUT P_ERROR_MSG  VARCHAR(200)
+)
+LANGUAGE SQL
+MODIFIES SQL DATA
+SPECIFIC UPDCUS0SP1
+BEGIN
+    DECLARE v_sqlstate CHAR(5) DEFAULT '00000';
+    DECLARE v_msg      VARCHAR(200) DEFAULT '';
+
+    DECLARE EXIT HANDLER FOR SQLSTATE '23505'
+    BEGIN
+        SET P_ERROR_CODE = 100;
+        SET P_ERROR_MSG  = 'Restricción de unicidad.';
+    END;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            v_sqlstate = RETURNED_SQLSTATE,
+            v_msg = MESSAGE_TEXT;
+        SET P_ERROR_CODE = -1;
+        SET P_ERROR_MSG  = 'Error SQLSTATE=' CONCAT v_sqlstate CONCAT ' - ' CONCAT v_msg;
+    END;
+
+    UPDATE R1DATA.CUSMAS
+       SET CUSNAME = P_CUSNAME
+     WHERE CUSNBR = P_CUSNBR;
+
+    SET P_ERROR_CODE = 0;
+    SET P_ERROR_MSG  = 'OK';
+END;</code></pre>
+
+      <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+        <button type="button" class="rounded-md border border-slate-600 bg-slate-800/50 px-4 py-2.5 text-sm text-slate-200 hover:bg-slate-800" title="Persistir en Django cuando exista modelo">Guardar borrador</button>
+        <button type="button" class="rounded-md border border-amber-500/40 bg-amber-950/30 px-4 py-2.5 text-sm text-amber-200">Descargar <span class="font-mono">.sql</span></button>
+      </div>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto max-w-4xl">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <a href="sp-asistido-upd-05-concurrencia.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a>
+        <a href="sp-asistido-list-demo.html" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Volver al listado</a>
+      </div>
+      <p class="mt-2 text-sm"><a href="sp-asistido-upd-01-name-sp.html" class="text-codas-accent/90 no-underline hover:underline">Nuevo asistente UPD desde cero</a></p>
+    </div>
+  </footer>
+</body>
+</html>

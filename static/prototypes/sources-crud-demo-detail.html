@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · Detalle plantilla source</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-screen min-h-0 flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo CRUD Sources ·</span>
+    <a href="sources-crud-demo-list.html" class="ml-1 hover:text-codas-accent underline">Listado</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-detail.html" class="font-semibold text-codas-accent underline">Detalle</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-form.html" class="hover:text-codas-accent underline">Alta / edición</a>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sources-crud-demo-delete.html" class="hover:text-codas-accent underline">Confirmar borrado</a>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+    <div class="mx-auto w-full max-w-4xl">
+      <p class="mb-6 text-sm text-slate-500">
+        <a href="sources-crud-demo-list.html" class="text-codas-accent no-underline hover:underline">← Volver al listado</a>
+      </p>
+      <div class="mb-6 border-l-4 border-codas-accent bg-slate-900/60 py-2 pl-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-200">Detalle de plantilla fuente</h2>
+      </div>
+
+      <div class="space-y-5 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+        <div>
+          <p class="text-xs text-slate-500">Nombre</p><p class="text-sm text-white">Pantalla maestro clientes</p>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-3">
+          <div><p class="text-xs text-slate-500">Tipo</p><p class="text-sm text-white">DSPF</p></div>
+          <div><p class="text-xs text-slate-500">Archivo</p><p class="text-sm text-white">CUSTMST.dspf</p></div>
+          <div><p class="text-xs text-slate-500">Versión</p><p class="text-sm text-white">3</p></div>
+        </div>
+        <div><p class="text-xs text-slate-500">Descripción</p><p class="text-sm text-slate-300">Plantilla base para mantenimiento de clientes con cabecera y subfile estándar.</p></div>
+        <div>
+          <p class="mb-1 text-xs text-slate-500">Contenido de la plantilla</p>
+          <pre class="overflow-x-auto rounded-md border border-emerald-700 bg-[#07120a] p-3 font-mono text-xs text-emerald-400">A          R CUSTREC
+A            CUSCOD        10A  B  5  2
+A            CUSNAM        40A  B  6  2
+A                                  24 2'F3=Salir F5=Refrescar'</pre>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div><p class="text-xs text-slate-500">Estado</p><p><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span></p></div>
+          <div><p class="text-xs text-slate-500">Actualizado por</p><p class="text-sm text-white">admin.su · 2026-04-20 10:15</p></div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="sources-crud-demo-form.html" class="inline-flex items-center justify-center rounded-md bg-codas-accent px-5 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-hover">Editar</a>
+        <a href="sources-crud-demo-list.html" class="inline-flex items-center rounded-md border border-slate-600 px-5 py-2.5 text-sm text-slate-300 no-underline hover:border-slate-500 hover:bg-white/5">Volver</a>
+        <a href="sources-crud-demo-delete.html" class="inline-flex items-center rounded-md border border-rose-500/50 px-5 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

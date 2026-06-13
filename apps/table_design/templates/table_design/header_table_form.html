@@ -1,0 +1,134 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}{% if form_mode == "edit" %}CODAS — Editar cabecera{% else %}CODAS — Nueva cabecera de diseño de tabla{% endif %}{% endblock %}
+{% block header_title %}{% if form_mode == "edit" %}Editar cabecera de diseño de tabla{% else %}Nueva cabecera de diseño de tabla{% endif %}{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<p class="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+    <a href="{% url 'table_design:header_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+    {% if form_mode == "edit" and header %}
+    <span class="text-slate-600">·</span>
+    <a href="{% url 'table_design:header_detail' header.pk %}" class="text-codas-blue-accent no-underline hover:underline">Ver cabecera (solo lectura)</a>
+    {% endif %}
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">{% if form_mode == "edit" %}Edición de cabecera{% else %}Datos de la cabecera{% endif %}</h2>
+    <p class="mt-1 text-xs text-gray-500">
+        Ámbito: compañía de su perfil (<strong class="text-gray-400">{% if profile.company %}{{ profile.company.name_short }}{% else %}—{% endif %}</strong>).
+        {% if form_mode == "edit" and header %}<span class="text-gray-600"> · </span><span class="font-mono text-gray-400">{{ header.table_name_short }}</span>{% endif %}
+    </p>
+    {% if form_mode == "edit" and not can_edit_identity %}
+    <p class="mt-2 text-xs text-amber-200/90">Nombre largo, nombre corto, esquema, Script DDL (cabecera) y configuración de llave autogenerada (<code class="text-[10px] text-gray-400">HeaderTableAutoKeyConfig</code>) no son editables porque el script ya fue generado para esta cabecera.</p>
+    {% endif %}
+</div>
+
+<form method="post" class="max-w-4xl space-y-5" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}
+    <div
+        role="alert"
+        class="rounded-md border border-amber-500/50 bg-amber-950/40 px-4 py-3 text-sm text-amber-100"
+    >
+        <strong class="font-medium">No se guardó la cabecera.</strong>
+        Revise los campos resaltados bajo cada etiqueta; corrija y pulse Guardar de nuevo.
+    </div>
+    {% endif %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div class="rounded-md {% if form.table_model.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.table_model.id_for_label }}" class="codas-label {% if form.table_model.errors %}text-rose-300{% endif %}">{{ form.table_model.label }} <span class="text-rose-400">*</span></label>
+            {{ form.table_model }}
+            {% if form.table_model.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.table_model.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="rounded-md {% if form.table_type.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.table_type.id_for_label }}" class="codas-label {% if form.table_type.errors %}text-rose-300{% endif %}">{{ form.table_type.label }} <span class="text-rose-400">*</span></label>
+            {{ form.table_type }}
+            {% if form.table_type.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.table_type.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div class="rounded-md {% if form.table_name_long.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.table_name_long.id_for_label }}" class="codas-label {% if form.table_name_long.errors %}text-rose-300{% endif %}">{{ form.table_name_long.label }} <span class="text-rose-400">*</span></label>
+            {{ form.table_name_long }}
+            {% if form.table_name_long.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.table_name_long.errors.0 }}</p>{% endif %}
+            {% include "table_design/includes/header_table_hint.html" with hint="long" %}
+        </div>
+        <div class="rounded-md {% if form.table_name_short.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.table_name_short.id_for_label }}" class="codas-label {% if form.table_name_short.errors %}text-rose-300{% endif %}">{{ form.table_name_short.label }} <span class="text-rose-400">*</span></label>
+            {{ form.table_name_short }}
+            {% if form.table_name_short.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.table_name_short.errors.0 }}</p>{% endif %}
+            {% include "table_design/includes/header_table_hint.html" with hint="short" %}
+        </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div class="rounded-md {% if form.schema.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.schema.id_for_label }}" class="codas-label {% if form.schema.errors %}text-rose-300{% endif %}">{{ form.schema.label }} <span class="text-rose-400">*</span></label>
+            {{ form.schema }}
+            {% if form.schema.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.schema.errors.0 }}</p>{% endif %}
+            {% include "table_design/includes/header_table_hint.html" with hint="schema" %}
+        </div>
+        <div class="rounded-md {% if form.status.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+            <label for="{{ form.status.id_for_label }}" class="codas-label {% if form.status.errors %}text-rose-300{% endif %}">{{ form.status.label }} <span class="text-rose-400">*</span></label>
+            {{ form.status }}
+            {% if form.status.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.status.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="space-y-5">
+        <div class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+            <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    Script DDL (cabecera)
+                </h3>
+                <span class="font-mono text-[10px] text-gray-500">HeaderTable</span>
+            </div>
+            <p class="mb-4 text-xs text-gray-500">
+                Opcional para generación SQL.
+                <span class="text-amber-200/80">pk_constraint_name</span> vacío: sin cláusula
+                <code class="rounded bg-gray-800 px-1 text-[10px] text-emerald-400/90">CONSTRAINT … PRIMARY KEY</code>.
+            </p>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+                <div class="rounded-md {% if form.pk_constraint_name.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+                    <label for="{{ form.pk_constraint_name.id_for_label }}" class="codas-label {% if form.pk_constraint_name.errors %}text-rose-300{% endif %}">{{ form.pk_constraint_name.label }}</label>
+                    {{ form.pk_constraint_name }}
+                    {% if form.pk_constraint_name.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.pk_constraint_name.errors.0 }}</p>{% endif %}
+                    <p class="mt-1 text-xs text-gray-500">Máx. 30 · A–Z, 0–9, _. Unicidad global si tiene valor.</p>
+                </div>
+                <div class="rounded-md {% if form.record_format_name.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+                    <label for="{{ form.record_format_name.id_for_label }}" class="codas-label {% if form.record_format_name.errors %}text-rose-300{% endif %}">{{ form.record_format_name.label }}</label>
+                    {{ form.record_format_name }}
+                    {% if form.record_format_name.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.record_format_name.errors.0 }}</p>{% endif %}
+                    <p class="mt-1 text-xs text-gray-500">Si está vacío, no se emite <code class="text-emerald-400/90">RCDFMT</code>.</p>
+                </div>
+            </div>
+        </div>
+
+        {% include "table_design/includes/header_auto_key_config_fields.html" %}
+    </div>
+
+    <div class="rounded-md {% if form.notes.errors %}p-[3px] ring-2 ring-rose-500/60{% endif %}">
+        <label for="{{ form.notes.id_for_label }}" class="codas-label {% if form.notes.errors %}text-rose-300{% endif %}">{{ form.notes.label }}</label>
+        {{ form.notes }}
+        {% if form.notes.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.notes.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        {% if form_mode == "edit" and header %}
+        <a href="{% url 'table_design:header_detail' header.pk %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar y volver al detalle</a>
+        {% endif %}
+        <a href="{% url 'table_design:header_list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">{% if form_mode == "edit" and header %}Ir al listado{% else %}Cancelar{% endif %}</a>
+    </div>
+</form>
+</div>
+{% endblock %}

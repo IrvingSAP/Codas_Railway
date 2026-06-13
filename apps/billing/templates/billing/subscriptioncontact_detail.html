@@ -1,0 +1,48 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Contacto {{ contact.full_name }}{% endblock %}
+{% block header_title %}Contacto — {{ contact.full_name }}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'billing:subscriptioncontact_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Contacto</h2>
+</div>
+
+<dl class="max-w-2xl space-y-4 text-sm">
+    <div>
+        <dt class="font-medium text-gray-400">Suscripción</dt>
+        <dd class="mt-1 text-gray-200">{{ contact.subscription.company.name_short }} — {{ contact.subscription.plan.name }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Nombre completo</dt>
+        <dd class="mt-1 text-white">{{ contact.full_name }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Teléfono</dt>
+        <dd class="mt-1 text-gray-200">{{ contact.phone }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Correo electrónico</dt>
+        <dd class="mt-1 text-gray-200">{{ contact.email|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Rol o cargo</dt>
+        <dd class="mt-1 text-gray-200">{{ contact.role|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Notas</dt>
+        <dd class="mt-1 text-gray-200">{{ contact.notes|default:"—" }}</dd>
+    </div>
+</dl>
+
+{% if can_crud %}
+<div class="mt-8 flex flex-wrap gap-3">
+    <a href="{% url 'billing:subscriptioncontact_update' contact.pk %}" class="inline-flex rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'billing:subscriptioncontact_delete' contact.pk %}" class="inline-flex rounded-md border border-rose-500/50 px-4 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endif %}
+{% endblock %}

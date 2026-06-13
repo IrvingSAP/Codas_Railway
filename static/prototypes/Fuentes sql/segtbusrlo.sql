@@ -1,0 +1,43 @@
+-- ********************************************************************* *
+-- NOMBRE DE CROGRAMA..: SEGTBUSRLO                                      *
+-- DESCRIPCIÓN.........: ARCHIVO HISTORICO DE CONTROL NOVEDADES DE       *
+--                       CREACION AUTOMATICO USUARIOS ISERIES            *
+--********************************************************************   *
+-- REQUERIMIENTO.......: PMO25818 - CREACION USUARIOS ISERIES            *
+-- SUBDOMINIO..........: RIESGOS Y SEGURIDAD                             *
+-- FECHA DE CREACIÓN...: 28 DE ENERO DE 2022.                            *
+-- AUTOR...............: CARLOS ROJAS.                                   *
+-- ***********************************************************************
+--  /* REGISTRO Y CAMPOS */
+
+CREATE OR REPLACE TABLE   &LIB.SEGTBUSRLO(
+  USUARIO     CHAR (10)   NOT NULL DEFAULT '' ,
+  FECHFASE1   NUMERIC(8)  NOT NULL DEFAULT 0  ,
+  HORAFASE1   NUMERIC(6)  NOT NULL DEFAULT 0  ,
+  FECHFASE2   NUMERIC(8)  NOT NULL DEFAULT 0  ,
+  HORAFASE2   NUMERIC(6)  NOT NULL DEFAULT 0  ,
+  FECHFASE3   NUMERIC(8)  NOT NULL DEFAULT 0  ,
+  HORAFASE3   NUMERIC(6)  NOT NULL DEFAULT 0  ,
+  ESTADO      NUMERIC(1)  NOT NULL DEFAULT 0  ,
+  FECHMODIF   NUMERIC(8)  NOT NULL DEFAULT 0  ,
+  HORAMODIF   NUMERIC(6)  NOT NULL DEFAULT 0
+)
+RCDFMT RSEGTBUSRL;
+
+--/* DESCRIPCIÓN */
+LABEL ON TABLE &LIB.SEGTBUSRLO IS
+'Archivo Log Creacion Automatico de Usuarios';
+
+-- /* DESCRIPCIÓN CAMPOS */
+LABEL ON &LIB.SEGTBUSRLO
+(USUARIO     TEXT IS  'PERFIL DE USUARIO',
+ FECHFASE1   TEXT IS  'FECHA DE FASE 1',
+ HORAFASE1   TEXT IS  'HORA DE FASE 1',
+ FECHFASE2   TEXT IS  'FECHA DE FASE 2',
+ HORAFASE2   TEXT IS  'HORA DE FASE 2',
+ FECHFASE3   TEXT IS  'FECHA DE FASE 3',
+ HORAFASE3   TEXT IS  'HORA DE FASE 3',
+ ESTADO      TEXT IS  'ESTADO/FASE ACTUAL',
+ FECHMODIF   TEXT IS  'FECHA MODIFICACION',
+ HORAMODIF   TEXT IS  'HORA MODIFICACION'
+);

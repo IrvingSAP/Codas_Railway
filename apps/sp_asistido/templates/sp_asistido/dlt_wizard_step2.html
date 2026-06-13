@@ -1,0 +1,81 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · DLT · Paso 2{% endblock %}
+{% block header_title %}SP Asistido · DLT{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold uppercase tracking-wide text-rose-400/90">Tabla destino</p>
+            <h2 class="mt-1 text-lg font-semibold text-white">Elija cabecera de diseño</h2>
+            <p class="mt-1 text-sm text-gray-500">Últimas 25 por fecha de creación (desc) en su compañía; use el buscador para acotar (D.2).</p>
+        </div>
+        <a href="{% url 'sp_asistido:dlt_step1' %}" class="shrink-0 text-sm text-codas-blue-accent no-underline hover:underline">← Paso 1</a>
+    </div>
+    {% include "sp_asistido/includes/dlt_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="w-full rounded-xl border border-white/10 bg-slate-900/40 p-4">
+        <form method="get" class="flex flex-wrap items-end gap-3">
+            <div class="min-w-0 flex-1">
+                <label class="mb-1 block text-xs text-gray-400" for="id_q">Buscar</label>
+                <input id="id_q" type="search" name="q" value="{{ search_q }}" placeholder="Nombre corto, largo o esquema…" class="h-10 w-full max-w-md rounded-md border border-gray-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-blue-accent">
+            </div>
+            <button type="submit" class="h-10 shrink-0 rounded-md border border-gray-600 px-4 text-sm text-white hover:bg-white/5">Buscar</button>
+        </form>
+    </div>
+
+    <div class="w-full rounded-lg border border-white/5 bg-slate-900/30 px-3 py-2 text-xs text-gray-500">
+        <span class="font-medium text-gray-400">Identificación:</span>
+        <span class="font-mono text-codas-blue-accent">{{ step1_summary.schema_name }}</span> ·
+        <span class="font-mono text-codas-blue-accent">{{ step1_summary.procedure_name_short }}</span> —
+        {{ step1_summary.procedure_name_long }}
+    </div>
+
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="q" value="{{ search_q }}">
+        {% if not tables %}
+        <p class="rounded-lg border border-amber-500/20 bg-amber-950/20 px-4 py-3 text-sm text-amber-100">No hay tablas de diseño que coincidan. Cree una en <em>Table design</em> o limpie el filtro.</p>
+        {% else %}
+        <div class="w-full overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full min-w-[640px] text-left text-sm">
+                <thead>
+                    <tr class="border-b border-white/10 bg-slate-900/80">
+                        <th class="w-14 px-3 py-2.5 text-xs text-gray-400"></th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Esquema</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Nombre corto</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Nombre largo</th>
+                        <th class="px-3 py-2.5 text-xs text-gray-400">Creada</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for t in tables %}
+                    <tr class="hover:bg-white/5">
+                        <td class="px-3 py-2.5">
+                            <input type="radio" name="header_table_id" value="{{ t.pk }}" required class="h-4 w-4 accent-rose-500">
+                        </td>
+                        <td class="px-3 py-2.5 font-mono text-codas-blue-accent">{{ t.schema }}</td>
+                        <td class="px-3 py-2.5 font-mono text-white">{{ t.table_name_short }}</td>
+                        <td class="px-3 py-2.5 text-gray-300">{{ t.table_name_long }}</td>
+                        <td class="px-3 py-2.5 text-gray-500">{{ t.created_at|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:dlt_step1' %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            {% if tables %}
+            <button type="submit" class="rounded-md bg-rose-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-rose-500">Crear borrador y continuar · WHERE</button>
+            {% endif %}
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Generador Mantenimiento · Modelo de tablas demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:"#0a1a2f",accent:"#1e90ff",hover:"#1877d3"}}}}}</script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-200 antialiased">
+  <div class="border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Generador Mantenimiento</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="text-codas-accent">Modelo de persistencia (diseño)</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="gen-mantenimiento-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+
+  <header class="border-b border-white/10 bg-codas-dark px-4 py-4 md:px-8">
+    <h1 class="text-lg font-semibold text-white md:text-xl">Generador de mantenimiento SQLRPGLE · Tablas propuestas</h1>
+    <p class="mt-1 text-sm text-slate-400">Diseño de datos para capturar pasos 1..9, guardar selección de SP/plantillas, y versionar la generación de fuente SQLRPGLE.</p>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-5 px-4 py-6 md:px-8">
+    <section class="rounded-xl border border-sky-500/20 bg-sky-950/10 p-4">
+      <p class="text-xs font-medium text-sky-200/90">Relaciones clave</p>
+      <p class="mt-1 text-sm text-slate-300">
+        <code class="text-slate-400">Company 1..N MaintenanceDefinition</code> ·
+        <code class="text-slate-400">HeaderTable 1..N MaintenanceDefinition</code> ·
+        <code class="text-slate-400">MaintenanceDefinition 1..N MaintenanceSpSelection</code> ·
+        <code class="text-slate-400">MaintenanceDefinition 1..N MaintenanceSourceSelection</code> ·
+        <code class="text-slate-400">MaintenanceDefinition 1..N MaintenanceScriptVersion</code>
+      </p>
+      <ul class="mt-3 list-inside list-disc text-sm text-slate-400">
+        <li>Auditoría estándar en todas las tablas: <code class="text-slate-500">created_at</code>, <code class="text-slate-500">updated_at</code>, <code class="text-slate-500">created_by</code>, <code class="text-slate-500">updated_by</code>.</li>
+        <li>Scope por compañía en cabecera y validación de pertenencia en relaciones a `SPDefinition` y `SourceTemplate`.</li>
+      </ul>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">1) gen_mnt_maintenance_definition (cabecera del mantenimiento)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[980px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">company_id</td><td class="px-3 py-2">FK → company_company</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Aislamiento por compañía</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">name_short</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">Obligatorio, único por compañía</td><td class="px-3 py-2">Paso 1</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">name_long</td><td class="px-3 py-2">Char(50)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Nombre descriptivo</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">comment</td><td class="px-3 py-2">Char(200)</td><td class="px-3 py-2">Opcional</td><td class="px-3 py-2">Comentario funcional</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">header_table_id</td><td class="px-3 py-2">FK → table_design_headertable</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Tabla base seleccionada</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">dspf_template_id</td><td class="px-3 py-2">FK → sources_sourcetemplate</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Paso 7, `source_type=DSPF`</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sqlrpgle_template_id</td><td class="px-3 py-2">FK → sources_sourcetemplate</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Paso 8, `source_type=SQLRPGLE`</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">status</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">D/G/E/I</td><td class="px-3 py-2">Borrador/Generado/Error/Inactivo</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">current_step</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">1..9</td><td class="px-3 py-2">Reanudación de wizard</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">is_generation_pending</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">Default False</td><td class="px-3 py-2">Control transaccional</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">last_generation_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">Null</td><td class="px-3 py-2">Última generación ejecutada</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">last_generation_result</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">S/E/Null</td><td class="px-3 py-2">Success/Error</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">last_error_message</td><td class="px-3 py-2">Char(300)</td><td class="px-3 py-2">Null</td><td class="px-3 py-2">Mensaje resumido de error</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">2) gen_mnt_maintenance_sp_selection (selección de SP por operación)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[920px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">maintenance_id</td><td class="px-3 py-2">FK → gen_mnt_maintenance_definition</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">operation</td><td class="px-3 py-2">Char(6)</td><td class="px-3 py-2">READ_C / ADD / READ_R / UPD / DLT</td><td class="px-3 py-2">Paso origen</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK → sp_asistido_spdefinition</td><td class="px-3 py-2">Null en opcionales</td><td class="px-3 py-2">SP seleccionado por operación</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">is_required</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">READ_C=True</td><td class="px-3 py-2">Control de obligatoriedad</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">selection_status</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">S/N</td><td class="px-3 py-2">Seleccionado / no seleccionado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">3) gen_mnt_maintenance_source_selection (plantillas de fuente)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[920px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">maintenance_id</td><td class="px-3 py-2">FK → gen_mnt_maintenance_definition</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">role_code</td><td class="px-3 py-2">Char(12)</td><td class="px-3 py-2">BASE_DSPF / BASE_SQLRPGLE</td><td class="px-3 py-2">Rol de plantilla en el proceso</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">source_template_id</td><td class="px-3 py-2">FK → sources_sourcetemplate</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Plantilla elegida</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">source_type_expected</td><td class="px-3 py-2">Char(20)</td><td class="px-3 py-2">DSPF / SQLRPGLE</td><td class="px-3 py-2">Validación de consistencia</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">4) gen_mnt_maintenance_step_state (snapshot por paso)</h2>
+      <p class="mt-1 text-xs text-slate-500">Estado temporal por paso para reingresar al wizard sin perder contexto.</p>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[840px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">—</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">maintenance_id</td><td class="px-3 py-2">FK → gen_mnt_maintenance_definition</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">step_number</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">1..9, único por mantenimiento</td><td class="px-3 py-2">Paso del wizard</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">payload_json</td><td class="px-3 py-2">JSONField</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Datos visibles y filtros usados</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">is_completed</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">Default False</td><td class="px-3 py-2">Control de flujo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">5) gen_mnt_maintenance_script_version (versionado del SQLRPGLE)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[920px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">maintenance_id</td><td class="px-3 py-2">FK → gen_mnt_maintenance_definition</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">version</td><td class="px-3 py-2">Integer</td><td class="px-3 py-2">Único por mantenimiento</td><td class="px-3 py-2">1..N</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">script_sqlrpgle</td><td class="px-3 py-2">TextField</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Programa fuente generado</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">script_hash</td><td class="px-3 py-2">Char(64)</td><td class="px-3 py-2">Opcional</td><td class="px-3 py-2">Control de cambios</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">generation_status</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">S/E</td><td class="px-3 py-2">Éxito/Error</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">error_message</td><td class="px-3 py-2">Char(300)</td><td class="px-3 py-2">Null</td><td class="px-3 py-2">Si falla generación</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">is_current</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">1 activa</td><td class="px-3 py-2">Versión vigente</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">6) gen_mnt_maintenance_process_log (bitácora de proceso)</h2>
+      <p class="mt-1 text-xs text-slate-500">Soporte para modal de éxito/error y trazabilidad del proceso “Generar Script”.</p>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[920px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400">
+            <tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">maintenance_id</td><td class="px-3 py-2">FK → gen_mnt_maintenance_definition</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">event_type</td><td class="px-3 py-2">Char(20)</td><td class="px-3 py-2">SAVE/GENERATE/ERROR</td><td class="px-3 py-2">Tipo de evento</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">event_status</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">S/E</td><td class="px-3 py-2">Resultado del evento</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">event_message</td><td class="px-3 py-2">Char(300)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Texto para modal/contexto</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">event_detail_json</td><td class="px-3 py-2">JSONField</td><td class="px-3 py-2">Null</td><td class="px-3 py-2">Detalle técnico controlado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

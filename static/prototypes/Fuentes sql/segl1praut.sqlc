@@ -1,0 +1,13 @@
+-- *?************************************************************************
+-- *  Programa:?SEGLFPRAUT                                                  *
+-- *  Descripcion:Componente Autorizador indice de Parametrizacion de     ?*
+-- *              Objetos a Autorizar    Por CODAUTO                      ?*
+-- *                                                                       ?*
+-- *  Autor:?Rigoberto Ríos Bola¦os                                         *
+-- *  Empresa:?PersonalSoft S.A.S                                           *
+-- *  Fecha Creacion:?24 - Mayo  2011                                       *
+-- *?************************************************************************
+
+CREATE INDEX SEGL1PRAUT
+  ON SEGFFPRAUT (AUCODAUTO) ;
+

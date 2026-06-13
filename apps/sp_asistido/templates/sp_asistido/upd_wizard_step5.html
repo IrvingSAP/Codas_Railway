@@ -1,0 +1,41 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · UPD · Paso 5{% endblock %}
+{% block header_title %}SP Asistido · UPD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-codas-blue-accent/90">Concurrencia (E.5)</p>
+        <h2 class="mt-1 text-lg font-semibold text-white">Control de filas afectadas</h2>
+        <p class="mt-1 text-sm text-gray-500">Opción estricta: solo continúa si hay exactamente una fila que cumple el WHERE antes de ejecutar el UPDATE.</p>
+    </div>
+    {% include "sp_asistido/includes/upd_wizard_stepper.html" %}
+
+    {% if errors %}
+    <ul class="list-inside list-disc rounded-lg border border-rose-500/30 bg-rose-950/20 px-4 py-3 text-sm text-rose-200">
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-5">
+        {% csrf_token %}
+        <fieldset>
+            <legend class="mb-2 text-xs font-medium text-gray-400">Modo</legend>
+            <div class="space-y-3">
+                <label class="flex cursor-pointer items-start gap-3 text-sm text-gray-200">
+                    <input type="radio" name="concurrency_mode" value="none" class="mt-1 h-4 w-4 accent-[#1e90ff]" {% if concurrency_mode == "none" %}checked{% endif %}>
+                    <span><strong class="text-white">Sin control adicional</strong> — se ejecuta un único UPDATE con el WHERE definido (comportamiento habitual).</span>
+                </label>
+                <label class="flex cursor-pointer items-start gap-3 text-sm text-gray-200">
+                    <input type="radio" name="concurrency_mode" value="exactly_one" class="mt-1 h-4 w-4 accent-[#1e90ff]" {% if concurrency_mode == "exactly_one" %}checked{% endif %}>
+                    <span><strong class="text-white">Exactamente una fila</strong> — el script genera una comprobación previa <code class="rounded bg-slate-950 px-1 font-mono text-codas-blue-accent">COUNT(*)</code> igual a 1 antes del UPDATE; si no, devuelve código 101.</span>
+                </label>
+            </div>
+        </fieldset>
+        <div class="flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-between">
+            <a href="{% url 'sp_asistido:upd_step' definition.pk 4 %}" class="inline-flex justify-center rounded-md border border-gray-600 px-4 py-2.5 text-center text-sm text-gray-300 no-underline hover:bg-white/5">Anterior</a>
+            <button type="submit" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-codas-blue-accent/40 bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white [text-shadow:0_0_8px_rgba(165,220,255,0.5),0_0_12px_rgba(30,144,255,0.35)] shadow-[0_0_18px_rgba(30,144,255,0.2)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-codas-blue-accent/50">Siguiente · Revisión y SQL</button>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

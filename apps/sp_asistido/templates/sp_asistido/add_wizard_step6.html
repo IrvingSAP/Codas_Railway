@@ -1,0 +1,59 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · ADD · Paso 6{% endblock %}
+{% block header_title %}SP Asistido · ADD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <h2 class="text-lg font-semibold text-white">Firma (resumen)</h2>
+        <p class="mt-1 text-sm text-gray-500">Identificación, SPECIFIC sugerido y parámetros IN antes del SQL final (C.6).</p>
+    </div>
+    {% include "sp_asistido/includes/add_wizard_stepper.html" %}
+
+    <div class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+        <div>
+            <p class="text-xs font-medium text-gray-500">Esquema / librería</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent">{{ definition.schema_name }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">Nombre corto del SP</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent">{{ definition.procedure_name_short }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">Nombre largo</p>
+            <p class="mt-0.5 text-sm text-gray-200">{{ definition.procedure_name_long }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">Comentario</p>
+            <p class="mt-0.5 text-sm text-gray-400">{% if definition.procedure_comment %}{{ definition.procedure_comment }}{% else %}—{% endif %}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">SPECIFIC (sugerido, IBM i)</p>
+            <p class="mt-0.5 font-mono text-sm text-amber-200/90">{{ specific_name }}</p>
+        </div>
+        <div class="border-t border-white/10 pt-3">
+            <p class="text-xs font-medium text-codas-blue-accent/90">Parámetros IN</p>
+            <p class="mt-2 break-words font-mono text-sm text-emerald-200/90">{% if in_signature_line %}{{ in_signature_line }}{% else %}— (sin IN; solo literales/NULL/expresión){% endif %}</p>
+        </div>
+        <div class="rounded-lg border border-codas-blue-accent/20 bg-slate-950/50 p-3">
+            <p class="text-xs font-medium text-sky-300/90">Parámetros OUT (plantilla CODAS §9.2)</p>
+            <p class="mt-2 font-mono text-sm text-sky-200/90">P_ERROR_CODE INTEGER, P_ERROR_MSG VARCHAR(200)</p>
+        </div>
+    </div>
+
+    <div class="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <form method="post" class="inline">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_draft">
+            <button type="submit" class="rounded-md border border-gray-600 bg-slate-800/50 px-4 py-2.5 text-sm text-gray-200 hover:bg-slate-800">Guardar borrador</button>
+        </form>
+        <a href="{% url 'sp_asistido:add_step' definition.pk 7 %}" class="inline-flex justify-center rounded-md bg-codas-blue-accent px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:opacity-95">Siguiente · SQL final</a>
+    </div>
+    <p class="w-full text-center text-sm sm:text-left">
+        <a href="{% url 'sp_asistido:add_step1' %}" class="text-codas-blue-accent no-underline hover:underline">Nuevo asistente ADD desde cero</a>
+    </p>
+    <div class="w-full">
+        <a href="{% url 'sp_asistido:add_step' definition.pk 5 %}" class="text-sm text-gray-400 no-underline hover:text-white">← Anterior (revisión)</a>
+    </div>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · DLT · Paso 4 de 6 · Modo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400"><span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-rose-300">Borrar (DLT)</span></span></div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a><h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · DELETE</h1></header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> WHERE</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-rose-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-rose-500/30 text-white">4</span> Modo</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Confirmación</li><li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma/SQL</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <div class="mx-auto w-full max-w-3xl">
+      <h2 class="text-lg font-semibold text-white">4 · Modo de baja</h2>
+      <p class="mt-1 text-sm text-slate-500">Seleccione si la baja será física (<code class="text-slate-400">DELETE</code>) o lógica (<code class="text-slate-400">UPDATE estado</code>).</p>
+      <div class="mt-5 space-y-3" role="radiogroup">
+        <label class="flex cursor-pointer items-start gap-3 rounded-lg border-2 border-rose-500/50 bg-rose-950/20 p-4"><input type="radio" name="dlt_mode" value="fisico" checked class="mt-1"><span><span class="font-medium text-white">Físico</span><span class="mt-0.5 block text-sm text-slate-400">Elimina definitivamente filas que cumplan el WHERE.</span></span></label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-slate-900/50 p-4"><input type="radio" name="dlt_mode" value="logico" class="mt-1"><span><span class="font-medium text-white">Lógico</span><span class="mt-0.5 block text-sm text-slate-400">Marca estado inactivo sin borrar físicamente.</span></span></label>
+      </div>
+      <div id="dlt04-logical-box" class="mt-4 hidden rounded-xl border border-amber-500/20 bg-amber-950/15 p-4">
+        <p class="text-xs font-medium text-amber-100/95">Configuración de baja lógica</p>
+        <div class="mt-2 grid gap-3 sm:grid-cols-2">
+          <div><label class="mb-1 block text-xs text-slate-400">Campo de estado *</label><input id="logical_field" value="CUSTATUS" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm"></div>
+          <div><label class="mb-1 block text-xs text-slate-400">Valor de baja *</label><input id="logical_value" value="'I'" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm"></div>
+        </div>
+      </div>
+      <p id="dlt04-error" class="mt-3 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+    </div>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-dlt-03-where.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><button id="dlt04-btn-next" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · Confirmación</button></div></footer>
+  <script>(function(){var radios=[].slice.call(document.querySelectorAll('input[name="dlt_mode"]')),box=document.getElementById("dlt04-logical-box"),err=document.getElementById("dlt04-error");function mode(){var r=document.querySelector('input[name="dlt_mode"]:checked');return r?r.value:"fisico";}function ui(){box.classList.toggle("hidden",mode()!=="logico");}radios.forEach(function(r){r.addEventListener("change",ui);});ui();document.getElementById("dlt04-btn-next").addEventListener("click",function(){if(mode()==="logico"){var f=document.getElementById("logical_field").value.trim(),v=document.getElementById("logical_value").value.trim();if(!f||!v){err.textContent="En modo lógico, campo de estado y valor son obligatorios.";err.classList.remove("hidden");return;}}err.classList.add("hidden");window.location.href="sp-asistido-dlt-05-confirmacion.html";});})();</script>
+</body>
+</html>

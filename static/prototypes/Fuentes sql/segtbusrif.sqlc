@@ -1,0 +1,35 @@
+--------------------------------------------------------------------------------
+-- TABLA    : &LIB/SEGTBUSRIF
+-- OBJETIVO : Extraccion de autorizaciones de permisos para usuarios
+-- FECHA    : Mayo 2022
+-- AUTOR    : ANDRES CUARTAS - BANCOLOMBIA
+--------------------------------------------------------------------------------
+
+-- Creando la tabla &LIB/SEGTBUSRIF
+CREATE OR REPLACE TABLE &LIB/SEGTBUSRIF (
+   LIBRERIA CHARACTER ( 10 ) ,
+   OBJETO CHARACTER ( 10 ) ,
+   TIPOOBJETO CHARACTER ( 10 )  ,
+   USUARIO CHARACTER ( 10 )  ,
+   TIPOAUT CHARACTER ( 12 ))
+   RCDFMT USRIF;
+
+-- Estableciendo el texto de etiqueta para &LIB/SEGTBUSRIF
+LABEL ON TABLE &LIB/SEGTBUSRIF
+   IS 'Autorizaciones consultadas';
+
+-- Estableciendo las etiquetas de columna para &LIB/SEGTBUSRIF
+LABEL ON COLUMN &LIB/SEGTBUSRIF (
+   LIBRERIA TEXT IS 'Librería',
+   OBJETO TEXT IS 'Nombre de objeto',
+   TIPOOBJETO TEXT IS 'Tipo de objeto',
+   USUARIO TEXT IS 'Acción sobre el objeto',
+   TIPOAUT TEXT IS 'Autorizacion');
+
+-- Estableciendo las cabeceras de columna para &LIB/SEGTBUSRIF
+LABEL ON COLUMN &LIB/SEGTBUSRIF (
+   LIBRERIA IS 'Libreria',
+   OBJETO IS 'Objeto',
+   TIPOOBJETO IS 'Tipo Objeto',
+   USUARIO IS 'Usuario',
+   TIPOAUT IS 'Autorizacion');

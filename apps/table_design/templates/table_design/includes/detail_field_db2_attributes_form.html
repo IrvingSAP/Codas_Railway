@@ -1,0 +1,72 @@
+<form id="db2-attrs-form" method="post" action="{% url 'table_design:field_db2_attributes' header.pk field.pk %}" class="rounded-xl border border-white/10 bg-slate-900/40 p-4 md:p-6">
+    {% csrf_token %}
+    {% if db2_form.non_field_errors %}
+    <ul class="mb-4 list-inside list-disc text-sm text-rose-300">
+        {% for err in db2_form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-sm font-semibold text-white">{{ step_title|default:"Atributos DB2" }} · <span class="font-mono text-codas-blue-accent">{{ field.field_name_short }}</span></h2>
+        <span class="font-mono text-[10px] text-gray-600">DetailTableDb2Attributes</span>
+    </div>
+
+    <div class="mb-4 rounded-lg border border-amber-500/20 bg-amber-950/20 px-4 py-3 text-xs text-amber-100/80">
+        Puede marcar <strong>varios atributos</strong> a la vez. Si activa
+        <code class="text-amber-200/70">user_defined_field</code>, el resto queda deshabilitado y no se tiene en cuenta.
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="codas-db2-attrs-table w-full min-w-[720px] border-collapse text-sm">
+            <thead>
+                <tr class="border-b border-white/10 text-left text-xs uppercase tracking-wide text-gray-500">
+                    <th class="w-10 px-2 py-2" scope="col"></th>
+                    <th class="min-w-[11rem] px-3 py-2 font-semibold" scope="col">Campos</th>
+                    <th class="min-w-[14rem] px-3 py-2 font-semibold" scope="col">Valor / entrada</th>
+                    <th class="min-w-[18rem] px-3 py-2 font-semibold" scope="col">Ejemplo de construcción</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for item in db2_table_rows %}
+                {% with row=item.meta %}
+                {% if row.section %}
+                <tr>
+                    <td colspan="4" class="bg-slate-800/40 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">{{ row.section }}</td>
+                </tr>
+                {% endif %}
+                <tr class="attr-row{% if row.name == 'user_defined_field' %} attr-row-udf{% endif %}" data-field="{{ row.field_key }}" data-input="{{ row.input_kind }}">
+                    <td class="px-2 py-3 align-top">
+                        {{ item.selector }}
+                        {% if item.errors %}
+                        <p class="mt-1 text-xs text-rose-400">{{ item.errors.0 }}</p>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 align-top font-mono {% if row.name == 'user_defined_field' %}text-amber-100/90{% else %}text-gray-200{% endif %}">{{ row.name }}</td>
+                    <td class="px-3 py-3 align-top">
+                        {% if item.input_field %}
+                        {{ item.input_field }}
+                        {% if item.input_field.errors %}
+                        <p class="mt-1 text-xs text-rose-400">{{ item.input_field.errors.0 }}</p>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-gray-600">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3 align-top">
+                        <div class="example-out font-mono text-xs leading-relaxed text-gray-400 whitespace-pre-wrap">{{ row.example }}</div>
+                    </td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-2 border-t border-white/5 pt-4">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-accent-hover">
+            Guardar atributos DB2
+        </button>
+        <a href="{% url 'table_design:field_update' header.pk field.pk %}" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">← Paso 1</a>
+        <a href="{% url 'table_design:field_list' header.pk %}" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 no-underline hover:bg-white/5">Listado</a>
+    </div>
+</form>

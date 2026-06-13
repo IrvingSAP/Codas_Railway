@@ -1,0 +1,27 @@
+Create Table &LIB/SEGFFAUT24
+(TCLOB    CLOB   (100)    NOT NULL DEFAULT
+,TDBCLOB  DBCLOB (60)     NOT NULL DEFAULT
+,TCHAR      CHAR (50)     NOT NULL DEFAULT ''
+,TCHAR2     CHAR (300) CCSID 284 NOT NULL WITH DEFAULT ''
+,TVARCHAR   VARCHAR (70)
+,TINT       INT           NOT NULL DEFAULT 0
+) RcdFmt SEG24R;
+
+Label On Table &LIB/SEGFFAUT24 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT24
+(TCLOB    TEXT IS 'TCLOB'
+,TDBCLOB  TEXT IS 'TDBCLOB'
+,TCHAR         Text Is 'CHAR'
+,TCHAR2        Text Is 'CHAR'
+,TVARCHAR         Text Is 'VARCHAR'
+,TINT          Text Is 'INT'
+ );
+
+Label On Column &LIB/SEGFFAUT24
+(TCLOB         Is 'T_CLOB'
+,TDBCLOB       IS 'T_DBCLOB'
+,TCHAR              Is 'T_CHAR'
+,TCHAR2             Is 'T_TCHAR2'
+,TVARCHAR           Is 'T_VARCHAR'
+,TINT               Is 'T_INT'
+ );

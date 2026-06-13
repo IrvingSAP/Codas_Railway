@@ -1,0 +1,22 @@
+---------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGIX1DUSR                               --
+-- Descripción.........: Script para crear: INDEX                 --
+-- Tipo Objeto.........: SEGLIBRA - SEGIX1DUSR                   --
+-- Requerimiento.......: PMO31385-Transversales de Apoyo Iseries. --
+-- Subdominio..........: Transversales de Apoyo Iseries.          --
+-- Fecha De Creación...: Mayo 11-2020                           --
+-- Autor...............: Carlos  J Rojas O                           --
+-- Base de datos relacional:  DB2 for i                           --
+--------------------------------------------------------------------
+-- MODIFICACIONES:                                                --
+-- Fecha de Modificación :                                        --
+-- Autor...............  :                                        --
+-- Descripción ......... :                                        --
+-- Requerimiento.........:                                        --
+--------------------------------------------------------------------
+-- CREAR INDICE
+CREATE INDEX &LIB.SEGIX1DUSR
+    ON &LIB.SEGFFDSUSR(UPSTAT ASC, UPUPRF ASC) UNIT ANY KEEP IN MEMORY NO;
+LABEL   ON INDEX &LIB.SEGIX1DUSR IS 'UPSTAT archivo de usuario usrprf';
+COMMENT ON INDEX &LIB.SEGIX1DUSR IS 'UPUPRF archivo de usuario usrprf';
+

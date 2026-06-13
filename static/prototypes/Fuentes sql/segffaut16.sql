@@ -1,0 +1,12 @@
+Create Table &LIB/SEGFFAUT16
+(TCLOB    CLOB   (100)    NOT NULL DEFAULT
+) RcdFmt SEG16R;
+
+Label On Table &LIB/SEGFFAUT16 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT16
+(TCLOB    TEXT IS 'TCLOB'
+ );
+
+Label On Column &LIB/SEGFFAUT16
+(TCLOB         Is 'T_CLOB'
+ );

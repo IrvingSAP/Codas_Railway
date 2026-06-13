@@ -1,0 +1,13 @@
+-- *?************************************************************************
+-- *  Programa:?SEGLFDEAUT                                                  *
+-- *  Descripcion:Componente Autorizador indice de Detalle de objetos a   ?*
+-- *              Autorizar    Por CLAVE USUARIO PERMISOS LSTAUT          ?*
+-- *                                                                       ?*
+-- *  Autor:?Rigoberto Ríos Bola¦os                                         *
+-- *  Empresa:?PersonalSoft S.A.S                                           *
+-- *  Fecha Creacion:?24 - Mayo  2011                                       *
+-- *?************************************************************************
+
+CREATE INDEX SEGLFDEAUT
+  ON SEGFFDEAUT ( ADCLAVE, ADUSUARIO, ADPERMISOS, ADLSTAUT) ;
+

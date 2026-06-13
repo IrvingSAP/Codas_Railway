@@ -1,0 +1,39 @@
+{# Asistente READ (SELECT) — stepper 7 pasos. Tono sky (F / checklist). #}
+<div class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-3 py-3 md:px-4" aria-label="Progreso del asistente READ">
+    <ol class="flex w-full flex-wrap items-center justify-between gap-x-1 gap-y-3 text-[11px] md:text-xs">
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 1 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 1 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">1</span>
+            <span class="hidden sm:inline">Identificación</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 2 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 2 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">2</span>
+            <span class="hidden sm:inline">Tabla</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 3 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 3 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">3</span>
+            <span class="hidden sm:inline">SELECT</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 4 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 4 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">4</span>
+            <span class="hidden sm:inline">WHERE</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 5 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 5 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">5</span>
+            <span class="hidden sm:inline">Orden</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 6 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 6 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">6</span>
+            <span class="hidden sm:inline">Resumen</span>
+        </li>
+        <span class="hidden shrink-0 text-slate-600 sm:inline" aria-hidden="true">→</span>
+        <li class="flex min-w-0 items-center gap-1.5 {% if current_step == 7 %}font-medium text-sky-300{% else %}text-slate-500{% endif %}">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full {% if current_step == 7 %}bg-sky-500/30 text-white{% else %}border border-slate-600{% endif %}">7</span>
+            <span class="hidden sm:inline">SQL</span>
+        </li>
+    </ol>
+</div>

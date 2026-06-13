@@ -1,0 +1,24 @@
+{% extends "dashboard/dashboard_base.html" %}
+{# Inicio /panel/ para UserProfile.user_type = SU (superusuario). #}
+
+{% block title %}CODAS — Panel superusuario{% endblock %}
+{% block header_title %}Dashboard del sistema{% endblock %}
+
+{% block content %}
+<h2 class="mb-6 text-base font-semibold text-white">Resumen del sistema</h2>
+
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="codas-dashboard-card-metric">
+        <h3 class="m-0 text-sm font-medium text-gray-400">Compañías registradas</h3>
+        <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ total_companies }}</p>
+    </div>
+    <div class="codas-dashboard-card-metric">
+        <h3 class="m-0 text-sm font-medium text-gray-400">Usuarios totales</h3>
+        <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ total_users }}</p>
+    </div>
+    <div class="codas-dashboard-card-metric sm:col-span-2 lg:col-span-1">
+        <h3 class="m-0 text-sm font-medium text-gray-400">Administradores de compañía</h3>
+        <p class="mt-3 text-3xl font-bold text-codas-blue-accent">{{ total_admin_company }}</p>
+    </div>
+</div>
+{% endblock %}

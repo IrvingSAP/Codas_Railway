@@ -1,0 +1,15 @@
+URL para DetailTAble
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+
+    path("table/field/<int:table_id>/", views.field_create, name="field_create"),
+    path("table/<int:table_id>/field/<int:field_id>/edit/",views.field_edit,name="field_edit"),
+    path("table/<int:table_id>/field/<int:field_id>/delete/",views.field_delete,name="field_delete"),
+    path("table/<int:table_id>/field/<int:field_id>/up/",views.field_move_up,name="field_move_up"),
+    path("table/<int:table_id>/field/<int:field_id>/down/",views.field_move_down,name="field_move_down"),
+    path("table/<int:table_id>/script/", views.table_script, name="table_script"),
+    path("table/<int:table_id>/detail/", views.table_detail_with_script, name="table_detail_with_script"),
+]

@@ -1,0 +1,44 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — Plan {{ plan.code }}{% endblock %}
+{% block header_title %}Plan — {{ plan.name }}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'billing:plan_list' %}" class="text-codas-blue-accent no-underline hover:underline">← Listado de planes</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Plan</h2>
+</div>
+
+<dl class="max-w-2xl space-y-4 text-sm">
+    <div>
+        <dt class="font-medium text-gray-400">Código</dt>
+        <dd class="mt-1 font-mono text-codas-blue-accent">{{ plan.code }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Nombre</dt>
+        <dd class="mt-1 text-white">{{ plan.name }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Periodo de facturación</dt>
+        <dd class="mt-1 text-gray-200">{{ plan.get_billing_period_display }} <span class="text-gray-500">({{ plan.billing_period }})</span></dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Descripción</dt>
+        <dd class="mt-1 text-gray-200">{{ plan.description|default:"—" }}</dd>
+    </div>
+    <div>
+        <dt class="font-medium text-gray-400">Activo en catálogo</dt>
+        <dd class="mt-1 text-gray-200">{% if plan.is_active %}Sí{% else %}No{% endif %}</dd>
+    </div>
+</dl>
+
+{% if can_crud %}
+<div class="mt-8 flex flex-wrap gap-3">
+    <a href="{% url 'billing:plan_update' plan.pk %}" class="inline-flex rounded-md bg-codas-blue-accent px-4 py-2.5 text-sm font-medium text-white no-underline hover:bg-codas-accent-hover">Editar</a>
+    <a href="{% url 'billing:plan_delete' plan.pk %}" class="inline-flex rounded-md border border-rose-500/50 px-4 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+</div>
+{% endif %}
+{% endblock %}

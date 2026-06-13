@@ -1,0 +1,66 @@
+-------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBUSRRG                  --
+-- Descripcion.........: Reglas para la Creacion de  --
+--                     : usuario por UDS
+-- Tipo Objeto.........: TABLE                       --
+-- Requerimiento.......: PMO31385-Creacion de usuario--
+-- Subdominio..........: Transversales Iseries       --
+-- Fecha De Creacion...: Enero  20 - 2022            --
+-- Autor...............: Carlos Rojas - Bancolombia  --
+-- Base de datos relacional:  DB2 for i              --
+-------------------------------------------------------
+-- MODIFICACIONES:                                   --
+-- Fecha de Modificacion :                           --
+-- Autor...............  :                           --
+-- Descripcion ......... :                           --
+-- Requerimiento.........:                           --
+-------------------------------------------------------
+-- Reglas Log de Mantenimiento
+
+CREATE OR REPLACE TABLE &LIB.REGLASCREACIONUSUARIO
+                        FOR SYSTEM NAME SEGTBUSRRG(
+ Id_Reglas_Usuario       FOR COLUMN IDREGLAUSR NUMERIC(10) NOT NULL
+                        GENERATED ALWAYS AS IDENTITY(START WITH 1,
+                        INCREMENT BY 1, NO MINVALUE,
+                        CYCLE, NO ORDER,  NO CACHE),
+ Codigo_Regla           FOR COLUMN CODREGLA    Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Nombre_Maquina         FOR COLUMN MAQUINA     Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Tipo_Usuario           FOR COLUMN TIPOUSR     Char(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Descripcion            FOR COLUMN DESCRIP     Char(100)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Nombre_Proceso         FOR COLUMN NOMPROCES     Char(50)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+
+ Estado_Validar         FOR COLUMN ESTADO      Char(1)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+Fecha_Creacion          FOR COLUMN FECHORACRE TIMESTAMP NOT NULL IMPLICITLY
+                        HIDDEN GENERATED ALWAYS FOR EACH ROW ON
+UPDATE AS ROW
+                        CHANGE TIMESTAMP,
+ Usuario_Creacion       FOR COLUMN USUARICREA CHAR(10)
+                                   CCSID 284 NOT NULL DEFAULT ' ',
+ Fecha_Modificacion     FOR COLUMN FECHORAMOD TIMESTAMP,
+ Usuario_Modificacion   FOR COLUMN USUARIOMOD CHAR(10),
+ CONSTRAINT &LIB.Id_Reglas_Usuario_PK
+ PRIMARY KEY (Id_Reglas_Usuario))
+ RCDFMT   RSEGTBUSRR    ;
+
+LABEL ON TABLE &LIB.SEGTBUSRRG Is
+' Reglas para la Creacion de usuario por UDS';
+
+LABEL ON  &LIB.SEGTBUSRRG(
+Id_Reglas_Usuario              Text Is 'ID Reglas Log. ..............',
+Codigo_Regla                   Text Is 'Codigo de la Regla...........',
+Nombre_Maquina                 Text Is 'Nombre de Maquina............',
+Tipo_Usuario                   Text Is 'Tipo de Usuario..............',
+Descripcion                    Text Is 'Detalle de la Regla..........',
+Nombre_Proceso                 Text Is 'Nombre del Proceso a Invocar.',
+Estado_Validar                 Text Is 'Estado.......................',
+Fecha_Creacion                 Text Is 'Fecha Creacio................',
+Usuario_Creacion               Text Is 'Usuario de Creacion..........',
+Fecha_Modificacion             Text Is 'Fecha Modificacion...........',
+Usuario_Modificacion           Text Is 'Usuario Modificacion.........'
+);

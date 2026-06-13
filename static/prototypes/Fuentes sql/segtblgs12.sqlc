@@ -1,0 +1,98 @@
+--AW1192003_BC_1:"RUNSQLSTM SRCFILE(R1SEG/SEGSRC) SRCMBR(SEGTBLGS12) "
+--AW1192003_BC_2:"COMMIT(*NONE)"
+--AW1192003_OBJTYPE:"*FILE"
+---------------------------------------------------------------------------
+-- Nombre De SCRIPT....: Crear Tabla Base.                               --
+-- Descripción.........: LOG SERVIDOR TRANSACCIONAL SEGTRS12XXX EXTENSIóN--
+-- Tipo Objeto.........: TABLE                                           --
+-- Requerimiento.......: Migracion componente Autorizador REC a SEG      --
+-- Subdominio..........: COMPONENTE AUTORIZADOR                          --
+-- Fecha De Creación...: Febreo 2025.                                    --
+-- Autor...............: Irving Sifuentes                                --
+-- Base de datos relacional:  DB2 for i                                  --
+---------------------------------------------------------------------------
+
+-- SE DEFINE LIBRERIA DE TRABAJO
+-- SET CURRENT SCHEMA &LIB;
+
+-- Crear TABLA LOG transaccional S12
+  CREATE OR REPLACE TABLE &LIB/SEGTBLGS12
+
+--DEFINICION DE CAMPOS
+
+  (FECHAREG          NUMERIC (8,0) NOT NULL DEFAULT 0  ,
+   HORAREG           NUMERIC (8,0) NOT NULL DEFAULT 0  ,
+   TIEMPOEMP         NUMERIC (8,0) NOT NULL DEFAULT 0  ,
+   TIPOMSG           CHAR (2)      NOT NULL DEFAULT '' ,
+   IDTRANS           CHAR (4)      NOT NULL DEFAULT '' ,
+   IDCLIENTE         CHAR (3)      NOT NULL DEFAULT '' ,
+   SECTRANS          CHAR (20)     NOT NULL DEFAULT '' ,
+   IDSERVIDOR        CHAR (3)      NOT NULL DEFAULT '' ,
+   IDINSTAN          CHAR (3)      NOT NULL DEFAULT '' ,
+   NOMBREJOB         CHAR (10)     NOT NULL DEFAULT '' ,
+   NUMEROJOB         NUMERIC (6,0) NOT NULL DEFAULT 0  ,
+   MODRESPU          CHAR (10)     NOT NULL DEFAULT '' ,
+   CODRESCLI         CHAR (4)      NOT NULL DEFAULT '' ,
+   ESTADOMOV         CHAR (1)      NOT NULL DEFAULT '' ,
+   CAMPOBUS          CHAR (30)     NOT NULL DEFAULT '' ,
+   CODRESPU          CHAR (4)      NOT NULL DEFAULT '' ,
+   OBSERVA           CHAR (50)     NOT NULL DEFAULT '' ,
+   MENSAJE           CHAR (32340)  NOT NULL DEFAULT ''
+
+ -- Clave Primaria  Sin Clave
+   )
+  -- Formato del Registro
+ RcdFmt RSEGTRS12;
+
+ -- Etiqueta de la tabla
+   Label On Table &LIB/SEGTBLGS12 Is
+   'LOG SERVIDOR TRANSACCIONAL SEGTRS12XXX' ;
+
+   COMMENT On Table &LIB/SEGTBLGS12 Is
+   'LOG SERVIDOR TRANSACCIONAL SEGTRS12XXX' ;
+-- Autorizacion de la tabla  --SE DEBE RETIRAR
+
+-- Atributo de texto de los campos
+   Label On Column  &LIB/SEGTBLGS12
+   (FECHAREG         is      'Fecha de Registro'       ,
+   HORAREG           is      'Hora de Registro'        ,
+   TIEMPOEMP         is      'Tiempo Total Empleado'   ,
+   TIPOMSG           is      'Tipo de Mensaje'         ,
+   IDTRANS           is      'ID - Transaccion'        ,
+   IDCLIENTE         is      'ID APlicativo Cliente'   ,
+   SECTRANS          is      'Secuencia transaccion'   ,
+   IDSERVIDOR        is      'ID Servidor'             ,
+   IDINSTAN          is      'ID Instancia'            ,
+   NOMBREJOB         is      'Nombre del JOB'          ,
+   NUMEROJOB         is      'Numero del JOB'          ,
+   MODRESPU          is      'Modulo Genera Respuesta' ,
+   CODRESCLI         is      'Codigo de Respuesta'     ,
+   ESTADOMOV         is      'Estado Movimiento'       ,
+   CAMPOBUS          is      'Campo de Busquedad'      ,
+   CODRESPU          is      'Codigo Respuesta'        ,
+   OBSERVA           is      'Observacion'             ,
+   MENSAJE           is      'Mensaje'
+    );
+
+-- Atributo de texto de los campos
+   Label On Column &LIB/SEGTBLGS12
+   (FECHAREG         Text is      'Fecha de Registro'       ,
+   HORAREG           Text is      'Hora de Registro'        ,
+   TIEMPOEMP         Text is      'Tiempo Total Empleado'   ,
+   TIPOMSG           Text is      'Tipo de Mensaje'         ,
+   IDTRANS           Text is      'ID - Transaccion'        ,
+   IDCLIENTE         Text is      'ID APlicativo Cliente'   ,
+   SECTRANS          Text is      'Secuencia transaccion'   ,
+   IDSERVIDOR        Text is      'ID Servidor'             ,
+   IDINSTAN          Text is      'ID Instancia'            ,
+   NOMBREJOB         Text is      'Nombre del JOB'          ,
+   NUMEROJOB         Text is      'Numero del JOB'          ,
+   MODRESPU          Text is      'Modulo Genera Respuesta' ,
+   CODRESCLI         Text is      'Codigo de Respuesta'     ,
+   ESTADOMOV         Text is      'Estado Movimiento'       ,
+   CAMPOBUS          Text is      'Campo de Busquedad'      ,
+   CODRESPU          Text is      'Codigo Respuesta'        ,
+   OBSERVA           Text is      'Observacion'             ,
+   MENSAJE           Text is      'Mensaje'
+    );
+

@@ -1,0 +1,82 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · UPD · Paso 6{% endblock %}
+{% block header_title %}SP Asistido · UPD{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <h2 class="text-lg font-semibold text-white">Revisión, firma y vista previa SQL (E.6 / §9)</h2>
+        <p class="mt-1 text-sm text-gray-500">Confirme columnas NOT NULL, modo de concurrencia y el script antes de persistir.</p>
+    </div>
+    {% include "sp_asistido/includes/upd_wizard_stepper.html" %}
+
+    <div class="w-full rounded-xl border border-white/10 bg-slate-900/40 p-4">
+        <p class="text-xs font-medium text-gray-500">Concurrencia</p>
+        <p class="mt-1 text-sm text-codas-blue-accent/85">{% if concurrency_mode == "exactly_one" %}Exactamente una fila (COUNT previo){% else %}Sin control adicional{% endif %}</p>
+        {% if where_conditions %}
+        <p class="mt-3 text-xs font-medium text-gray-500">WHERE (AND)</p>
+        <ul class="mt-1 list-inside list-disc space-y-1 font-mono text-sm text-white">
+            {% for wc in where_conditions %}
+            {% if wc.detail_field %}
+            <li>{{ wc.detail_field.field_name_short }} {{ wc.operator }}
+                {% if wc.value_origin == 'IN' %}{{ wc.value_text }}{% else %}literal{% endif %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="w-full space-y-2 rounded-xl border border-white/10 bg-slate-900/40 p-4">
+        <p class="text-xs font-medium text-gray-400">Columnas SET vs NOT NULL</p>
+        <ul class="space-y-2 text-sm">
+            {% for r in review_rows %}
+            <li class="flex flex-wrap items-center gap-2 {% if not r.ok %}text-rose-300{% else %}text-gray-200{% endif %}">
+                {% if r.ok %}<span class="text-emerald-400">✓</span>{% else %}<span class="text-rose-400">✗</span>{% endif %}
+                <span class="font-mono">{{ r.detail.field_name_short }}</span>
+                <span class="text-gray-500">({{ r.assignment.get_source_kind_display }})</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+        <div>
+            <p class="text-xs font-medium text-gray-500">Esquema / librería</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent">{{ definition.schema_name }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">Nombre corto del SP</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent">{{ definition.procedure_name_short }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">SPECIFIC (sugerido)</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent/90">{{ specific_name }}</p>
+        </div>
+        <div class="border-t border-white/10 pt-3">
+            <p class="text-xs font-medium text-codas-blue-accent/90">Parámetros IN</p>
+            <p class="mt-2 break-words font-mono text-sm text-codas-blue-accent/90">{% if in_signature_line %}{{ in_signature_line }}{% else %}—{% endif %}</p>
+        </div>
+        <div class="rounded-lg border border-codas-blue-accent/20 bg-slate-950/50 p-3">
+            <p class="text-xs font-medium text-sky-300/90">Parámetros OUT (§9.2)</p>
+            <p class="mt-2 font-mono text-sm text-sky-200/90">P_ERROR_CODE INTEGER, P_ERROR_MSG VARCHAR(200)</p>
+        </div>
+    </div>
+
+    <form method="post" class="w-full space-y-4">
+        {% csrf_token %}
+        <label class="block text-xs font-medium text-gray-400" for="id_preview_sql">Script (solo lectura)</label>
+        {% with download_basename="sp_upd_"|add:definition.procedure_name_short|slugify %}
+        {% include "sp_asistido/includes/sql_preview_toolbar.html" %}
+        {% endwith %}
+        <textarea id="id_preview_sql" readonly rows="22" class="w-full resize-y rounded-lg border border-gray-700 bg-[#020b23] p-3 font-mono text-xs leading-relaxed text-gray-200 outline-none">{{ preview_sql }}</textarea>
+        <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <button type="submit" name="action" value="save_draft" class="rounded-md border border-gray-600 bg-slate-800/50 px-4 py-2.5 text-sm text-gray-200 hover:bg-slate-800">Guardar borrador</button>
+            <button type="submit" name="action" value="confirm" class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2.5 text-sm font-medium {% if all_review_ok %}border border-codas-blue-accent/40 bg-codas-blue-accent text-white [text-shadow:0_0_8px_rgba(165,220,255,0.5),0_0_12px_rgba(30,144,255,0.35)] shadow-[0_0_18px_rgba(30,144,255,0.2)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-codas-blue-accent/50{% else %}cursor-not-allowed border border-white/5 bg-slate-800/90 text-slate-500 [text-shadow:none] shadow-none{% endif %}" {% if not all_review_ok %}disabled aria-disabled="true"{% endif %}>Generar y persistir en CODAS</button>
+        </div>
+        <div>
+            <a href="{% url 'sp_asistido:upd_step' definition.pk 5 %}" class="text-sm text-gray-400 no-underline hover:text-white">← Anterior</a>
+        </div>
+    </form>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

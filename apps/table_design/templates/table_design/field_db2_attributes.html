@@ -1,0 +1,27 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table_design/detail_field_db2_attributes.css' %}">
+{% endblock %}
+
+{% block title %}CODAS — Atributos DB2 · {{ field.field_name_short }}{% endblock %}
+{% block header_title %}Campos · {{ header.table_name_short }}{% endblock %}
+
+{% block content %}
+<div class="pb-10 md:pb-14">
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'table_design:field_list' header.pk %}" class="text-codas-blue-accent no-underline hover:underline">← Listado de campos</a>
+    <span class="text-gray-600"> · </span>
+    <a href="{% url 'table_design:field_update' header.pk field.pk %}" class="text-codas-blue-accent no-underline hover:underline">Paso 1 (DetailTable)</a>
+    <span class="text-gray-600"> · </span>
+    <span class="text-gray-500">Paso 2 de 2</span>
+</p>
+
+{% include "table_design/includes/detail_field_db2_attributes_form.html" %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/table_design/detail_field_db2_attributes.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · Demo modelo de tablas propuestas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{codas:{dark:"#0a1a2f",accent:"#1e90ff",hover:"#1877d3"}}}}}</script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-200 antialiased">
+  <div class="border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · SP Asistido</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="text-codas-accent">Modelo de persistencia (diseño)</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+
+  <header class="border-b border-white/10 bg-codas-dark px-4 py-4 md:px-8">
+    <h1 class="text-lg font-semibold text-white md:text-xl">SP Asistido · Tablas propuestas (sin programación)</h1>
+    <p class="mt-1 text-sm text-slate-400">Diseño base para persistir definiciones, pasos, parámetros, criterios y versiones SQL de ADD/READ/UPD/DLT.</p>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-5 px-4 py-6 md:px-8">
+    <section class="rounded-xl border border-sky-500/20 bg-sky-950/10 p-4">
+      <p class="text-xs font-medium text-sky-200/90">Relaciones clave</p>
+      <p class="mt-1 text-sm text-slate-300"><code class="text-slate-400">Company 1..N SPDefinition</code> · <code class="text-slate-400">HeaderTable 1..N SPDefinition</code> · <code class="text-slate-400">SPDefinition 1..N (StepState, Parameter, Assignment, Condition, ArtifactVersion)</code></p>
+      <p class="mt-3 text-xs font-medium text-sky-200/90">Auditoría y emisión de script (alineado a <code class="text-sky-300/90">HeaderTable</code>)</p>
+      <ul class="mt-1 list-inside list-disc text-sm text-slate-400">
+        <li>Todas las tablas propuestas incluyen <code class="text-slate-500">created_at</code>, <code class="text-slate-500">updated_at</code>, <code class="text-slate-500">created_by</code>, <code class="text-slate-500">updated_by</code> (<code class="text-slate-500">ForeignKey</code> a usuario, <code class="text-slate-500">on_delete=SET_NULL</code>, <code class="text-slate-500">null=True</code>).</li>
+        <li>En <strong class="text-slate-300">cabecera</strong> (<code class="text-slate-500">sp_asistido_spdefinition</code>): <code class="text-slate-500">script_generated</code> y <code class="text-slate-500">script_date</code> indican si ya se emitió/confirmó el script del SP (misma idea que DDL en table design).</li>
+      </ul>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">1) sp_asistido_spdefinition (cabecera)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[880px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">company_id</td><td class="px-3 py-2">FK → company_company</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Aislamiento por compañía</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">header_table_id</td><td class="px-3 py-2">FK → table_design_headertable</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Tabla seleccionada en paso 2</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">operation</td><td class="px-3 py-2">Char(4)</td><td class="px-3 py-2">READ/ADD/UPD/DLT</td><td class="px-3 py-2">Tipo de asistente</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">schema_name</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Esquema/librería SP</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">procedure_name_short</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Nombre corto del SP</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">procedure_name_long</td><td class="px-3 py-2">Varchar(50)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Nombre descriptivo</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">procedure_comment</td><td class="px-3 py-2">Varchar(200)</td><td class="px-3 py-2">Opcional</td><td class="px-3 py-2">Comentario funcional</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">status</td><td class="px-3 py-2">Char(1)</td><td class="px-3 py-2">D/A/I</td><td class="px-3 py-2">Draft/Active/Inactive</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">current_step</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">1..N</td><td class="px-3 py-2">Reanudación wizard</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">script_generated</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">Default False</td><td class="px-3 py-2">Indica si ya se generó/confirmó el <code class="text-slate-500">CREATE PROCEDURE</code> (paralelo a <code class="text-slate-500">HeaderTable.script_generated</code>)</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">script_date</td><td class="px-3 py-2">DateField</td><td class="px-3 py-2">Null si no aplica</td><td class="px-3 py-2">Fecha de emisión/confirmación del script (paralelo a <code class="text-slate-500">HeaderTable.script_date</code>)</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría · Creado el</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría · Actualizado el</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_definitions_created"</code> (columna BD <code class="text-slate-500">created_by_id</code>)</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_definitions_updated"</code> (columna BD <code class="text-slate-500">updated_by_id</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">2) sp_asistido_stepstate (snapshot por paso)</h2>
+      <p class="mt-1 text-xs text-slate-500">Permite guardar progreso/estado por paso sin fijar estructura rígida.</p>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[760px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">—</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">step_number</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">Unique junto a sp_definition</td><td class="px-3 py-2">Paso del wizard</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">payload_json</td><td class="px-3 py-2">JSONField</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Datos transitorios del paso</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_step_states_created"</code></td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_step_states_updated"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">3) sp_asistido_parameter (firma IN/OUT)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[860px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">direction</td><td class="px-3 py-2">Char(3)</td><td class="px-3 py-2">IN/OUT</td><td class="px-3 py-2">Dirección parámetro</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">name</td><td class="px-3 py-2">Varchar(30)</td><td class="px-3 py-2">Unique por SP</td><td class="px-3 py-2">Ej: P_CUSNBR</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">db2_type</td><td class="px-3 py-2">Varchar(50)</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Tipo final SQL</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">ordinal</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">Orden firma</td><td class="px-3 py-2">Reproducibilidad</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_parameters_created"</code></td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_parameters_updated"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">4) sp_asistido_assignment (ADD/UPD SET)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[860px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">detail_field_id</td><td class="px-3 py-2">FK → DetailTable</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Columna destino</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">source_kind</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">IN/LITERAL/NULL/EXPR</td><td class="px-3 py-2">Origen valor</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">source_value</td><td class="px-3 py-2">Varchar(255)</td><td class="px-3 py-2">Nullable</td><td class="px-3 py-2">Reglas por tipo de origen</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_assignments_created"</code></td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_assignments_updated"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">5) sp_asistido_condition (WHERE y ORDER/FETCH)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[980px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">clause_kind</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">WHERE/ORDER/FETCH</td><td class="px-3 py-2">Tipo de cláusula</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">detail_field_id</td><td class="px-3 py-2">FK → DetailTable</td><td class="px-3 py-2">Nullable</td><td class="px-3 py-2">Campo afectado</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">operator</td><td class="px-3 py-2">Varchar(12)</td><td class="px-3 py-2">=, <>, LIKE, IN...</td><td class="px-3 py-2">Operador SQL</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">value_origin</td><td class="px-3 py-2">Char(10)</td><td class="px-3 py-2">IN/LITERAL/EXPR/NULL</td><td class="px-3 py-2">Origen valor</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">value_text</td><td class="px-3 py-2">Varchar(255)</td><td class="px-3 py-2">Nullable</td><td class="px-3 py-2">Valor o nombre parámetro</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">logical_join</td><td class="px-3 py-2">Char(3)</td><td class="px-3 py-2">AND/OR</td><td class="px-3 py-2">Para múltiples filtros futuros</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">ordinal</td><td class="px-3 py-2">SmallInt</td><td class="px-3 py-2">Orden</td><td class="px-3 py-2">Secuencia de armado</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_conditions_created"</code></td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_conditions_updated"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4">
+      <h2 class="text-base font-semibold text-white">6) sp_asistido_artifactversion (versionado SQL)</h2>
+      <div class="mt-3 overflow-x-auto rounded-lg border border-white/10">
+        <table class="w-full min-w-[920px] text-left text-sm">
+          <thead class="bg-slate-900/90 text-xs text-slate-400"><tr><th class="px-3 py-2">Campo</th><th class="px-3 py-2">Tipo</th><th class="px-3 py-2">Regla</th><th class="px-3 py-2">Comentario</th></tr></thead>
+          <tbody class="divide-y divide-white/5">
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">id</td><td class="px-3 py-2">BigAutoField</td><td class="px-3 py-2">PK</td><td class="px-3 py-2">Identificador interno</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sp_definition_id</td><td class="px-3 py-2">FK</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Padre</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">version</td><td class="px-3 py-2">Integer</td><td class="px-3 py-2">Unique por SP</td><td class="px-3 py-2">1..N</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">sql_script</td><td class="px-3 py-2">Text</td><td class="px-3 py-2">Obligatorio</td><td class="px-3 py-2">Script renderizado</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">script_hash</td><td class="px-3 py-2">Char(64)</td><td class="px-3 py-2">Opcional</td><td class="px-3 py-2">Control de cambios</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">is_current</td><td class="px-3 py-2">Boolean</td><td class="px-3 py-2">1 activa</td><td class="px-3 py-2">Versión vigente</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now_add</td><td class="px-3 py-2">Auditoría · momento en que se persistió esta versión del script</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_at</td><td class="px-3 py-2">DateTime</td><td class="px-3 py-2">auto_now</td><td class="px-3 py-2">Auditoría</td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">created_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_artifact_versions_created"</code></td></tr>
+            <tr><td class="px-3 py-2 font-mono text-codas-accent">updated_by</td><td class="px-3 py-2">ForeignKey → User</td><td class="px-3 py-2">SET_NULL, null</td><td class="px-3 py-2"><code class="text-slate-500">related_name="sp_asistido_artifact_versions_updated"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

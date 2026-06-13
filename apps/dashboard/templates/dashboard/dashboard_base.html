@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" class="h-full min-h-0">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CODAS — Panel{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'core/img/codaslogo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+{# Layout corporativo: barra superior a todo el ancho; debajo menú lateral + área de trabajo #}
+<body class="flex h-full min-h-0 flex-col overflow-hidden bg-slate-950 font-sans text-gray-200 antialiased">
+    <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-blue-dark px-4 md:px-5">
+        <a href="{% url 'dashboard:home' %}" class="flex shrink-0 items-center gap-2 no-underline" title="CODAS">
+            <img src="{% static 'core/img/codaslogo.png' %}" alt="CODAS" class="codas-dashboard-logo" width="120" height="36">
+            <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+        </a>
+        <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">
+            {% block header_title %}Panel de control{% endblock %}
+        </h1>
+        <div class="flex shrink-0 items-center gap-3">
+            <span class="hidden max-w-[10rem] truncate text-sm text-gray-300 sm:inline">{{ request.user.get_username }}</span>
+            <form method="post" action="{% url 'dashboard:logout' %}" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white transition hover:border-codas-blue-accent hover:bg-codas-blue-accent/15">
+                    Salir
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <div class="flex min-h-0 min-w-0 flex-1 flex-row overflow-hidden">
+        <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-blue-dark min-h-0" aria-label="Menú lateral">
+            <nav class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain p-4 text-sm" aria-label="Menú principal">
+                <a href="{% url 'dashboard:home' %}" class="codas-dashboard-nav-item {% if dashboard_nav_active|default:'home' == 'home' %}codas-dashboard-nav-item--active{% else %}codas-dashboard-nav-item--inactive{% endif %}">
+                    <span class="codas-dashboard-nav-icon-box {% if dashboard_nav_active|default:'home' == 'home' %}codas-dashboard-nav-icon-box--active{% else %}codas-dashboard-nav-icon-box--inactive{% endif %}" aria-hidden="true">🏠</span>
+                    <span>Inicio / panel</span>
+                </a>
+                {% block sidebar_nav %}
+                {% include dashboard_sidebar_include %}
+                {% endblock %}
+            </nav>
+        </aside>
+
+        <main class="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain scroll-pb-6 bg-slate-950 px-6 pt-6 pb-10 md:px-8 md:pt-8 md:pb-12">
+            <div class="codas-dashboard-work">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+<div id="codas-msg-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/55 p-4" role="dialog" aria-modal="true" aria-labelledby="codas-msg-title">
+    <div class="w-full max-w-md rounded-lg border border-white/10 bg-slate-900 shadow-xl">
+        <div id="codas-msg-header" class="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <h2 id="codas-msg-title" class="m-0 text-base font-semibold text-white"></h2>
+            <button type="button" id="codas-msg-close" class="rounded p-1 text-gray-400 hover:bg-white/10 hover:text-white" aria-label="Cerrar">×</button>
+        </div>
+        <div class="px-4 py-4">
+            <p id="codas-msg-body" class="m-0 text-sm text-gray-300"></p>
+        </div>
+        <div class="flex justify-end border-t border-white/10 px-4 py-3">
+            <button type="button" id="codas-msg-btn" class="rounded-md px-4 py-2 text-sm font-medium text-white"></button>
+        </div>
+    </div>
+</div>
+
+{# Confirmación tipo advertencia (sustituye confirm() nativo); API: codasConfirmWarning(msg, onConfirm) #}
+<div id="codas-confirm-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/55 p-4" role="dialog" aria-modal="true" aria-labelledby="codas-confirm-title">
+    <div class="w-full max-w-md rounded-lg border border-amber-500/25 bg-slate-900 shadow-xl">
+        <div id="codas-confirm-header" class="flex items-center justify-between border-b border-amber-500/20 bg-amber-950/90 px-4 py-3">
+            <h2 id="codas-confirm-title" class="m-0 text-base font-semibold text-amber-100">Advertencia</h2>
+            <button type="button" id="codas-confirm-close" class="rounded p-1 text-amber-200/80 hover:bg-white/10 hover:text-white" aria-label="Cerrar">×</button>
+        </div>
+        <div class="px-4 py-4">
+            <p id="codas-confirm-body" class="m-0 text-sm text-gray-300"></p>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-white/10 px-4 py-3">
+            <button type="button" id="codas-confirm-cancel" class="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-white/5">Cancelar</button>
+            <button type="button" id="codas-confirm-ok" class="rounded-md bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-500">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const modal = document.getElementById("codas-msg-modal");
+    const header = document.getElementById("codas-msg-header");
+    const title = document.getElementById("codas-msg-title");
+    const body = document.getElementById("codas-msg-body");
+    const btn = document.getElementById("codas-msg-btn");
+    const closeBtn = document.getElementById("codas-msg-close");
+
+    function hideModal() {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    function showModal(tipo, mensaje) {
+        body.textContent = mensaje;
+        title.textContent = "Mensaje";
+        header.className = "flex items-center justify-between border-b border-white/10 px-4 py-3 bg-slate-800";
+        btn.className = "rounded-md px-4 py-2 text-sm font-medium text-white bg-codas-blue-accent hover:bg-codas-accent-hover";
+        btn.textContent = "Aceptar";
+
+        const t = (tipo || "").toUpperCase();
+        if (t.includes("ERROR")) {
+            header.classList.add("bg-red-900/90");
+            title.textContent = "Error";
+            btn.className = "rounded-md px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500";
+        } else if (t.includes("SUCCESS")) {
+            header.classList.add("bg-emerald-900/90");
+            title.textContent = "Operación exitosa";
+            btn.className = "rounded-md px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-500";
+        } else if (t.includes("WARNING")) {
+            header.classList.add("bg-amber-900/90");
+            title.textContent = "Advertencia";
+            btn.className = "rounded-md px-4 py-2 text-sm font-medium text-slate-900 bg-amber-400 hover:bg-amber-300";
+        } else if (t.includes("INFO")) {
+            header.classList.add("bg-sky-900/90");
+            title.textContent = "Información";
+            btn.className = "rounded-md px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-500";
+        }
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.classList.add("overflow-hidden");
+    }
+
+    btn.addEventListener("click", hideModal);
+    closeBtn.addEventListener("click", hideModal);
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) hideModal();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        {% if messages %}
+        {% for m in messages %}
+        showModal("{{ m.tags|upper }}", "{{ m|escapejs }}");
+        {% endfor %}
+        {% endif %}
+    });
+
+    /* Modal de confirmación — advertencia (p. ej. eliminar campo) */
+    const confirmModal = document.getElementById("codas-confirm-modal");
+    const confirmBody = document.getElementById("codas-confirm-body");
+    const confirmOk = document.getElementById("codas-confirm-ok");
+    const confirmCancel = document.getElementById("codas-confirm-cancel");
+    const confirmClose = document.getElementById("codas-confirm-close");
+    let pendingConfirm = null;
+
+    function hideConfirmModal() {
+        if (!confirmModal) return;
+        confirmModal.classList.add("hidden");
+        confirmModal.classList.remove("flex");
+        document.body.classList.remove("overflow-hidden");
+        pendingConfirm = null;
+    }
+
+    window.codasConfirmWarning = function (message, onConfirm) {
+        if (!confirmModal || !confirmBody) return;
+        pendingConfirm = typeof onConfirm === "function" ? onConfirm : null;
+        confirmBody.textContent = message || "";
+        confirmModal.classList.remove("hidden");
+        confirmModal.classList.add("flex");
+        document.body.classList.add("overflow-hidden");
+        if (confirmOk) confirmOk.focus();
+    };
+
+    function runConfirmAndClose() {
+        var fn = pendingConfirm;
+        hideConfirmModal();
+        if (fn) fn();
+    }
+
+    if (confirmOk) confirmOk.addEventListener("click", runConfirmAndClose);
+    if (confirmCancel) confirmCancel.addEventListener("click", hideConfirmModal);
+    if (confirmClose) confirmClose.addEventListener("click", hideConfirmModal);
+    if (confirmModal) {
+        confirmModal.addEventListener("click", function (e) {
+            if (e.target === confirmModal) hideConfirmModal();
+        });
+    }
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
+        if (!confirmModal || confirmModal.classList.contains("hidden")) return;
+        hideConfirmModal();
+    });
+})();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,72 @@
+-------------------------------------------------------------------------------
+-- Nombre De SCRIPT....: SEGTBMNOV                                          --
+-- Descripcion.........: SEG-Tablas  Maestro de Novedades                   --
+-- Tipo Objeto.........: TABLE                                              --
+-- Requerimiento.......: PMO31385-aplicacion de novedades                   --
+-- Subdominio..........: Transversales Iseries                              --
+-- Fecha De Creacion...: Abril -05 -2023.                                   --
+-- Autor...............: Carlos Rojas                                       --
+-- Base de datos relacional:  DB2 for i                                     --
+-------------------------------------------------------------------------------
+-- MODIFICACIONES:                                                           --
+-- Fecha de Modificacion :                                                   --
+-- Autor...............  :                                                   --
+-- Descripcion ......... :                                                   --
+-- Requerimiento.........:                                                   --
+-- CreaTablas Tablas  Maestro de Novedades
+--  CREATE OR REPLACE  &LIB/SEGTBMNOV
+CREATE OR REPLACE TABLE &LIB.TablasMaestrodeNovedades
+	                  FOR SYSTEM NAME SEGTBMNOV(
+LLAVE_DE_NOVEDAD            FOR COLUMN LLAVE    CHAR(40)  NOT NULL DEFAULT ''
+                                      CCSID 284 ,
+NUMERO_ID_EMPLEADO          FOR COLUMN NROID CHAR(15) NOT NULL DEFAULT ''
+                                     CCSID 284 ,
+NOMBRE_EMPLEADO             FOR COLUMN NOMBRE CHAR(40)   NOT NULL DEFAULT ''
+                                                         CCSID 284 ,
+DESCRIPCION_AUSENCIA        FOR COLUMN DESAUS CHAR(25)   NOT NULL DEFAULT ''
+                                                         CCSID 284 ,
+FECHA_INICIO_AUSENCIA       FOR COLUMN FEIAUS NUMERIC(8) NOT NULL DEFAULT 0  ,
+FECHA_FIN_AUSENCIA          FOR COLUMN FEFAUS NUMERIC(8) NOT NULL DEFAULT 0  ,
+FECHA_RETIRO                FOR COLUMN FECRET NUMERIC(8) NOT NULL DEFAULT 0  ,
+FECHA_NOVEDAD               FOR COLUMN FECNOV NUMERIC(8) NOT NULL DEFAULT 0  ,
+USUARIO_CREACION_NOVEDAD    FOR COLUMN USUCRE CHAR(10)  NOT NULL DEFAULT ''
+                                                        CCSID 284 ,
+ESTADO                      FOR COLUMN ESTNOV CHAR(1)   NOT NULL DEFAULT ''
+                                                        CCSID 284 ,
+FECHA_ESTADO                FOR COLUMN FECEST NUMERIC(8)  NOT NULL DEFAULT 0  ,
+USUARIO_CAMBIA_ESTADO       FOR COLUMN USUEST CHAR(10)   NOT NULL DEFAULT ''
+                                                         CCSID 284 ,
+ORIGEN_DEL_REGISTRO         FOR COLUMN ORIGEN CHAR(10)   NOT NULL DEFAULT ''
+                                                         CCSID 284 ,
+OBSERVACION                 FOR COLUMN OBSERV CHAR(400)  NOT NULL DEFAULT ''
+                                                         CCSID 284 ,
+FECHA_MODIFICACION          FOR COLUMN FECMOD NUMERIC(8)  NOT NULL DEFAULT 0  ,
+USUARIO_MODIFICACION        FOR COLUMN USUMOD CHAR(10)   NOT NULL DEFAULT ''
+                                                         CCSID 284,
+-- Clave Primaria
+CONSTRAINT &LIB.LLAVE_DE_NOVEDAD_PK
+PRIMARY KEY ( LLAVE_DE_NOVEDAD ))
+RCDFMT RSEGTBMNVO;
+
+
+/* DESCRIPCIÓN */
+LABEL ON TABLE &LIB.TablasMaestrodeNovedades IS
+'Tablas  Maestro de Novedades';
+
+LABEL ON &LIB.TablasMaestrodeNovedades(
+LLAVE_DE_NOVEDAD          TEXT Is 'LLAVE DE NOVEDAD',
+NUMERO_ID_EMPLEADO        TEXT Is 'NRO ID EMPLEADO',
+NOMBRE_EMPLEADO           TEXT Is 'NOMBRE EMPLEADO',
+DESCRIPCION_AUSENCIA      TEXT Is 'DESC AUSENCIA',
+FECHA_INICIO_AUSENCIA     TEXT Is 'FECHA INI AUSENCIA',
+FECHA_FIN_AUSENCIA        TEXT Is 'FECHA FIN AUSENCIA',
+FECHA_RETIRO              TEXT Is 'FECHA RETIRO',
+FECHA_NOVEDAD             TEXT Is 'FECHA NOVEDAD',
+USUARIO_CREACION_NOVEDAD  TEXT Is 'USUARIO CREA NOVEDAD',
+ESTADO                    TEXT Is 'ESTADO',
+FECHA_ESTADO              TEXT Is 'FECHA ESTADO' ,
+USUARIO_CAMBIA_ESTADO     TEXT Is 'USER CAMBIA ESTADO',
+ORIGEN_DEL_REGISTRO       TEXT Is 'ORIGEN DEL REGISTRO' ,
+OBSERVACION               TEXT Is 'OBSERVACION',
+FECHA_MODIFICACION        TEXT Is 'FECHA MODIFICACION' ,
+USUARIO_MODIFICACION      TEXT Is'USUARIO MODIFICACION');

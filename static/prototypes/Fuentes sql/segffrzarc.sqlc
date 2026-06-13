@@ -1,0 +1,26 @@
+CREATE TABLE &LIB/SEGFFRZARC (
+ idProceso         Numeric     (10)    ,
+ Libreria          Char        (10)    ,
+ Archivo           Char        (10)    ,
+ Miembro           Char        (10)    ,
+ Estado            Char        (01)    ,
+CONSTRAINT PK_RZARC PRIMARY KEY (idProceso,Archivo))
+RCDFMT   REGRZARC;
+
+
+LABEL ON TABLE &LIB/SEGFFRZARC  Is
+'Razonabilidad de Cifras - Archivos';
+
+LABEL ON &LIB/SEGFFRZARC (
+idProceso          Text Is  'Id. Proceso',
+Libreria           Text Is  'Libreria',
+Archivo            Text Is  'Archivo',
+Miembro            Text Is  'Miembro',
+Estado             Text Is  'Estado');
+
+LABEL ON COLUMN &LIB/SEGFFRZARC (
+idProceso               Is  'Id. Proceso',
+Libreria                Is  'Libreria',
+Archivo                 Is  'Archivo',
+Miembro                 Is  'Miembro',
+Estado                  Is  'Estado');

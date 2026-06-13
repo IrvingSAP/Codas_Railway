@@ -1,0 +1,112 @@
+{% load static %}
+
+<!-- HERO PRINCIPAL (gradiente tipo diseño original, en modo oscuro refinado) -->
+<section class="codas-hero">
+    <div class="mx-auto max-w-7xl px-4">
+        <div class="grid items-center gap-10 md:grid-cols-2">
+            <div>
+                <h1 class="codas-hero-title">
+                    CODAS — Plataforma Empresarial para iSeries
+                </h1>
+                <p class="codas-hero-subtitle">
+                    Diseño profesional de Tablas, Store Procedures y Mantenimientos.
+                </p>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <a href="{% url 'security:security_login' %}" class="codas-btn-primary">
+                        Entrar al Sistema
+                    </a>
+                    <a href="#" class="codas-btn-outline-light">
+                        Solicitar Acceso
+                    </a>
+                </div>
+            </div>
+            <div class="flex justify-center md:justify-end">
+                <div class="h-[280px] w-full max-w-lg overflow-hidden rounded-lg bg-black/30 ring-1 ring-white/10">
+                    <img
+                        src="{% static 'core/img/imagen01.png' %}"
+                        alt="Arquitectura tecnológica CODAS"
+                        class="h-full w-full object-cover"
+                        width="560"
+                        height="280"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ¿QUÉ ES CODAS? -->
+<section class="codas-section-elevated">
+    <div class="mx-auto max-w-7xl px-4">
+        <h2 class="mb-10 text-2xl font-semibold text-white md:text-3xl">¿Qué es CODAS?</h2>
+        <div class="grid gap-8 md:grid-cols-3">
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Diseño de BD2 iSeries</h3>
+                <p class="mt-2 text-gray-400">Define tablas y genera scripts de forma estandarizada.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Store Procedures</h3>
+                <p class="mt-2 text-gray-400">Crea, documenta y aplica procedimientos almacenados.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Mantenimientos</h3>
+                <p class="mt-2 text-gray-400">Genera mantenimientos empresariales listos para producción.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MÓDULOS -->
+<section class="border-b border-white/5 py-16">
+    <div class="mx-auto max-w-7xl px-4">
+        <h2 class="mb-10 text-center text-2xl font-semibold text-white md:text-3xl">Módulos del Sistema</h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Diseño de Tablas</h3>
+                <p class="mt-2 text-sm text-gray-400">Crea estructuras BD2 de forma profesional.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Generador de Scripts</h3>
+                <p class="mt-2 text-sm text-gray-400">Exporta scripts listos para iSeries.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Store Procedures</h3>
+                <p class="mt-2 text-sm text-gray-400">Define y aplica SP con control total.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Mantenimientos</h3>
+                <p class="mt-2 text-sm text-gray-400">Genera mantenimientos empresariales.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Usuarios</h3>
+                <p class="mt-2 text-sm text-gray-400">Administra usuarios y permisos.</p>
+            </div>
+            <div class="codas-module-card text-left">
+                <h3 class="text-lg font-medium text-white">Compañías</h3>
+                <p class="mt-2 text-sm text-gray-400">Gestiona compañías y estructuras.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="codas-section-benefits">
+    <div class="mx-auto max-w-7xl px-4">
+        <h2 class="mb-10 text-2xl font-semibold text-white md:text-3xl">Beneficios</h2>
+        <div class="grid gap-8 md:grid-cols-3">
+            <div>
+                <h3 class="text-lg font-medium text-white">Productividad</h3>
+                <p class="mt-2 text-gray-400">Automatiza tareas repetitivas y reduce errores.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-white">Estandarización</h3>
+                <p class="mt-2 text-gray-400">Define estructuras uniformes para toda la organización.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-white">Seguridad</h3>
+                <p class="mt-2 text-gray-400">MFA, roles, autorizaciones y auditoría integrada.</p>
+            </div>
+        </div>
+    </div>
+</section>

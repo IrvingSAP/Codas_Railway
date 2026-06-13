@@ -1,0 +1,13 @@
+-- *?************************************************************************
+-- *  Programa:?SEGL3PRAUT                                                  *
+-- *  Descripcion:Componente Autorizador indice de Parametrizacion de     ?*
+-- *              Objetos a Autorizar Por AUCODAUTO, AUPROCESO, AUOBJETO  ?*
+-- *                                                                       ?*
+-- *  Autor:?Didier Giovanni Cairasco S.
+-- *  Empresa:?PersonalSoft S.A.S                                           *
+-- *  Fecha Creacion:?30 - Agosto 2011                                      *
+-- *?************************************************************************
+
+CREATE INDEX SEGL3PRAUT
+  ON SEGFFPRAUT (AUCODAUTO, AUPROCESO, AUOBJETO);
+

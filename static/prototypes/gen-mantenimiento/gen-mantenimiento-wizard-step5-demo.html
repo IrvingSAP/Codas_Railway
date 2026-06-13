@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS - Prototipo Generador Mantenimiento - Crear (Paso 5)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: "#0a1a2f", accent: "#1e90ff", hover: "#1877d3" }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo Generador de Mantenimiento</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="font-semibold text-codas-accent">Crear: Paso 5 — SP UPD (actualizar)</span>
+  </div>
+
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4 md:px-5">
+    <a href="gen-mantenimiento-list-demo.html" class="flex shrink-0 items-center gap-2 no-underline" title="Volver al listado (demo)">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">Crear mantenimiento</h1>
+    <div class="flex shrink-0 items-center gap-2 text-xs sm:gap-3 sm:text-sm">
+      <span class="hidden max-w-[14rem] truncate rounded border border-sky-500/20 bg-sky-950/40 px-2 py-1 text-sky-200 sm:inline">AC - DemoCorp S.A.</span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white hover:border-codas-accent hover:bg-codas-accent/15">Salir</button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-2 overflow-y-auto p-4 text-sm" aria-label="Menu">
+        <a href="../table-design-header-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">[]</span>
+          <span class="leading-tight">Diseno de tablas</span>
+        </a>
+        <a href="../sp-asistido/sp-asistido-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">SP</span>
+          <span class="leading-tight">SP Asistido</span>
+        </a>
+        <a href="gen-mantenimiento-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-codas-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline" aria-current="page">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-accent/25 text-base">GM</span>
+          <span class="leading-tight">Generador mantenimiento<br><span class="text-[11px] font-normal text-slate-400">Demo Fase A</span></span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-950 px-6 pb-10 pt-6 md:px-8 md:pb-12 md:pt-8">
+      <div class="mx-auto w-full max-w-[1600px]">
+        <nav class="mb-4 text-xs text-slate-500" aria-label="Migas de pan">
+          <a href="gen-mantenimiento-list-demo.html" class="text-codas-accent no-underline hover:underline">Generador de mantenimiento</a>
+          <span class="mx-1.5">/</span>
+          <span class="text-slate-300">Crear</span>
+          <span class="mx-1.5">/</span>
+          <span class="font-medium text-slate-400">Paso 5 de N</span>
+        </nav>
+
+        <div class="mb-4 overflow-x-auto rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2" aria-label="Progreso del asistente">
+          <ol id="wizard-stepper" class="flex min-w-[980px] items-center gap-2 text-[11px]">
+            <li data-step="1" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">1</span><span class="step-label text-slate-400">Base</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="2" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">2</span><span class="step-label text-slate-400">READ-C</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="3" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">3</span><span class="step-label text-slate-400">ADD</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="4" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">4</span><span class="step-label text-slate-400">READ-R</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="5" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">5</span><span class="step-label text-slate-400">UPD</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="6" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">6</span><span class="step-label text-slate-400">DLT</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="7" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">7</span><span class="step-label text-slate-400">DSPF</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="8" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">8</span><span class="step-label text-slate-400">SQLRPGLE</span></li>
+            <li class="h-px w-6 bg-slate-700"></li><li data-step="9" class="step-item flex items-center gap-2"><span class="step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300">9</span><span class="step-label text-slate-400">Resumen</span></li>
+          </ol>
+        </div>
+        <script>
+          (function () {
+            var stepTextEl = document.querySelector('nav[aria-label="Migas de pan"] .font-medium.text-slate-400');
+            var stepper = document.getElementById('wizard-stepper');
+            if (!stepTextEl || !stepper) return;
+            var m = (stepTextEl.textContent || '').match(/Paso\s+(\d+)/i);
+            if (!m) return;
+            var current = parseInt(m[1], 10);
+            stepper.querySelectorAll('.step-item').forEach(function (item) {
+              var n = parseInt(item.getAttribute('data-step') || '0', 10);
+              var dot = item.querySelector('.step-dot');
+              var label = item.querySelector('.step-label');
+              if (!dot || !label) return;
+              if (n < current) {
+                dot.className = 'step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-200';
+                label.className = 'step-label text-emerald-300/90';
+              } else if (n === current) {
+                dot.className = 'step-dot inline-flex h-6 w-6 items-center justify-center rounded-full border border-codas-accent bg-codas-accent/25 text-cyan-100';
+                label.className = 'step-label text-codas-accent';
+              }
+            });
+          })();
+        </script>
+
+        <div class="mb-6 max-w-4xl">
+          <h2 class="text-lg font-semibold text-white">Selección de SP para Actualizar registro</h2>
+          <p class="mt-1 text-sm text-slate-500">
+            <code class="rounded bg-slate-800 px-1.5 py-0.5 text-xs text-indigo-200/90">UPD</code> (UPDATE) en <code class="text-emerald-300/90">SPDefinition</code>. Estándar 1.1. Selección <strong class="text-slate-300">opcional</strong>.
+            <button type="button" id="btn-clear-sel" class="text-codas-accent underline decoration-codas-accent/40 hover:decoration-codas-accent">Quitar selección</button>
+          </p>
+        </div>
+
+        <section class="mb-6 rounded-xl border border-cyan-500/20 bg-cyan-950/20 p-4 md:p-5" aria-labelledby="sec-salida">
+          <p id="sec-salida" class="text-[11px] font-bold uppercase tracking-widest text-cyan-300/90">Salida</p>
+          <p class="mt-1 text-xs text-cyan-200/60">Nombre del mantenimiento y tabla (paso 1).</p>
+          <dl class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-lg border border-white/5 bg-slate-900/50 px-3 py-2.5">
+              <dt class="text-[11px] font-medium uppercase text-slate-500">Nombre del mantenimiento</dt>
+              <dd id="out-mnt" class="mt-0.5 font-mono text-sm font-semibold text-white">—</dd>
+            </div>
+            <div class="rounded-lg border border-white/5 bg-slate-900/50 px-3 py-2.5">
+              <dt class="text-[11px] font-medium uppercase text-slate-500">Tabla seleccionada (HeaderTable)</dt>
+              <dd id="out-table" class="mt-0.5 font-mono text-sm text-cyan-100">—</dd>
+            </div>
+          </dl>
+          <p id="salida-aviso" class="mt-3 hidden text-xs text-amber-200/90">Sin datos del paso 1. <a class="text-codas-accent underline" href="gen-mantenimiento-wizard-step1-demo.html">Paso 1</a></p>
+        </section>
+
+        <section class="rounded-xl border border-white/10 bg-slate-900/40 p-4" aria-labelledby="sec-sp-upd" data-gm-wizard-dt="sp-upd">
+          <h3 id="sec-sp-upd" class="text-sm font-semibold text-white">Definiciones SP (UPD)</h3>
+          <p class="mt-1 text-xs text-slate-500">Filtro: <code class="text-emerald-300/90">operation = "UPD"</code>.</p>
+
+          <form class="gm-wizard-dt-toolbar mb-4 mt-4 flex flex-col gap-4 rounded-lg border border-white/5 bg-slate-900/30 p-4" onsubmit="return false;">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-3">
+              <div>
+                <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Listado</span>
+                <p class="mt-0.5 text-xs text-slate-600">Buscar por nombre · Registros por página · Filtros</p>
+              </div>
+              <span class="rounded border border-codas-accent/25 bg-codas-accent/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-codas-accent/90">Estándar datatable</span>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+              <div class="min-w-0 xl:col-span-2">
+                <label class="mb-1 block text-xs font-medium text-slate-400" for="filter-search">Buscar por nombre</label>
+                <input type="search" id="filter-search" name="q" placeholder="Nombre SP, descripción, librería, tabla…" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-codas-accent" autocomplete="off">
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-slate-400" for="filter-page-size">Registros por página</label>
+                <select id="filter-page-size" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                  <option value="10" selected>10</option>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-slate-400" for="filter-schema">Filtro: esquema del SP</label>
+                <select id="filter-schema" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                  <option value="">Todos</option>
+                  <option value="R1DATA">R1DATA</option>
+                  <option value="LIBIACP">LIBIACP</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-slate-400" for="filter-status">Filtro: estado</label>
+                <select id="filter-status" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                  <option value="">Todos</option>
+                  <option value="D">Borrador</option>
+                  <option value="A">Activo</option>
+                  <option value="I">Inactivo</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-slate-400" for="filter-script">Filtro: script</label>
+                <select id="filter-script" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent">
+                  <option value="">Todos</option>
+                  <option value="1">Generado</option>
+                  <option value="0">No generado</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+              <button type="button" id="btn-apply" class="rounded-md bg-codas-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-hover">Aplicar filtros</button>
+              <button type="button" id="btn-clear" class="rounded-md border border-slate-600 px-4 py-2 text-sm text-slate-300 hover:bg-white/5">Limpiar</button>
+            </div>
+          </form>
+
+          <div class="overflow-hidden rounded-lg border border-white/10 bg-slate-900/50 shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[1100px] border-collapse text-left text-sm" id="sp-table">
+                <thead>
+                  <tr class="border-b border-white/10 bg-slate-900/90">
+                    <th class="w-10 px-2 py-3 text-center text-xs font-semibold uppercase text-slate-500"></th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase text-slate-400">Nombre SP (corto)</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase text-slate-400">Descripción</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase text-slate-400">Librería</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase text-slate-400">Tabla diseño</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase text-slate-400">Estado</th>
+                    <th class="px-3 py-3 text-center text-xs font-semibold uppercase text-slate-400">Script</th>
+                    <th class="px-3 py-3 text-xs font-semibold uppercase text-slate-400">Actualizado</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5" id="sp-table-body"></tbody>
+              </table>
+            </div>
+            <div class="flex flex-col gap-3 border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+              <p id="pagination-info">Mostrando <span class="font-medium text-slate-300" id="pg-range">0-0</span> de <span class="font-medium text-slate-300" id="pg-total">0</span></p>
+              <nav class="flex flex-wrap items-center justify-end gap-1 sm:gap-2" id="pagination-nav" aria-label="Paginacion">
+                <button type="button" id="pg-prev" class="rounded border border-slate-600 px-2.5 py-1.5 text-slate-300 hover:bg-white/5" disabled>Anterior</button>
+                <div class="flex flex-wrap items-center gap-1" id="pagination-pages"></div>
+                <button type="button" id="pg-next" class="rounded border border-slate-600 px-2.5 py-1.5 text-slate-300 hover:bg-white/5" disabled>Siguiente</button>
+              </nav>
+            </div>
+          </div>
+        </section>
+
+        <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex flex-wrap gap-2">
+            <a href="gen-mantenimiento-list-demo.html" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-rose-500/30 bg-rose-950/30 px-4 py-2.5 text-sm text-rose-200 no-underline hover:bg-rose-950/50">Cancelar</a>
+            <a href="gen-mantenimiento-wizard-step4-demo.html" class="inline-flex min-h-[44px] items-center justify-center rounded-md border border-slate-600 px-4 py-2.5 text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+          </div>
+          <div class="flex flex-wrap justify-end gap-2">
+            <button type="button" id="btn-next" class="inline-flex min-h-[44px] min-w-[160px] items-center justify-center rounded-md bg-codas-accent px-5 text-sm font-medium text-white hover:bg-codas-hover">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var STORAGE = { MNT: 'gm_wizard_mnt', TABLE: 'gm_wizard_table' };
+      var rows = [
+        { id: '501', operation: 'UPD', procedureShort: 'SP_UPD_CUS', procedureLong: 'Actualización de cliente', schema: 'R1DATA', tableDesign: 'R1DATA.CUSMAS', status: 'A', script: true, updated: '2026-04-25 10:00' },
+        { id: '502', operation: 'UPD', procedureShort: 'SP_UPD_ORD', procedureLong: 'Cambio de pedido', schema: 'R1DATA', tableDesign: 'R1DATA.ORDHDR', status: 'A', script: true, updated: '2026-04-25 09:00' },
+        { id: '503', operation: 'UPD', procedureShort: 'SP_UPD_DTL', procedureLong: 'Línea de pedido (UPD)', schema: 'R1DATA', tableDesign: 'R1DATA.ORDDTL', status: 'D', script: false, updated: '2026-04-24 14:00' },
+        { id: '504', operation: 'UPD', procedureShort: 'SP_UPD_INV', procedureLong: 'Ajuste inventario', schema: 'R1DATA', tableDesign: 'STOCK.INVL01', status: 'A', script: true, updated: '2026-04-24 11:00' },
+        { id: '505', operation: 'UPD', procedureShort: 'SP_UPD_VEN', procedureLong: 'Modificación vencimiento', schema: 'R1DATA', tableDesign: 'R1DATA.VENCIM', status: 'A', script: false, updated: '2026-04-23 16:00' },
+        { id: '506', operation: 'UPD', procedureShort: 'SP_UPD_CTA', procedureLong: 'Actualizar mov. cuenta', schema: 'R1DATA', tableDesign: 'R1DATA.CTACTE', status: 'A', script: true, updated: '2026-04-23 09:00' },
+        { id: '507', operation: 'UPD', procedureShort: 'SP_UPD_PAY', procedureLong: 'Cambio cabecera nómina', schema: 'R1DATA', tableDesign: 'R1DATA.PAYHDR', status: 'D', script: false, updated: '2026-04-22 12:00' },
+        { id: '508', operation: 'UPD', procedureShort: 'SP_UPD_MOV', procedureLong: 'Mov. inventario (UPD)', schema: 'R1DATA', tableDesign: 'STOCK.MOVINV', status: 'A', script: true, updated: '2026-04-22 10:00' },
+        { id: '509', operation: 'UPD', procedureShort: 'SP_UPD_LOG', procedureLong: 'Corrección en log', schema: 'LIBIACP', tableDesign: 'R1CRP.LOGERR', status: 'I', script: true, updated: '2026-04-21 15:00' },
+        { id: '510', operation: 'UPD', procedureShort: 'SP_UPD_SRC', procedureLong: 'Actualizar fuente SRC', schema: 'LIBIACP', tableDesign: 'R1CRP.SRCTAB', status: 'A', script: true, updated: '2026-04-21 08:00' },
+        { id: '511', operation: 'UPD', procedureShort: 'SP_UPD_CTRX', procedureLong: 'Cambio control análisis', schema: 'LIBIACP', tableDesign: 'R1CRP.CTRSPX', status: 'A', script: false, updated: '2026-04-20 13:00' },
+        { id: '512', operation: 'UPD', procedureShort: 'SP_UPD_ALM', procedureLong: 'Ajuste pos. almacén', schema: 'R1DATA', tableDesign: 'STOCK.ALM01', status: 'A', script: true, updated: '2026-04-20 10:00' }
+      ];
+      var state = { currentPage: 1, selectedId: null, filtered: rows.slice() };
+      var bodyEl = document.getElementById('sp-table-body');
+      var filterSearch = document.getElementById('filter-search');
+      var filterSchema = document.getElementById('filter-schema');
+      var filterStatus = document.getElementById('filter-status');
+      var filterScript = document.getElementById('filter-script');
+      var pageSizeSelect = document.getElementById('filter-page-size');
+      var pgRange = document.getElementById('pg-range');
+      var pgTotal = document.getElementById('pg-total');
+      var pgNav = document.getElementById('pagination-pages');
+      var pgPrev = document.getElementById('pg-prev');
+      var pgNext = document.getElementById('pg-next');
+      var btnNext = document.getElementById('btn-next');
+      var outMnt = document.getElementById('out-mnt');
+      var outTable = document.getElementById('out-table');
+      var salidaAviso = document.getElementById('salida-aviso');
+      var btnClearSel = document.getElementById('btn-clear-sel');
+      function loadSalida() {
+        try {
+          var m = sessionStorage.getItem(STORAGE.MNT);
+          var t = sessionStorage.getItem(STORAGE.TABLE);
+          if (m) outMnt.textContent = m;
+          if (t) outTable.textContent = t;
+          if (!m || !t) salidaAviso.classList.remove('hidden');
+        } catch (e) { salidaAviso.classList.remove('hidden'); }
+      }
+      function statusInfo(s) {
+        if (s === 'A') return { t: 'Activo', c: 'text-emerald-300 bg-emerald-500/20' };
+        if (s === 'D') return { t: 'Borrador', c: 'text-amber-200 bg-amber-500/20' };
+        if (s === 'I') return { t: 'Inactivo', c: 'text-slate-400 bg-slate-600/30' };
+        return { t: s, c: 'text-slate-300' };
+      }
+      function pageSize() {
+        var v = parseInt(pageSizeSelect.value, 10);
+        if ([10, 20, 30, 50].indexOf(v) === -1) v = 10;
+        return v;
+      }
+      function applyFilters() {
+        var q = (filterSearch.value || '').trim().toLowerCase();
+        var sch = filterSchema.value;
+        var st = filterStatus.value;
+        var sc = filterScript.value;
+        state.filtered = rows.filter(function (r) {
+          if (r.operation !== 'UPD') return false;
+          if (sch && r.schema !== sch) return false;
+          if (st && r.status !== st) return false;
+          if (sc === '1' && !r.script) return false;
+          if (sc === '0' && r.script) return false;
+          if (q) {
+            var b = (r.procedureShort + ' ' + r.procedureLong + ' ' + r.schema + ' ' + r.tableDesign).toLowerCase();
+            if (b.indexOf(q) === -1) return false;
+          }
+          return true;
+        });
+        state.currentPage = 1;
+        if (state.selectedId && !state.filtered.some(function (x) { return x.id === state.selectedId; })) state.selectedId = null;
+        renderTable();
+      }
+      function clearSelection() {
+        state.selectedId = null;
+        document.querySelectorAll('#sp-table-body input[name="sp_upd_sel"]').forEach(function (r) { r.checked = false; });
+        document.querySelectorAll('#sp-table-body tr').forEach(function (row) { row.classList.remove('bg-codas-accent/10'); });
+        renderTable();
+      }
+      function renderTable() {
+        var ps = pageSize();
+        var total = state.filtered.length;
+        var pages = Math.max(1, Math.ceil(total / ps));
+        if (state.currentPage > pages) state.currentPage = pages;
+        var start = (state.currentPage - 1) * ps;
+        var slice = state.filtered.slice(start, start + ps);
+        bodyEl.innerHTML = '';
+        slice.forEach(function (r) {
+          var st = statusInfo(r.status);
+          var tr = document.createElement('tr');
+          tr.className = 'hover:bg-white/[0.03] ' + (state.selectedId === r.id ? 'bg-codas-accent/10' : '');
+          tr.innerHTML =
+            '<td class="px-2 py-3 text-center"><input type="radio" name="sp_upd_sel" class="h-4 w-4 border-slate-500 text-codas-accent" data-id="' + r.id + '"' + (state.selectedId === r.id ? ' checked' : '') + '></td>' +
+            '<td class="px-3 py-3 font-mono text-sm font-medium text-codas-accent">' + r.procedureShort + '</td>' +
+            '<td class="px-3 py-3 text-xs text-slate-300">' + r.procedureLong + '</td>' +
+            '<td class="px-3 py-3 font-mono text-xs text-slate-400">' + r.schema + '</td>' +
+            '<td class="px-3 py-3 text-xs text-slate-300">' + r.tableDesign + '</td>' +
+            '<td class="px-3 py-3 text-center"><span class="inline-flex rounded-full px-2 py-0.5 text-xs ' + st.c + '">' + st.t + '</span></td>' +
+            '<td class="px-3 py-3 text-center text-xs ' + (r.script ? 'text-emerald-300' : 'text-slate-500') + '">' + (r.script ? 'Sí' : 'No') + '</td>' +
+            '<td class="px-3 py-3 text-xs text-slate-500">' + r.updated + '</td>';
+          tr.querySelector('input[type=radio]').addEventListener('change', function () {
+            state.selectedId = r.id;
+            document.querySelectorAll('#sp-table-body tr').forEach(function (row) { row.classList.remove('bg-codas-accent/10'); });
+            tr.classList.add('bg-codas-accent/10');
+          });
+          bodyEl.appendChild(tr);
+        });
+        if (slice.length === 0) {
+          var empty = document.createElement('tr');
+          empty.innerHTML = '<td colspan="8" class="px-3 py-8 text-center text-sm text-slate-500">Sin resultados con los filtros actuales.</td>';
+          bodyEl.appendChild(empty);
+        }
+        var last = start + slice.length;
+        pgRange.textContent = total ? (start + 1 + '-' + last) : '0-0';
+        pgTotal.textContent = String(total);
+        pgNav.innerHTML = '';
+        for (var p = 1; p <= pages; p++) {
+          (function (page) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = String(page);
+            b.className = 'min-w-[2rem] rounded border px-2.5 py-1 ' + (state.currentPage === page ? 'border-codas-accent bg-codas-accent/20 font-medium text-codas-accent' : 'border-slate-600 text-slate-300 hover:bg-white/5');
+            b.addEventListener('click', function () { state.currentPage = page; renderTable(); });
+            pgNav.appendChild(b);
+          })(p);
+        }
+        if (pgPrev) {
+          pgPrev.disabled = state.currentPage <= 1;
+          pgPrev.onclick = function () { if (state.currentPage > 1) { state.currentPage--; renderTable(); } };
+        }
+        if (pgNext) {
+          pgNext.disabled = state.currentPage >= pages;
+          pgNext.onclick = function () { if (state.currentPage < pages) { state.currentPage++; renderTable(); } };
+        }
+      }
+      document.getElementById('btn-apply').addEventListener('click', applyFilters);
+      document.getElementById('btn-clear').addEventListener('click', function () {
+        filterSearch.value = '';
+        filterSchema.value = '';
+        filterStatus.value = '';
+        filterScript.value = '';
+        pageSizeSelect.value = '10';
+        applyFilters();
+      });
+      pageSizeSelect.addEventListener('change', function () { state.currentPage = 1; renderTable(); });
+      btnClearSel.addEventListener('click', function (e) { e.preventDefault(); clearSelection(); });
+      btnNext.addEventListener('click', function () {
+        try {
+          if (state.selectedId) sessionStorage.setItem('gm_wizard_sp_upd_id', state.selectedId);
+          else sessionStorage.removeItem('gm_wizard_sp_upd_id');
+        } catch (err) { /* empty */ }
+        window.location.href = 'gen-mantenimiento-wizard-step6-demo.html';
+      });
+      loadSalida();
+      applyFilters();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block title %}CODAS — SP Asistido{% endblock %}
+{% block header_title %}SP Asistido{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl pb-10 md:pb-14">
+    <h2 class="text-base font-semibold text-white">Procedimientos almacenados (definiciones)</h2>
+    <p class="mt-1 text-sm text-gray-500">Aún no hay definiciones guardadas.</p>
+
+    <div class="mb-6 mt-8">
+        <label class="mb-1.5 block text-xs font-medium text-gray-500" for="new-sp-select-empty">Nuevo procedimiento</label>
+        <select id="new-sp-select-empty" class="h-[44px] w-full max-w-md cursor-pointer rounded-md border-2 border-codas-blue-accent/50 bg-codas-blue-accent/10 px-3 pr-8 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-codas-blue-accent sm:max-w-sm" title="Asistente en panel para READ, ADD, UPD y DLT">
+            <option value="">+ Nuevo procedimiento (elegir operación)…</option>
+            <option value="{% url 'sp_asistido:read_step1' %}">Leer (READ)</option>
+            <option value="{% url 'sp_asistido:add_step1' %}">Añadir (ADD)</option>
+            <option value="{% url 'sp_asistido:upd_step1' %}">Cambiar (UPD)</option>
+            <option value="{% url 'sp_asistido:dlt_step1' %}">Borrar (DLT)</option>
+        </select>
+    </div>
+    <script>
+    document.getElementById('new-sp-select-empty')?.addEventListener('change', function () {
+        if (this.value) window.location.href = this.value;
+    });
+    </script>
+
+    <p class="mb-2 text-center text-sm text-gray-500">
+        Atajos:
+        <a href="{% url 'sp_asistido:read_step1' %}" class="text-sky-300 no-underline hover:underline">Leer (READ)</a> ·
+        <a href="{% url 'sp_asistido:add_step1' %}" class="text-emerald-300 no-underline hover:underline">Añadir (ADD)</a> ·
+        <a href="{% url 'sp_asistido:upd_step1' %}" class="text-codas-blue-accent [text-shadow:0_0_8px_rgba(30,144,255,0.25)] no-underline hover:underline">Cambiar (UPD)</a> ·
+        <a href="{% url 'sp_asistido:dlt_step1' %}" class="text-rose-300 no-underline hover:underline">Borrar (DLT)</a>
+    </p>
+
+    <div class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-700/80 bg-slate-900/40 px-6 py-16 text-center" role="status">
+        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-800/80 text-3xl" aria-hidden="true">🗂️</div>
+        <h3 class="m-0 text-lg font-semibold text-white">Aún no hay procedimientos definidos</h3>
+        <p class="mt-2 max-w-md text-sm text-gray-500">
+            Cree el primero con el asistente (ADD en panel; otras operaciones con la ayuda de referencia).
+            Las definiciones se vinculan a tablas de <strong class="text-gray-400">diseño de tablas</strong> de su compañía.
+        </p>
+        <p class="mt-4 text-xs text-gray-600">
+            <a href="{% static 'prototypes/sp-asistido/sp-asistido-list-demo.html' %}" class="text-codas-blue-accent no-underline hover:underline">Demo visual de listado (HTML de referencia)</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

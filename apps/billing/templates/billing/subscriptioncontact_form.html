@@ -1,0 +1,57 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar contacto{% else %}Nuevo contacto{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar contacto{% else %}Nuevo contacto{% endif %}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% if is_edit %}{% url 'billing:subscriptioncontact_detail' contact.pk %}{% else %}{% url 'billing:subscriptioncontact_list' %}{% endif %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<form method="post" class="max-w-3xl space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div>
+        <label for="{{ form.subscription.id_for_label }}" class="codas-label">{{ form.subscription.label }} <span class="text-rose-400">*</span></label>
+        {{ form.subscription }}
+        {% if form.subscription.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.subscription.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+        <label for="{{ form.full_name.id_for_label }}" class="codas-label">{{ form.full_name.label }} <span class="text-rose-400">*</span></label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.full_name.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.phone.id_for_label }}" class="codas-label">{{ form.phone.label }} <span class="text-rose-400">*</span></label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.phone.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="codas-label">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% if form.email.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.email.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+    <div>
+        <label for="{{ form.role.id_for_label }}" class="codas-label">{{ form.role.label }}</label>
+        {{ form.role }}
+        {% if form.role.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.role.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+        <label for="{{ form.notes.id_for_label }}" class="codas-label">{{ form.notes.label }}</label>
+        {{ form.notes }}
+        {% if form.notes.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.notes.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% if is_edit %}{% url 'billing:subscriptioncontact_detail' contact.pk %}{% else %}{% url 'billing:subscriptioncontact_list' %}{% endif %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

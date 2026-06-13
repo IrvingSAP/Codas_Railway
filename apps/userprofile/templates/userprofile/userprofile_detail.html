@@ -1,0 +1,73 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — {{ target_profile.user.get_username }}{% endblock %}
+{% block header_title %}Ver perfil{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'userprofile:list' %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al listado</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos del perfil</h2>
+    <p class="mt-1 text-xs text-gray-500">Solo lectura · mismo formato que edición</p>
+</div>
+
+<div class="max-w-3xl space-y-5">
+    <div>
+        <label class="codas-label">Nombre (usuario)</label>
+        <input type="text" readonly tabindex="-1" value="{{ target_profile.user.get_username }}"
+            class="h-[38px] w-full max-w-md cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+    </div>
+    <div>
+        <label class="codas-label">Correo electrónico</label>
+        <input type="email" readonly tabindex="-1" value="{{ target_profile.user.email|default:'' }}"
+            class="h-[38px] w-full max-w-md cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label class="codas-label">Nombre</label>
+            <input type="text" readonly tabindex="-1" value="{{ target_profile.user.first_name|default:'—' }}"
+                class="h-[38px] w-full cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+        </div>
+        <div>
+            <label class="codas-label">Apellido</label>
+            <input type="text" readonly tabindex="-1" value="{{ target_profile.user.last_name|default:'—' }}"
+                class="h-[38px] w-full cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+        </div>
+    </div>
+    <div>
+        <label class="codas-label">Compañía</label>
+        <input type="text" readonly tabindex="-1" value="{% if target_profile.company %}{{ target_profile.company }}{% else %}—{% endif %}"
+            class="h-[38px] w-full max-w-md cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label class="codas-label">Teléfono</label>
+            <input type="text" readonly tabindex="-1" value="{{ target_profile.phone|default:'—' }}"
+                class="h-[38px] w-full cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+        </div>
+        <div>
+            <label class="codas-label">Documento de identidad</label>
+            <input type="text" readonly tabindex="-1" value="{{ target_profile.document_id|default:'—' }}"
+                class="h-[38px] w-full cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+        </div>
+    </div>
+    <div>
+        <label class="codas-label">Dirección</label>
+        <input type="text" readonly tabindex="-1" value="{{ target_profile.address|default:'—' }}"
+            class="h-[38px] w-full cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+    </div>
+    <div>
+        <label class="codas-label">Estado</label>
+        <input type="text" readonly tabindex="-1" value="{{ target_profile.get_status_display }}"
+            class="h-[38px] w-full max-w-md cursor-default rounded-md border border-gray-600 bg-gray-900 px-2.5 text-sm text-gray-300 outline-none">
+    </div>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <a href="{% url 'userprofile:update' target_profile.pk %}" class="inline-flex items-center justify-center rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white no-underline transition hover:bg-codas-accent-hover">Editar</a>
+        <a href="{% url 'userprofile:list' %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Volver al listado</a>
+        <a href="{% url 'userprofile:delete' target_profile.pk %}" class="inline-flex items-center rounded-md border border-rose-500/50 px-5 py-2.5 text-sm text-rose-400 no-underline hover:bg-rose-950/40">Eliminar</a>
+    </div>
+</div>
+{% endblock %}

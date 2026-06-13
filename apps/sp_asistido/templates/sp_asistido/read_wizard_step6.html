@@ -1,0 +1,105 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block title %}CODAS — SP Asistido · READ · Paso 6{% endblock %}
+{% block header_title %}SP Asistido · READ{% endblock %}
+
+{% block content %}
+{% include "sp_asistido/includes/add_wizard_shell_start.html" %}
+    <div>
+        <h2 class="text-lg font-semibold text-white">Firma (resumen)</h2>
+        <p class="mt-1 text-sm text-gray-500">Proyección, WHERE y firma según modalidad READ-C / READ-R antes del SQL final.</p>
+    </div>
+    {% include "sp_asistido/includes/read_wizard_stepper.html" %}
+
+    <div class="w-full space-y-4 rounded-xl border border-white/10 bg-slate-900/40 p-5">
+        <div>
+            <p class="text-xs font-medium text-gray-500">Esquema / SP</p>
+            <p class="mt-0.5 font-mono text-sm text-codas-blue-accent">{{ definition.schema_name }}.{{ definition.procedure_name_short }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">Columnas del resultado (SELECT)</p>
+            <ul class="mt-2 list-inside list-disc text-sm text-sky-200/90">
+                {% for a in projection_assignments %}
+                <li class="font-mono">{{ a.detail_field.field_name_short }}</li>
+                {% empty %}
+                <li class="text-gray-500">—</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-gray-500">WHERE (AND)</p>
+            <ul class="mt-2 space-y-1 text-sm text-gray-300">
+                {% for wc in where_conditions %}
+                <li class="font-mono text-xs text-gray-200">
+                    {{ wc.detail_field.field_name_short }} {{ wc.operator }}
+                    {% if wc.value_origin == "IN" %}
+                    <span class="text-sky-300/90">{{ wc.value_text|default:"" }}</span> <span class="text-gray-500">(IN)</span>
+                    {% else %}
+                    <span class="text-sky-200/80">{{ wc.value_text|default:"" }}</span> <span class="text-gray-500">(literal)</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-1 md:grid-cols-2">
+            <div>
+                <p class="text-xs font-medium text-gray-500">ORDER BY</p>
+                <p class="mt-1 text-sm text-gray-200">
+                {% if is_cursor_mode and order_conditions %}
+                    <span class="font-mono text-sky-200/90">{% for oc in order_conditions %}{% if not forloop.first %}, {% endif %}{{ oc.detail_field.field_name_short }} {{ oc.operator }}{% endfor %}</span>
+                {% else %}
+                    <span class="text-gray-500">{% if is_cursor_mode %}— (sin orden){% else %}No aplica en READ-R{% endif %}</span>
+                {% endif %}
+                </p>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-gray-500">FETCH</p>
+                <p class="mt-1 text-sm text-sky-200/90">
+                    {% if not is_cursor_mode %}
+                    <span class="text-gray-500">No aplica en READ-R</span>
+                    {% elif fetch_unlimited %}
+                    <span class="text-gray-300">Sin límite</span>
+                    {% else %}
+                    <span class="font-mono">FETCH FIRST {{ fetch_n }} ROWS</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div>
+            <p class="text-xs font-medium text-amber-200/80">SPECIFIC (sugerido, IBM i)</p>
+            <p class="mt-0.5 font-mono text-sm text-amber-200/90">{{ specific_name }}</p>
+        </div>
+        <div class="border-t border-white/10 pt-3">
+            <p class="text-xs font-medium text-codas-blue-accent/90">Parámetros IN (WHERE)</p>
+            <p class="mt-2 break-words font-mono text-sm text-emerald-200/90">{% if in_line %}{{ in_line }}{% else %}— (solo literales en WHERE){% endif %}</p>
+        </div>
+        <div class="rounded-lg border border-sky-500/20 bg-slate-950/50 p-3">
+            <p class="text-xs font-medium text-sky-300/90">Parámetros OUT (plantilla CODAS §9.2 / §9.7)</p>
+            {% if is_cursor_mode %}
+            <p class="mt-2 font-mono text-sm text-sky-200/90">P_ERROR_CODE INTEGER, P_ERROR_MSG VARCHAR(200)</p>
+            {% else %}
+            <ul class="mt-2 list-inside list-disc text-sm text-sky-200/90">
+                {% for a in projection_assignments %}
+                <li class="font-mono">O_{{ a.detail_field.field_name_short }}</li>
+                {% endfor %}
+                <li class="font-mono">P_ERROR_CODE INTEGER</li>
+                <li class="font-mono">P_ERROR_MSG VARCHAR(200)</li>
+            </ul>
+            {% endif %}
+        </div>
+        {% if is_cursor_mode %}
+        <p class="text-xs text-gray-500">Se incluye <span class="text-gray-400">DYNAMIC RESULT SETS 1</span> y cursor <span class="text-gray-400">WITH RETURN</span> en el generador (§9.7).</p>
+        {% else %}
+        <p class="text-xs text-gray-500">READ-R no usa cursor; genera <span class="text-gray-400">SELECT ... INTO OUT</span> para registro único. Política de múltiples filas: <span class="text-gray-300">{% if read_row_policy == "F" %}Tomar primer registro{% else %}Error controlado{% endif %}</span>.</p>
+        {% endif %}
+    </div>
+
+    <div class="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <form method="post" class="inline">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_draft">
+            <button type="submit" class="rounded-md border border-gray-600 bg-slate-800/50 px-4 py-2.5 text-sm text-gray-200 hover:bg-slate-800">Guardar borrador</button>
+        </form>
+        <a href="{% url 'sp_asistido:read_step' definition.pk 7 %}" class="inline-flex justify-center rounded-md bg-sky-600 px-4 py-2.5 text-center text-sm font-medium text-white no-underline hover:opacity-95">Siguiente · Vista previa SQL</a>
+    </div>
+{% include "sp_asistido/includes/add_wizard_shell_end.html" %}
+{% endblock %}

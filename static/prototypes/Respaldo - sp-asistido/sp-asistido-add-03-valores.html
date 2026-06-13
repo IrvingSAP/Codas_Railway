@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — SP Asistido · ADD · Paso 3 de 6 · Valores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' } } } } }
+  </script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></span>
+    <span class="mx-2 text-slate-600">|</span>
+    <a href="sp-asistido-list-demo.html" class="text-codas-accent no-underline hover:underline">Volver al listado</a>
+  </div>
+  <header class="flex h-14 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4">
+    <a href="sp-asistido-list-demo.html" class="text-sm text-codas-accent no-underline">← Listado</a>
+    <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-white md:text-lg">Nuevo procedimiento · INSERT</h1>
+    <span class="hidden sm:inline text-xs text-slate-500">AC · DemoCorp S.A.</span>
+  </header>
+  <div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+    <ol class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs" aria-label="Progreso del asistente (paso 3 de 6)">
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Tabla</li>
+      <li class="text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Columnas</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">3</span> Valores</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">4</span> Revisión</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Firma</li>
+      <li class="hidden sm:inline text-slate-600">→</li>
+      <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Vista previa</li>
+    </ol>
+  </div>
+  <main class="min-h-0 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
+    <form id="form-add-03" class="mx-auto w-full max-w-5xl">
+      <h2 class="text-lg font-semibold text-white">3 · Entrada: identificación y columnas</h2>
+      <p class="mt-1 text-sm text-slate-500">Complete <strong class="text-slate-300">esquema</strong>, <strong class="text-slate-300">nombres</strong> y opcionalmente el <strong class="text-slate-300">comentario</strong>. Los <strong class="text-slate-300">parámetros IN</strong> mostrados abajo son <strong class="text-white">solo lectura en demo</strong> (se derivan de las columnas con origen &quot;Parámetro IN&quot;). Luego defina el <strong class="text-slate-300">origen</strong> por columna. Literal/Expresión: tercer columna obligatoria si aplica.</p>
+      <p class="mt-2 rounded-lg border border-codas-accent/20 bg-slate-900/60 px-3 py-2 text-xs text-slate-400">
+        La misma identificación (sin la tabla) se vuelve a mostrar en el <a class="text-codas-accent underline" href="sp-asistido-add-05-valores.html">paso 5 (firma / resumen)</a>, junto con <strong class="text-slate-300">SPECIFIC</strong>, <strong class="text-slate-300">parámetros OUT</strong> (plantilla §9) y opciones de manejadores; la <a class="text-codas-accent underline" href="sp-asistido-add-06-vista-previa.html">vista previa SQL (paso 6)</a> emite el <code class="text-slate-500">CREATE OR REPLACE PROCEDURE</code> completo con handlers y códigos de fin de ejecución. En el producto se persistirá la sesión del asistente.
+      </p>
+
+      <fieldset class="mt-5 rounded-xl border border-white/10 bg-slate-900/40 p-4">
+        <legend class="px-1 text-sm font-semibold text-white">Procedimiento almacenado</legend>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="procedure_schema" class="mb-1 block text-xs font-medium text-slate-400">Esquema / librería <span class="text-slate-600">(máx. 10)</span></label>
+            <input type="text" id="procedure_schema" name="procedure_schema" required minlength="1" maxlength="10" autocomplete="off" value="R1DATA" class="h-9 w-full max-w-sm rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm uppercase text-codas-accent" title="Librería / esquema IBM i" pattern="[A-Za-z0-9#]{1,10}">
+            <p class="mt-1 text-[10px] text-slate-600">Atributo HTML: <code class="text-slate-500">name="procedure_schema"</code></p>
+          </div>
+          <div>
+            <label for="procedure_name_short" class="mb-1 block text-xs font-medium text-slate-400">Nombre corto del SP <span class="text-slate-600">(máx. 10)</span></label>
+            <input type="text" id="procedure_name_short" name="procedure_name_short" required minlength="1" maxlength="10" autocomplete="off" class="h-9 w-full max-w-xs rounded border border-slate-600 bg-slate-900 px-2.5 font-mono text-sm uppercase text-codas-accent" value="INSCUS00" pattern="[A-Za-z0-9_#]{1,10}" title="A-Z, 0-9, # o _; máximo 10">
+            <p class="mt-1 text-[10px] text-slate-600">Atributo: <code class="text-slate-500">name="procedure_name_short"</code> (Django: por modelo).</p>
+          </div>
+          <div>
+            <label for="procedure_name_long" class="mb-1 block text-xs font-medium text-slate-400">Nombre largo (descriptivo) <span class="text-slate-600">(máx. 50)</span></label>
+            <input type="text" id="procedure_name_long" name="procedure_name_long" required minlength="1" maxlength="50" autocomplete="off" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 text-sm text-slate-200" value="Alta de registro de cliente (INSERT)">
+            <p class="mt-1 text-[10px] text-slate-600">Atributo: <code class="text-slate-500">name="procedure_name_long"</code></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="procedure_comment" class="mb-1 block text-xs font-medium text-slate-400">Comentario descriptivo <span class="text-slate-500">(opcional)</span></label>
+            <input type="text" id="procedure_comment" name="procedure_comment" maxlength="200" autocomplete="off" class="h-9 w-full rounded border border-slate-600 bg-slate-900 px-2.5 text-sm text-slate-200" placeholder="Nota interna o comentario LABEL (según emisión)">
+            <p class="mt-1 text-[10px] text-slate-600">Atributo: <code class="text-slate-500">name="procedure_comment"</code></p>
+          </div>
+        </div>
+        <div class="mt-4 rounded-lg border border-codas-accent/25 bg-codas-accent/5 p-3 text-xs text-slate-300">
+          <p class="font-medium text-codas-accent/95">Parámetros IN previstos <span class="font-normal text-slate-500">(read-only en demo; lista según orígenes IN de la tabla inferior)</span></p>
+          <p class="mt-2 break-all font-mono text-sm text-emerald-300/90">P_CUSNAME VARCHAR(40), P_CUSTATUS CHAR(1)</p>
+        </div>
+      </fieldset>
+
+      <h3 class="mb-0 mt-8 text-base font-semibold text-slate-200">Origen por columna (detalle C.3)</h3>
+      <p class="mb-2 mt-1 text-xs text-slate-500">Nombres provisionales: <code class="text-slate-500">add03_literal_&lt;col&gt;</code>, <code class="text-slate-500">add03_expr_&lt;col&gt;</code>, <code class="text-slate-500">add03_in_&lt;col&gt;</code></p>
+      <div class="mb-1 overflow-x-auto overflow-hidden rounded-xl border border-white/10">
+        <table class="w-full min-w-[800px] text-left text-sm">
+          <thead>
+            <tr class="border-b border-white/10 bg-slate-900/90">
+              <th class="w-[7rem] px-3 py-2.5 text-xs text-slate-400">Columna</th>
+              <th class="w-[10.5rem] px-3 py-2.5 text-xs text-slate-400">Origen (C.3)</th>
+              <th class="px-3 py-2.5 text-xs text-slate-400">Detalle según origen <span class="block font-normal text-slate-600">(Literal/Expresión: no vacío)</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5" id="origen-tbody">
+            <tr class="js-origen-row" data-colid="cusname">
+              <td class="px-3 py-2.5 font-mono text-codas-accent">CUSNAME</td>
+              <td class="px-3 py-2.5 align-top">
+                <label class="sr-only" for="sel-cusname">Origen CUSNAME</label>
+                <select id="sel-cusname" class="js-origen-select h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-slate-900 px-2 text-xs text-white">
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                  <option value="null">NULL</option>
+                  <option value="expr">Expresión SQL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5 align-top">
+                <div class="js-panel js-panel-in">
+                  <label for="add03_in_cusname" class="mb-0.5 block text-[10px] font-medium text-slate-500">Nombre del parámetro IN <span class="text-rose-300/90">(obligatorio)</span></label>
+                  <input type="text" id="add03_in_cusname" name="add03_in_cusname" class="h-8 w-full max-w-xs rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-300 js-in-input" value="P_CUSNAME" minlength="1" required>
+                  <p class="mt-1 text-[10px] text-slate-600">Tipo: <code class="text-slate-500">VARCHAR(40)</code></p>
+                </div>
+                <div class="js-panel js-panel-literal hidden">
+                  <label for="add03_literal_cusname" class="mb-0.5 block text-[10px] font-medium text-amber-200/90">Valor fijo (literal) <span class="text-rose-300/90">· no vacío</span></label>
+                  <input type="text" id="add03_literal_cusname" name="add03_literal_cusname" class="js-literal-input h-8 w-full max-w-md rounded border border-amber-500/30 bg-amber-950/20 px-2 text-xs text-amber-100" value="" placeholder="Obligatorio si elige literal" minlength="1" autocomplete="off" disabled>
+                </div>
+                <div class="js-panel js-panel-null hidden">
+                  <p class="text-xs text-slate-500">Se emitirá <code class="text-slate-400">NULL</code>.</p>
+                </div>
+                <div class="js-panel js-panel-expr hidden">
+                  <label for="add03_expr_cusname" class="mb-0.5 block text-[10px] font-medium text-violet-200/90">Expresión SQL <span class="text-rose-300/90">· no vacía</span></label>
+                  <textarea id="add03_expr_cusname" name="add03_expr_cusname" rows="2" class="js-expr-input w-full max-w-lg rounded border border-violet-500/30 bg-violet-950/20 px-2 py-1.5 font-mono text-xs text-violet-100" minlength="1" disabled></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr class="js-origen-row" data-colid="custatus">
+              <td class="px-3 py-2.5 font-mono text-codas-accent">CUSTATUS</td>
+              <td class="px-3 py-2.5 align-top">
+                <label class="sr-only" for="sel-custatus">Origen CUSTATUS</label>
+                <select id="sel-custatus" class="js-origen-select h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-slate-900 px-2 text-xs text-white">
+                  <option value="in" selected>Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                  <option value="null">NULL</option>
+                  <option value="expr">Expresión SQL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5 align-top">
+                <div class="js-panel js-panel-in">
+                  <label for="add03_in_custatus" class="mb-0.5 block text-[10px] font-medium text-slate-500">Nombre del parámetro IN <span class="text-rose-300/90">(obligatorio)</span></label>
+                  <input type="text" id="add03_in_custatus" name="add03_in_custatus" class="h-8 w-full max-w-xs rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-300 js-in-input" value="P_CUSTATUS" minlength="1" required>
+                </div>
+                <div class="js-panel js-panel-literal hidden">
+                  <label for="add03_literal_custatus" class="mb-0.5 block text-[10px] font-medium text-amber-200/90">Valor fijo (literal) <span class="text-rose-300/90">· no vacío</span></label>
+                  <input type="text" id="add03_literal_custatus" name="add03_literal_custatus" class="js-literal-input h-8 w-full max-w-md rounded border border-amber-500/30 bg-amber-950/20 px-2 text-xs text-amber-100" value="A" minlength="1" maxlength="1" disabled>
+                </div>
+                <div class="js-panel js-panel-null hidden">
+                  <p class="text-xs text-slate-500">Se emitirá <code class="text-slate-400">NULL</code>.</p>
+                </div>
+                <div class="js-panel js-panel-expr hidden">
+                  <label for="add03_expr_custatus" class="mb-0.5 block text-[10px] font-medium text-violet-200/90">Expresión SQL <span class="text-rose-300/90">· no vacía</span></label>
+                  <textarea id="add03_expr_custatus" name="add03_expr_custatus" rows="2" class="js-expr-input w-full max-w-lg rounded border border-violet-500/30 bg-violet-950/20 px-2 py-1.5 font-mono text-xs text-violet-100" minlength="1" disabled></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr class="js-origen-row" data-colid="cuszipc">
+              <td class="px-3 py-2.5 font-mono text-codas-accent">CUSZIPC</td>
+              <td class="px-3 py-2.5 align-top">
+                <label class="sr-only" for="sel-cuszipc">Origen CUSZIPC</label>
+                <select id="sel-cuszipc" class="js-origen-select h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-slate-900 px-2 text-xs text-white">
+                  <option value="in">Parámetro IN</option>
+                  <option value="literal">Literal</option>
+                  <option value="null" selected>NULL</option>
+                  <option value="expr">Expresión SQL</option>
+                </select>
+              </td>
+              <td class="px-3 py-2.5 align-top">
+                <div class="js-panel js-panel-in hidden">
+                  <label for="add03_in_cuszipc" class="mb-0.5 block text-[10px] font-medium text-slate-500">Nombre del parámetro IN <span class="text-rose-300/90">(obligatorio)</span></label>
+                  <input type="text" id="add03_in_cuszipc" name="add03_in_cuszipc" class="h-8 w-full max-w-xs rounded border border-slate-600 bg-slate-900 px-2 font-mono text-xs text-emerald-300 js-in-input" value="P_CUSZIPC" minlength="1" disabled>
+                </div>
+                <div class="js-panel js-panel-literal hidden">
+                  <label for="add03_literal_cuszipc" class="mb-0.5 block text-[10px] font-medium text-amber-200/90">Valor fijo (literal) <span class="text-rose-300/90">· no vacío</span></label>
+                  <input type="text" id="add03_literal_cuszipc" name="add03_literal_cuszipc" class="js-literal-input h-8 w-full max-w-md rounded border border-amber-500/30 bg-amber-950/20 px-2 text-xs text-amber-100" minlength="1" disabled>
+                </div>
+                <div class="js-panel js-panel-null">
+                  <p class="text-xs text-slate-500">Se emitirá <code class="text-slate-400">NULL</code> (nullable).</p>
+                </div>
+                <div class="js-panel js-panel-expr hidden">
+                  <label for="add03_expr_cuszipc" class="mb-0.5 block text-[10px] font-medium text-violet-200/90">Expresión SQL <span class="text-rose-300/90">· no vacía</span></label>
+                  <textarea id="add03_expr_cuszipc" name="add03_expr_cuszipc" rows="2" class="js-expr-input w-full max-w-lg rounded border border-violet-500/30 bg-violet-950/20 px-2 py-1.5 font-mono text-xs text-violet-100" minlength="1" disabled></textarea>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </main>
+  <footer class="shrink-0 border-t border-white/10 bg-codas-dark px-4 py-4">
+    <div class="mx-auto w-full max-w-3xl">
+      <p id="add03-error" class="mb-2 hidden text-center text-xs text-rose-300" role="alert" aria-live="polite"></p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-between">
+        <a href="sp-asistido-add-02-columnas.html" class="rounded-md border border-slate-600 px-4 py-2.5 text-center text-sm text-slate-300 no-underline hover:bg-white/5">Anterior</a>
+        <button type="button" id="add03-btn-next" class="inline-flex w-full min-h-[2.5rem] shrink-0 items-center justify-center rounded-md border border-transparent bg-[#1e90ff] px-4 py-2.5 text-center text-sm font-medium text-white shadow-sm no-underline hover:bg-[#1877d3] sm:w-auto">Siguiente · Revisión</button>
+      </div>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      var panelClass = { in: "js-panel-in", literal: "js-panel-literal", null: "js-panel-null", expr: "js-panel-expr" };
+      function setDisabledForHidden(row) {
+        row.querySelectorAll("input, textarea, select").forEach(function (el) {
+          var panel = el.closest(".js-panel");
+          if (!panel) return;
+          el.disabled = panel.classList.contains("hidden");
+        });
+      }
+      function clearRequiredInRow(row) {
+        row.querySelectorAll("input, textarea").forEach(function (el) {
+          el.removeAttribute("required");
+        });
+      }
+      function syncRow(row) {
+        var sel = row.querySelector(".js-origen-select");
+        if (!sel) return;
+        var v = sel.value;
+        clearRequiredInRow(row);
+        row.querySelectorAll(".js-panel").forEach(function (el) {
+          el.classList.add("hidden");
+        });
+        var key = v in panelClass ? v : "in";
+        var show = row.querySelector("." + panelClass[key]);
+        if (show) show.classList.remove("hidden");
+        if (v === "in") {
+          var inEl = row.querySelector(".js-panel-in .js-in-input");
+          if (inEl) inEl.setAttribute("required", "required");
+        } else if (v === "literal") {
+          var lit = row.querySelector(".js-panel-literal .js-literal-input");
+          if (lit) lit.setAttribute("required", "required");
+        } else if (v === "expr") {
+          var ex = row.querySelector(".js-panel-expr .js-expr-input");
+          if (ex) ex.setAttribute("required", "required");
+        }
+        setDisabledForHidden(row);
+      }
+      document.querySelectorAll(".js-origen-select").forEach(function (sel) {
+        sel.addEventListener("change", function () {
+          var err = document.getElementById("add03-error");
+          if (err) err.classList.add("hidden");
+          syncRow(sel.closest(".js-origen-row"));
+        });
+        syncRow(sel.closest(".js-origen-row"));
+      });
+      document.getElementById("add03-btn-next").addEventListener("click", function () {
+        var form = document.getElementById("form-add-03");
+        var err = document.getElementById("add03-error");
+        if (!form.checkValidity()) {
+          if (err) {
+            err.classList.remove("hidden");
+            err.textContent = "Complete esquema, nombre corto/largo del SP y cada detalle de columna según el origen (IN / literal / expresión con texto).";
+          }
+          form.reportValidity();
+          return;
+        }
+        if (err) err.classList.add("hidden");
+        window.location.href = "sp-asistido-add-04-validacion.html";
+      });
+    })();
+  </script>
+</body>
+</html>

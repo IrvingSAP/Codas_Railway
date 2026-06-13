@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODAS — Prototipo · Listado cabeceras diseño de tabla (HeaderTable)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            codas: { dark: '#0a1a2f', accent: '#1e90ff', hover: '#1877d3' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+  <div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">
+    <span class="font-medium text-slate-300">Prototipo TableDesign · Paso 1</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="font-semibold text-codas-accent">Listado HeaderTable</span>
+    <span class="mx-2 text-slate-600">|</span>
+    <span class="text-slate-500" title="Siguientes pasos (no enlazados aún)">Detalle · Alta/edición · Campos · Borrado</span>
+  </div>
+
+  <header class="flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-codas-dark px-4 md:px-5">
+    <a href="#" class="flex shrink-0 items-center gap-2 no-underline">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-white">C</span>
+      <span class="hidden text-sm font-semibold text-white sm:inline">CODAS</span>
+    </a>
+    <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-white md:text-xl">Diseño de tablas DB2 for i</h1>
+    <div class="flex shrink-0 items-center gap-3">
+      <span class="hidden max-w-[10rem] truncate text-sm text-slate-300 sm:inline">AC · MiCompañía</span>
+      <button type="button" class="rounded-md border border-white/25 px-3 py-2 text-sm text-white hover:border-codas-accent hover:bg-codas-accent/15">Salir</button>
+    </div>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-white/10 bg-codas-dark">
+      <nav class="flex flex-col gap-2 overflow-y-auto p-4 text-sm" aria-label="Menú">
+        <a href="#" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">🏠</span>
+          <span>Inicio / panel</span>
+        </a>
+        <p class="mt-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Datos / IBM i</p>
+        <a href="table-design-header-list-demo.html" class="flex items-center gap-3 rounded-md border-l-4 border-codas-accent bg-white/10 py-3 pl-3 pr-2 text-white no-underline">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-codas-accent/20 text-lg">▦</span>
+          <span class="leading-tight">Diseño de tablas<br><span class="text-[11px] font-normal text-slate-400">Cabeceras</span></span>
+        </a>
+        <a href="sources-crud-demo-list.html" class="flex items-center gap-3 rounded-md border-l-4 border-transparent py-3 pl-3 pr-2 text-slate-300 no-underline hover:bg-white/10">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/5 text-lg">🧩</span>
+          <span>Plantillas Sources</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-950 px-6 pt-6 pb-10 md:px-8 md:pt-8 md:pb-12">
+      <div class="mx-auto w-full max-w-[1600px]">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="max-w-3xl">
+            <h2 class="text-base font-semibold text-white">Cabeceras de diseño de tabla</h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Demo alineada al modelo <code class="rounded bg-slate-800 px-1 py-0.5 text-xs text-emerald-300">HeaderTable</code>:
+              metadatos IBM i (librería <strong class="text-slate-300">obligatoria</strong> en alta/edición y en BD tras migración, nombre físico/lógico, modelo S/A/E, llaves, estado, script).
+              <strong class="font-medium text-slate-400">Ámbito único:</strong> el listado real filtrará por <code class="text-emerald-300/90">company_id</code> del usuario (no hay columna «Compañía»: todos los registros son de esa compañía).
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+            <button type="button" disabled class="cursor-not-allowed rounded-md border border-white/10 bg-slate-800/50 px-4 py-2.5 text-center text-sm text-slate-500" title="Paso siguiente: pantalla de alta">
+              + Nueva cabecera
+            </button>
+            <button type="button" class="rounded-md border border-slate-600 px-4 py-2.5 text-sm text-slate-300 hover:border-slate-500 hover:bg-white/5">
+              Exportar vista (CSV)
+            </button>
+          </div>
+        </div>
+
+        <!-- KPIs resumen (valores ficticios para layout) -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Diseños en ámbito</p>
+            <p class="mt-1 text-2xl font-semibold text-white">24</p>
+            <p class="mt-0.5 text-xs text-slate-500">Cabeceras <code class="text-emerald-400/90">HeaderTable</code> visibles con filtros actuales</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Estado activo</p>
+            <p class="mt-1 text-2xl font-semibold text-emerald-400">19</p>
+            <p class="mt-0.5 text-xs text-slate-500">Incluye borrador listo si <code class="text-slate-400">status=A</code></p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">En proceso</p>
+            <p class="mt-1 text-2xl font-semibold text-amber-400">3</p>
+            <p class="mt-0.5 text-xs text-slate-500"><code class="text-slate-400">status=P</code> · revisión o generación pendiente</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Sin script generado</p>
+            <p class="mt-1 text-2xl font-semibold text-sky-400">8</p>
+            <p class="mt-0.5 text-xs text-slate-500"><code class="text-slate-400">script_generated=False</code></p>
+          </div>
+        </div>
+
+        <!-- Filtros alineados a campos del modelo -->
+        <form class="mb-4 flex flex-col gap-4 rounded-xl border border-white/10 bg-slate-900/40 p-4" aria-label="Filtros de listado">
+          <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
+            <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Filtros</span>
+            <span class="text-xs text-slate-600">Coinciden con índices / listados previstos en backend</span>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6">
+            <div class="min-w-0 xl:col-span-2">
+              <label class="mb-1 block text-xs font-medium text-slate-400">Buscar</label>
+              <input type="search" placeholder="Nombre corto, largo o librería (ej. CUSMAS, Clientes, R1DATA)…" class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Modelo de tabla</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option value="">Todos</option>
+                <option value="S">Simple (S)</option>
+                <option value="A">Avanzado (A)</option>
+                <option value="E">Experto (E)</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Tipo de tabla</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option value="">Todos</option>
+                <option value="PHYSICAL">Física</option>
+                <option value="LOGICAL">Lógica</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Estado</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option value="">Todos</option>
+                <option value="A">Activo</option>
+                <option value="I">Inactivo</option>
+                <option value="P">Proceso</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Script generado</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option value="">Todos</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Tiene llave</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option value="">Todos</option>
+                <option value="1">Sí · <code class="text-[10px]">is_field_key</code></option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Ordenar por</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option>Nombre corto (A→Z)</option>
+                <option>Actualizado (reciente)</option>
+                <option>Estado · nombre corto</option>
+                <option>Tipo físico / lógico</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-slate-400">Por página</label>
+              <select class="h-[38px] w-full rounded-md border border-slate-600 bg-slate-900 px-2.5 text-sm text-white outline-none focus:border-codas-accent focus:ring-1 focus:ring-codas-accent">
+                <option>10</option>
+                <option selected>15</option>
+                <option>25</option>
+                <option>50</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+            <button type="button" class="rounded-md bg-codas-accent px-4 py-2 text-sm font-medium text-white hover:bg-codas-hover">Aplicar filtros</button>
+            <button type="button" class="rounded-md border border-slate-600 px-4 py-2 text-sm text-slate-300 hover:bg-white/5">Limpiar</button>
+          </div>
+        </form>
+
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-900/50 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[1180px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-slate-900/90">
+                  <th class="sticky left-0 z-10 bg-slate-900/95 px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre corto</th>
+                  <th class="min-w-[12rem] px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Nombre largo</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Librería</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Tipo</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Modelo</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Llave</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Script</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400">Estado</th>
+                  <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400" title="Conteo DetailTable por cabecera">Campos</th>
+                  <th class="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Actualizado</th>
+                  <th class="sticky right-0 z-10 bg-slate-900/95 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3 font-mono text-sm font-medium text-codas-accent">CUSMAS</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="Maestro de clientes corporativos">Maestro de clientes corporativos</td>
+                  <td class="px-3 py-3 font-mono text-xs text-slate-400">R1DATA</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 text-xs text-slate-200">Física</span></td>
+                  <td class="px-3 py-3"><span class="rounded border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 text-xs text-emerald-300">Simple</span></td>
+                  <td class="px-3 py-3 text-center text-xs">
+                    <span class="inline-flex flex-wrap justify-center gap-1">
+                      <span class="rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200" title="is_field_key">PK</span>
+                      <span class="rounded bg-sky-500/15 px-1.5 py-0.5 text-sky-200" title="is_auto_key">AUTO</span>
+                    </span>
+                  </td>
+                  <td class="px-3 py-3 text-xs">
+                    <span class="text-emerald-400">Generado</span>
+                    <span class="block text-slate-500">2026-04-18</span>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">42</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-20 14:02</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Ver</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Editar</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="detail_table/field_list_demo.html" class="text-codas-accent no-underline hover:underline" title="Prototipo: pantalla DetailTable">Campos</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3 font-mono text-sm font-medium text-codas-accent">CUSL01</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="Vista lógica clientes por sucursal">Vista lógica clientes por sucursal</td>
+                  <td class="px-3 py-3 font-mono text-xs text-slate-400">R1DATA</td>
+                  <td class="px-3 py-3"><span class="rounded bg-violet-500/15 px-2 py-0.5 text-xs text-violet-200">Lógica</span></td>
+                  <td class="px-3 py-3"><span class="rounded border border-amber-500/30 bg-amber-950/30 px-2 py-0.5 text-xs text-amber-200">Avanzado</span></td>
+                  <td class="px-3 py-3 text-center text-xs"><span class="rounded bg-slate-600/40 px-1.5 py-0.5 text-slate-400">—</span></td>
+                  <td class="px-3 py-3 text-xs">
+                    <span class="text-slate-500">Pendiente</span>
+                    <span class="block text-slate-600">—</span>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200">Proceso</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">12</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-19 09:41</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Ver</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Editar</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="detail_table/field_list_demo.html" class="text-codas-accent no-underline hover:underline" title="Prototipo DetailTable">Campos</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3 font-mono text-sm font-medium text-codas-accent">PAYHDR</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="Cabecera de pagos batch">Cabecera de pagos batch</td>
+                  <td class="px-3 py-3 font-mono text-xs text-slate-400" title="Ejemplo legado tras migración (valor rellenado)">LEGACY_LIB</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 text-xs text-slate-200">Física</span></td>
+                  <td class="px-3 py-3"><span class="rounded border border-fuchsia-500/30 bg-fuchsia-950/30 px-2 py-0.5 text-xs text-fuchsia-200">Experto</span></td>
+                  <td class="px-3 py-3 text-center text-xs"><span class="rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200" title="is_field_key">PK</span></td>
+                  <td class="px-3 py-3 text-xs">
+                    <span class="text-emerald-400">Generado</span>
+                    <span class="block text-slate-500">2026-04-12</span>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">Activo</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">28</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2026-04-12 11:15</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Ver</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Editar</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="detail_table/field_list_demo.html" class="text-codas-accent no-underline hover:underline" title="Prototipo DetailTable">Campos</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-white/[0.03]">
+                  <td class="sticky left-0 z-0 bg-slate-900/50 px-3 py-3 font-mono text-sm font-medium text-codas-accent">ARCCTL</td>
+                  <td class="max-w-[14rem] truncate px-3 py-3 text-slate-300" title="Tabla de control de archivado">Tabla de control de archivado</td>
+                  <td class="px-3 py-3 font-mono text-xs text-slate-400">QGPL</td>
+                  <td class="px-3 py-3"><span class="rounded bg-slate-700/60 px-2 py-0.5 text-xs text-slate-200">Física</span></td>
+                  <td class="px-3 py-3"><span class="rounded border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 text-xs text-emerald-300">Simple</span></td>
+                  <td class="px-3 py-3 text-center text-xs"><span class="rounded bg-amber-500/15 px-1.5 py-0.5 text-amber-200">PK</span></td>
+                  <td class="px-3 py-3 text-xs">
+                    <span class="text-slate-500">Pendiente</span>
+                    <span class="block text-slate-600">—</span>
+                  </td>
+                  <td class="px-3 py-3 text-center"><span class="inline-flex rounded-full bg-slate-600/40 px-2 py-0.5 text-xs text-slate-400">Inactivo</span></td>
+                  <td class="px-3 py-3 text-center font-mono text-slate-300">6</td>
+                  <td class="px-3 py-3 text-xs text-slate-500">2025-11-03 08:00</td>
+                  <td class="sticky right-0 z-0 bg-slate-900/50 px-3 py-3 text-right text-xs whitespace-nowrap">
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Ver</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="#" class="text-codas-accent no-underline hover:underline">Editar</a>
+                    <span class="text-slate-600"> · </span>
+                    <a href="detail_table/field_list_demo.html" class="text-codas-accent no-underline hover:underline" title="Prototipo DetailTable">Campos</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex flex-col gap-3 border-t border-white/10 bg-slate-900/60 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>Mostrando <span class="font-medium text-slate-300">1–4</span> de <span class="font-medium text-slate-300">24</span> (demo)</p>
+            <nav class="flex flex-wrap items-center justify-end gap-1" aria-label="Paginación">
+              <button type="button" class="rounded border border-slate-600 px-2 py-1 text-slate-500" disabled>« Anterior</button>
+              <button type="button" class="rounded border border-codas-accent bg-codas-accent/20 px-2.5 py-1 font-medium text-codas-accent">1</button>
+              <button type="button" class="rounded border border-slate-600 px-2.5 py-1 text-slate-300 hover:bg-white/5">2</button>
+              <button type="button" class="rounded border border-slate-600 px-2.5 py-1 text-slate-300 hover:bg-white/5">3</button>
+              <span class="px-1 text-slate-600">…</span>
+              <button type="button" class="rounded border border-slate-600 px-2 py-1 text-slate-300 hover:bg-white/5">Siguiente »</button>
+            </nav>
+          </div>
+        </div>
+
+        <p class="mt-6 rounded-lg border border-white/5 bg-slate-900/30 px-4 py-3 text-xs text-slate-500">
+          <strong class="text-slate-400">Nota de implementación:</strong>
+          columnas «Campos» y KPIs agregan consultas (<code class="text-emerald-400/80">annotate(Count)</code> o subconsultas);
+          primera columna sticky es el nombre corto (clave visible en scroll horizontal). Borrar compañía con cabeceras <code class="text-emerald-400/80">HeaderTable</code> queda bloqueado por <code class="text-emerald-400/80">PROTECT</code> en el modelo real.
+        </p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

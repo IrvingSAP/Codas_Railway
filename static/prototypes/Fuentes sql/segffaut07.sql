@@ -1,0 +1,21 @@
+Create Table &LIB/SEGFFAUT07
+(TBIGINT        BIGINT      NOT NULL WITH DEFAULT
+,TCLOB           CLOB   (100)    NOT NULL DEFAULT
+,TDBCLOB         DBCLOB   (60)     NOT NULL DEFAULT
+,TVARCHAR        VARCHAR (70)
+) RcdFmt SEG07R;
+
+Label On Table &LIB/SEGFFAUT07 Is 'TIPOS DE DATOS PARA PRUEBAS LZ ';
+Label On  &LIB/SEGFFAUT07
+(TBIGINT         TEXT IS 'TBIGINT     '
+,TCLOB            TEXT IS 'TCLOB'
+,TDBCLOB          TEXT IS 'TDBCLOB'
+,TVARCHAR         TEXT IS 'VARCHAR'
+ );
+
+Label On Column &LIB/SEGFFAUT07
+(TBIGINT              Is 'T_BIGINT    '
+,TCLOB                 IS 'T_CLOB'
+,TDBCLOB               IS 'T_DBCLOB'
+,TVARCHAR              IS 'T_VARCHAR'
+ );

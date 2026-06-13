@@ -1,0 +1,47 @@
+CREATE TABLE &LIB/SEGFFRZEJE (
+ idProceso         Numeric     (10)    ,
+ idEjecucion       Numeric     (10)    ,
+ Frecuencia        Char        (01)    ,
+ DiaFrecuencia     VarChar     (05)    ,
+ HoraEjecucion     Decimal    (4,2)    ,
+ Job               Char        (30)    ,
+ FechaEjecucion    TimeStamp   DEFAULT CURRENT TIMESTAMP,
+ Ano               Numeric    (4,0)    ,
+ Mes               Numeric    (2,0)    ,
+ Dia               Numeric    (2,0)    ,
+ HoraInicio        Time                ,
+ HoraFin           Time                ,
+CONSTRAINT PK_RZEJE PRIMARY KEY (idProceso,idEjecucion))
+RCDFMT   REGRZEJE;
+
+
+LABEL ON TABLE &LIB/SEGFFRZEJE  Is
+'Razonabilidad de Cifras - Ejecuciones por Proceso';
+
+LABEL ON &LIB/SEGFFRZEJE (
+idProceso          Text Is  'Id. Proceso',
+idEjecucion        Text Is  'Id. Ejecucion',
+Frecuencia         Text Is  'Frecuencia',
+DiaFrecuencia      Text Is  'Dia Ejecucion',
+HoraEjecucion      Text Is  'Hora Ejecucion',
+Job                Text Is  'Trabajo',
+FechaEjecucion     Text Is  'Fecha de Ejecucion',
+Ano                Text Is  'A¦o de Ejecucion',
+Mes                Text Is  'Mes de Ejecucion',
+Dia                Text Is  'Dia de Ejecucion',
+HoraInicio         Text Is  'Hora Inicio Ejecucion',
+HoraFin            Text Is  'Hora Fin Ejecucion');
+
+LABEL ON COLUMN &LIB/SEGFFRZEJE (
+idProceso               Is  'Id. Proceso',
+idEjecucion             Is  'Id. Ejecucion',
+Frecuencia              Is  'Frecuencia',
+DiaFrecuencia           Is  'Dia Ejecucion',
+HoraEjecucion           Is  'Hora Ejecucion',
+Job                     Is  'Trabajo',
+FechaEjecucion          Is  'Fecha de Ejecucion',
+Ano                     Is  'A¦o de Ejecucion',
+Mes                     Is  'Mes de Ejecucion',
+Dia                     Is  'Dia de Ejecucion',
+HoraInicio              Is  'Hora Inicio Ejecucion',
+HoraFin                 Is  'Hora Fin Ejecucion');

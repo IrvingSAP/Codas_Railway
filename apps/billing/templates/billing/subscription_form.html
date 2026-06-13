@@ -1,0 +1,65 @@
+{% extends "billing/billing_base.html" %}
+
+{% block title %}CODAS — {% if is_edit %}Editar suscripción{% else %}Nueva suscripción{% endif %}{% endblock %}
+{% block header_title %}{% if is_edit %}Editar suscripción{% else %}Nueva suscripción{% endif %}{% endblock %}
+
+{% block billing_content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% if is_edit %}{% url 'billing:subscription_detail' subscription.pk %}{% else %}{% url 'billing:subscription_list' %}{% endif %}" class="text-codas-blue-accent no-underline hover:underline">← Volver</a>
+</p>
+
+<div class="mb-6 border-l-4 border-codas-blue-accent bg-slate-900/60 py-2 pl-4">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-200">Datos de la suscripción</h2>
+</div>
+
+<form method="post" class="max-w-3xl space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <ul class="list-none rounded-md border border-rose-500/40 bg-rose-950/30 px-4 py-2 text-sm text-rose-300">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if form.company %}
+    <div>
+        <label for="{{ form.company.id_for_label }}" class="codas-label">{{ form.company.label }} <span class="text-rose-400">*</span></label>
+        {{ form.company }}
+        {% if form.company.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.company.errors.0 }}</p>{% endif %}
+        <p class="mt-1 text-xs text-gray-500">Solo compañías sin suscripción previa.</p>
+    </div>
+    {% endif %}
+    <div>
+        <label for="{{ form.plan.id_for_label }}" class="codas-label">{{ form.plan.label }} <span class="text-rose-400">*</span></label>
+        {{ form.plan }}
+        {% if form.plan.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.plan.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label for="{{ form.start_date.id_for_label }}" class="codas-label">{{ form.start_date.label }}</label>
+            {{ form.start_date }}
+            {% if form.start_date.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.start_date.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.end_date.id_for_label }}" class="codas-label">{{ form.end_date.label }}</label>
+            {{ form.end_date }}
+            {% if form.end_date.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.end_date.errors.0 }}</p>{% endif %}
+        </div>
+    </div>
+    <div>
+        <label for="{{ form.status.id_for_label }}" class="codas-label">{{ form.status.label }}</label>
+        {{ form.status }}
+        {% if form.status.errors %}<p class="mt-1 text-xs text-rose-400">{{ form.status.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="flex items-center gap-3">
+        {{ form.auto_renew }}
+        <label for="{{ form.auto_renew.id_for_label }}" class="text-sm text-gray-300">{{ form.auto_renew.label }}</label>
+    </div>
+    {% if form.auto_renew.errors %}<p class="text-xs text-rose-400">{{ form.auto_renew.errors.0 }}</p>{% endif %}
+    <p class="text-xs text-gray-500">Al guardar se recalcula la huella <code class="text-gray-600">integrity_signature</code> (HMAC sobre fechas).</p>
+
+    <div class="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+        <button type="submit" class="rounded-md bg-codas-blue-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-codas-accent-hover">Guardar</button>
+        <a href="{% if is_edit %}{% url 'billing:subscription_detail' subscription.pk %}{% else %}{% url 'billing:subscription_list' %}{% endif %}" class="inline-flex items-center rounded-md border border-gray-600 px-5 py-2.5 text-sm text-gray-300 no-underline hover:border-gray-500 hover:bg-white/5">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

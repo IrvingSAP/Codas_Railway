@@ -1,0 +1,42 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}CODAS — Eliminar compañía{% endblock %}
+{% block header_title %}Eliminar compañía{% endblock %}
+
+{% block content %}
+<p class="mb-6 text-sm text-gray-500">
+    <a href="{% url 'company:detail' company.pk %}" class="text-codas-blue-accent no-underline hover:underline">← Volver al detalle</a>
+</p>
+
+<div class="max-w-lg rounded-xl border border-rose-500/30 bg-rose-950/20 p-6 shadow-sm">
+    <h2 class="text-base font-semibold text-white">¿Eliminar esta compañía?</h2>
+    <p class="mt-3 text-sm text-gray-300">
+        Se eliminará de forma permanente <strong class="text-white">{{ company.name_short }}</strong> — {{ company.name_long }}.
+    </p>
+    <p class="mt-4 text-xs text-gray-500">Esta acción no se puede deshacer.</p>
+
+    {% if delete_blocked %}
+    <div class="mt-5 rounded-md border border-amber-500/40 bg-amber-950/30 px-4 py-3 text-sm text-amber-100" role="alert">
+        <p class="font-medium text-amber-200">No se puede eliminar ahora</p>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-amber-100/95">
+            {% for msg in delete_blockers %}<li>{{ msg }}</li>{% endfor %}
+        </ul>
+        <p class="mt-3 text-xs text-amber-200/80">Los datos operativos (fuentes, diseños de tabla, perfiles, etc.) quedan ligados a la compañía del tenant; resuélvalos antes de borrar la compañía.</p>
+    </div>
+    <p class="mt-6 flex flex-wrap gap-3">
+        <a href="{% url 'company:detail' company.pk %}" class="inline-flex items-center rounded-md border border-gray-600 px-4 py-2.5 text-sm text-gray-300 no-underline hover:bg-white/5">Volver al detalle</a>
+    </p>
+    {% else %}
+    {% if has_subscription %}
+    <div class="mt-5 rounded-md border border-sky-500/30 bg-sky-950/25 px-4 py-3 text-xs text-sky-100">
+        Esta compañía tiene <strong class="text-sky-200">suscripción / facturación</strong> asociada; al confirmar, Django eliminará en cascada la suscripción y los datos ligados a ella según los modelos actuales.
+    </div>
+    {% endif %}
+    <form method="post" class="mt-6 flex flex-wrap gap-3">
+        {% csrf_token %}
+        <button type="submit" class="rounded-md bg-rose-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-rose-500">Sí, eliminar</button>
+        <a href="{% url 'company:detail' company.pk %}" class="inline-flex items-center rounded-md border border-gray-600 px-4 py-2.5 text-sm text-gray-300 no-underline hover:bg-white/5">Cancelar</a>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

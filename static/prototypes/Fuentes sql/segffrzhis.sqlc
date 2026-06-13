@@ -1,0 +1,64 @@
+CREATE TABLE &LIB/SEGFFRZHIS (
+ idProceso           Numeric     (10)    ,
+ idFrecuencia        Numeric     (10)    ,
+ idTope              Numeric     (10)    ,
+ idEjecucion         Numeric     (10)    ,
+ NombreProceso       VarChar     (50)    ,
+ Producto            VarChar     (50)    ,
+ NombreTope          VarChar     (50)    ,
+ NombreFrecuencia    VarChar     (50)    ,
+ CodigoMensaje       Char        (10)    ,
+ NombreMensaje       VarChar     (50)    ,
+ Archivo             VarChar     (10)    ,
+ RegistrosLeidos     Numeric     (15)    ,
+ RegistrosEsperados  Numeric     (15)    ,
+ VariacionRegistros  Numeric     (15)    ,
+ PorcentajeLeido     Decimal    (5,2)    ,
+ PorcentajeEserado   Decimal    (5,2)    ,
+ PorcentajeVariacion Decimal    (5,2)    ,
+ Estado              Char        (01)    ,
+CONSTRAINT PK_RZHIS PRIMARY KEY (idProceso,idFrecuencia,idTope,idEjecucion))
+RCDFMT   REGRZHIS;
+
+LABEL ON TABLE &LIB/SEGFFRZHIS  Is
+'Razonabilidad de Cifras - Historico de Ejecuciones';
+
+LABEL ON &LIB/SEGFFRZHIS (
+idProceso           Text Is  'Id. Proceso',
+idFrecuencia        Text Is  'Id. Frecuencia',
+idTope              Text Is  'Id. Tope',
+idEjecucion         Text Is  'Id. Ejecucion',
+NombreProceso       Text Is  'Nombre del Proceso',
+Producto            Text Is  'Producto',
+NombreTope          Text Is  'Nombre del Tope',
+NombreFrecuencia    Text Is  'Nombre Frecuencia',
+CodigoMensaje       Text Is  'Cod. Mensaje',
+NombreMensaje       Text Is  'Nombre Mensaje',
+Archivo             Text Is  'Archivo o Lectura',
+RegistrosLeidos     Text Is  'Registros Leidos',
+RegistrosEsperados  Text Is  'Registros Esperados',
+VariacionRegistros  Text Is  'Variacion Registros',
+PorcentajeLeido     Text Is  'Porcentaje Leidos',
+PorcentajeEserado   Text Is  'Porcentaje Esperados',
+PorcentajeVariacion Text Is  'Porcentaje Variacion',
+Estado              Text Is  'Estado Alerta - S o N');
+
+LABEL ON COLUMN &LIB/SEGFFRZHIS (
+idProceso                Is  'Id. Proceso',
+idFrecuencia             Is  'Id. Frecuencia',
+idTope                   Is  'Id. Tope',
+idEjecucion              Is  'Id. Ejecucion',
+NombreProceso            Is  'Nombre del Proceso',
+Producto                 Is  'Producto',
+NombreTope               Is  'Nombre del Tope',
+NombreFrecuencia         Is  'Nombre Frecuencia',
+CodigoMensaje            Is  'Cod. Mensaje',
+NombreMensaje            Is  'Nombre Mensaje',
+Archivo                  Is  'Archivo o Lectura',
+RegistrosLeidos          Is  'Registros Leidos',
+RegistrosEsperados       Is  'Registros Esperados',
+VariacionRegistros       Is  'Variacion Registros',
+PorcentajeLeido          Is  'Porcentaje Leidos',
+PorcentajeEserado        Is  'Porcentaje Esperados',
+PorcentajeVariacion      Is  'Porcentaje Variacion',
+Estado                   Is  'Estado Alerta - S o N');

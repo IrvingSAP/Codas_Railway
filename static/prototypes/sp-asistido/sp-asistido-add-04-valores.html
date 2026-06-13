@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ADD · Paso 4 de 7 · Orígenes</title><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={theme:{extend:{colors:{codas:{dark:'#0a1a2f',accent:'#1e90ff',hover:'#1877d3'}}}}}</script></head>
+<body class="flex h-[100dvh] flex-col overflow-hidden bg-slate-950 text-slate-200 antialiased">
+<div class="shrink-0 border-b border-white/10 bg-slate-900 py-2 text-center text-xs text-slate-400">Prototipo · Asistente <span class="text-emerald-400">Añadir (ADD)</span></div>
+<header class="flex h-14 items-center gap-4 border-b border-white/10 bg-codas-dark px-4"><a href="sp-asistido-list-demo.html" class="text-codas-accent">← Listado</a><h1 class="text-base font-semibold text-white">Paso 4 · Origen por columna</h1></header>
+<div class="shrink-0 border-b border-white/10 bg-slate-900/80 px-4 py-3">
+  <ol class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px] md:text-xs">
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">1</span> Identificación</li><li class="text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">2</span> Tabla</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">3</span> Columnas</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 font-medium text-emerald-300"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-white">4</span> Orígenes</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">5</span> Revisión</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">6</span> Firma</li><li class="hidden sm:inline text-slate-600">→</li>
+    <li class="flex items-center gap-1.5 text-slate-500"><span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-600">7</span> SQL</li>
+  </ol>
+</div>
+<main class="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">
+  <div class="mx-auto max-w-5xl">
+    <h2 class="text-lg font-semibold">4 · Definir origen de valor</h2>
+    <p class="mt-1 text-sm text-slate-500">Cada columna define su origen. Los mensajes de ayuda cambian segun la seleccion para guiar al usuario.</p>
+    <p id="add04-error" class="mt-2 hidden rounded border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-xs text-rose-200"></p>
+
+    <div class="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-[#020b23] shadow-[inset_0_0_0_1px_rgba(30,144,255,0.05)]">
+      <table class="w-full min-w-[920px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-slate-800 bg-[#0b1730]">
+            <th class="px-3 py-2.5 text-xs text-slate-400">Columna</th>
+            <th class="w-[10.5rem] px-3 py-2.5 text-xs text-slate-400">Origen (C.4)</th>
+            <th class="px-3 py-2.5 text-xs text-slate-400">Detalle segun origen <span class="block text-[10px] text-slate-600">(ayuda dinamica)</span></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          <tr class="js-row bg-[#03102a]" data-colid="cusname">
+            <td class="px-3 py-2.5 font-mono text-codas-accent">CUSNAME</td>
+            <td class="px-3 py-2.5 align-top">
+              <select class="js-origin h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-[#0b1730] px-2 text-xs">
+                <option value="in" selected>Parámetro IN</option><option value="literal">Literal</option><option value="null">NULL</option><option value="expr">Expresión SQL</option>
+              </select>
+            </td>
+            <td class="px-3 py-2.5 align-top">
+              <p class="js-help mb-1.5 text-[11px] text-slate-500"></p>
+              <input class="js-input h-8 w-full max-w-md rounded border border-slate-700 bg-[#0b1730] px-2 font-mono text-xs text-emerald-300" value="P_CUSNAME" autocomplete="off">
+            </td>
+          </tr>
+          <tr class="js-row bg-[#03102a]" data-colid="custatus">
+            <td class="px-3 py-2.5 font-mono text-codas-accent">CUSTATUS</td>
+            <td class="px-3 py-2.5 align-top">
+              <select class="js-origin h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-[#0b1730] px-2 text-xs">
+                <option value="in">Parámetro IN</option><option value="literal" selected>Literal</option><option value="null">NULL</option><option value="expr">Expresión SQL</option>
+              </select>
+            </td>
+            <td class="px-3 py-2.5 align-top">
+              <p class="js-help mb-1.5 text-[11px] text-slate-500"></p>
+              <input class="js-input h-8 w-full max-w-md rounded border border-amber-500/30 bg-amber-950/20 px-2 font-mono text-xs text-amber-100" value="A" autocomplete="off">
+            </td>
+          </tr>
+          <tr class="js-row bg-[#03102a]" data-colid="cuszipc">
+            <td class="px-3 py-2.5 font-mono text-codas-accent">CUSZIPC</td>
+            <td class="px-3 py-2.5 align-top">
+              <select class="js-origin h-9 w-full max-w-[10.5rem] rounded border border-slate-600 bg-[#0b1730] px-2 text-xs">
+                <option value="in">Parámetro IN</option><option value="literal">Literal</option><option value="null">NULL</option><option value="expr" selected>Expresión SQL</option>
+              </select>
+            </td>
+            <td class="px-3 py-2.5 align-top">
+              <p class="js-help mb-1.5 text-[11px] text-slate-500"></p>
+              <textarea class="js-input h-20 w-full max-w-lg rounded border border-violet-500/30 bg-violet-950/20 px-2 py-1.5 font-mono text-xs text-violet-100" autocomplete="off"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<footer class="border-t border-white/10 bg-codas-dark px-4 py-4"><div class="mx-auto flex max-w-3xl justify-between"><a href="sp-asistido-add-03-columnas.html" class="rounded border border-slate-600 px-4 py-2 text-sm">Anterior</a><button id="add04-btn-next" type="button" class="rounded bg-codas-accent px-4 py-2 text-sm font-medium text-white">Siguiente · Revisión</button></div></footer>
+<script>(function(){var helpByOrigin={in:'Nombre del parametro IN (obligatorio). Ejemplo: P_CUSNAME',literal:'Valor fijo (literal) · no vacio. Para CHAR/VARCHAR usar formato de negocio.',null:'Se emitira NULL. El campo detalle debe quedar vacio.',expr:'Expresion SQL · no vacia. Ejemplo: CURRENT DATE'};function applyOriginRule(row){var o=row.querySelector('.js-origin').value,input=row.querySelector('.js-input'),help=row.querySelector('.js-help');help.textContent=helpByOrigin[o]||'';if(o==='null'){if(input.tagName==='TEXTAREA')input.value='';else input.value='';input.disabled=true;input.classList.add('opacity-60','cursor-not-allowed','border-slate-700');input.classList.remove('border-amber-500/40','border-violet-500/40');return;}input.disabled=false;input.classList.remove('opacity-60','cursor-not-allowed','border-slate-700');if(o==='literal'){input.classList.add('border-amber-500/40');input.classList.remove('border-violet-500/40');}else if(o==='expr'){input.classList.add('border-violet-500/40');input.classList.remove('border-amber-500/40');}else{input.classList.remove('border-amber-500/40','border-violet-500/40');}}function validate(){var rows=[].slice.call(document.querySelectorAll('.js-row'));for(var i=0;i<rows.length;i++){var row=rows[i],o=row.querySelector('.js-origin').value,v=row.querySelector('.js-input').value.trim();if(o==='null'&&v!==''){return{ok:false,msg:'Si origen es NULL, el detalle debe quedar vacio.'};}if((o==='in'||o==='literal'||o==='expr')&&!v){return{ok:false,msg:'Si origen es Parametro IN, Literal o Expresion SQL, el detalle no puede quedar vacio.'};}}return{ok:true,msg:''};}var rows=[].slice.call(document.querySelectorAll('.js-row'));rows.forEach(function(row){var sel=row.querySelector('.js-origin');sel.addEventListener('change',function(){applyOriginRule(row);});applyOriginRule(row);});document.getElementById('add04-btn-next').addEventListener('click',function(){var e=document.getElementById('add04-error'),v=validate();if(!v.ok){e.textContent=v.msg;e.classList.remove('hidden');return;}e.classList.add('hidden');window.location.href='sp-asistido-add-05-validacion.html';});})();</script>
+</body></html>
