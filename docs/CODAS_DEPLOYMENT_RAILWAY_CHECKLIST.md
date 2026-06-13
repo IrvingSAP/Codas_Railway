@@ -81,7 +81,7 @@ Estrategia **A (Git)**: CSS compilado en local y versionado; el build de Railway
 | # | Tarea | OK |
 |---|--------|-----|
 | A.5.1 | `buildCommand`: pip + `collectstatic --noinput` (sin npm) | [x] |
-| A.5.2 | `preDeployCommand`: `python manage.py migrate --noinput` | [x] |
+| A.5.2 | `migrate` en **startCommand** (no preDeploy; ver § J.3) | [x] |
 | A.5.3 | `startCommand`: `gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT` | [x] |
 
 Plantilla orientativa:
@@ -91,8 +91,7 @@ Plantilla orientativa:
 buildCommand = "pip install -r requirements.txt && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput"
 
 [deploy]
-preDeployCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput"
-startCommand = "gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
+startCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
 restartPolicyType = "ON_FAILURE"
 ```
 
@@ -162,8 +161,8 @@ En **Variables** del servicio Web. Usar **Raw Editor** o **New Variable**. Los c
 | `DJANGO_SETTINGS_MODULE` | `codas.settings.production` | No | [ ] |
 | `DJANGO_SECRET_KEY` | Clave aleatoria larga | **Sí** | [ ] |
 | `LICENSE_SECRET_KEY` | Clave HMAC suscripciones | **Sí** | [ ] |
-| `DJANGO_ALLOWED_HOSTS` | `${{RAILWAY_PUBLIC_DOMAIN}}` o dominio fijo sin `https://` | No | [ ] |
-| `CSRF_TRUSTED_ORIGINS` | `https://${{RAILWAY_PUBLIC_DOMAIN}}` (cuando esté en settings) | No | [ ] |
+| `DJANGO_ALLOWED_HOSTS` | Dominio **literal** (recomendado) o `${{RAILWAY_PUBLIC_DOMAIN}}` | No | [ ] |
+| `CSRF_TRUSTED_ORIGINS` | `https://tu-dominio.up.railway.app` o `https://${{RAILWAY_PUBLIC_DOMAIN}}` | No | [ ] |
 
 ### D.2 Base de datos
 
@@ -184,6 +183,28 @@ En **Variables** del servicio Web. Usar **Raw Editor** o **New Variable**. Los c
 | `DEFAULT_FROM_EMAIL` | mismo que `EMAIL_HOST_USER` | No | [ ] |
 
 **No** definir `EMAIL_BACKEND` — lo asigna `_email.py`.
+
+**Plantilla Raw Editor (proyecto Codas_Railway — ajustar nombres):**
+
+```ini
+DJANGO_SETTINGS_MODULE=codas.settings.production
+DJANGO_SECRET_KEY=...
+LICENSE_SECRET_KEY=...
+DJANGO_ALLOWED_HOSTS=tu-servicio.up.railway.app
+CSRF_TRUSTED_ORIGINS=https://tu-servicio.up.railway.app
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+EMAIL_DELIVERY=smtp
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=...
+EMAIL_HOST_PASSWORD=sin-espacios
+DEFAULT_FROM_EMAIL=...
+```
+
+> `DATABASE_URL`: usar **Add Reference** al servicio PostgreSQL (nombre típico `Postgres`).  
+> `EMAIL_HOST_PASSWORD`: contraseña de aplicación Gmail **sin espacios**.  
+> Tras **Generate Domain**, copiar el hostname a `DJANGO_ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` (más fiable que solo referencias en el primer deploy).
 
 ### D.4 Aplicar variables
 
@@ -212,7 +233,7 @@ En **Variables** del servicio Web. Usar **Raw Editor** o **New Variable**. Los c
 | E.1.1 | `pip install -r requirements.txt` sin error | [ ] |
 | E.1.2 | `npm run build:css:min` (si aplica) | [ ] |
 | E.1.3 | `collectstatic` copió archivos a `staticfiles/` | [ ] |
-| E.1.4 | `preDeployCommand`: migraciones aplicadas | [ ] |
+| E.1.4 | `startCommand`: `migrate` + Gunicorn (no preDeploy) | [ ] |
 | E.1.5 | Gunicorn enlazado a `$PORT` | [ ] |
 
 ---
@@ -262,7 +283,87 @@ Por defecto el disco del contenedor es **efímero**; `media/` se pierde al redep
 | `ImproperlyConfigured` al arrancar | SMTP incompleto o `EMAIL_BACKEND` en env |
 | Estáticos 404 | WhiteNoise + `collectstatic` en build |
 | BD no conecta | `DATABASE_URL=${{Postgres.DATABASE_URL}}` + Deploy aplicado |
-| Build falla en `collectstatic` / PostgreSQL no configurada | Usar `codas.settings.collectstatic_build` en build (ver [`collectstatic_build.py`](../codas/settings/collectstatic_build.py)); `production` solo en migrate/runtime |
+| Build falla en `collectstatic` / PostgreSQL no configurada | Usar `codas.settings.collectstatic_build` en build (ver [`collectstatic_build.py`](../codas/settings/collectstatic_build.py)) |
+| `DATABASE_URL` / no database configured | Servicio **PostgreSQL** + referencia `${{Postgres.DATABASE_URL}}` en el servicio Web (**Add Reference**) |
+| `DJANGO_ALLOWED_HOSTS es obligatorio` en **pre-deploy** | `${{RAILWAY_PUBLIC_DOMAIN}}` **no se expande** en pre-deploy; ver § J.3 — usar dominio literal o `migrate` en start |
+| IA Railway sugiere `DJANGO_ALLOWED_HOSTS=*` | Evitar en producción; usar dominio literal tras **Generate Domain** |
+| Variables guardadas pero sigue fallando | Hacer **Deploy** tras staged variables (el deploy anterior no las tenía) |
+
+---
+
+## Parte J — Lecciones del despliegue real (Codas_Railway)
+
+Incidencias resueltas en el primer deploy con IA de Railway y ajustes en el repo.
+
+### J.1 PostgreSQL → servicio Web
+
+| Paso | Detalle |
+|------|---------|
+| 1 | Canvas → **Add PostgreSQL** (servicio aparte del Web) |
+| 2 | Servicio **Codas_Railway** (Web) → **Variables** → **Add Reference** |
+| 3 | Elegir Postgres → `DATABASE_URL` → queda `${{Postgres.DATABASE_URL}}` |
+| 4 | **Deploy** para aplicar variables staged |
+
+Sin referencia, el pre-deploy/start falla con *no database is configured*.
+
+### J.2 Variables obligatorias de producción
+
+CODAS valida al importar `codas.settings.production`:
+
+| Variable | Cómo obtenerla |
+|----------|----------------|
+| `DJANGO_SECRET_KEY` | Clave aleatoria larga (sellada) |
+| `LICENSE_SECRET_KEY` | Otra clave aleatoria (sellada) |
+| `DJANGO_ALLOWED_HOSTS` | Hostname del dominio Railway **sin** `https://` |
+| `CSRF_TRUSTED_ORIGINS` | `https://` + mismo hostname |
+| `DATABASE_URL` | Referencia al Postgres |
+| `EMAIL_*` | SMTP Gmail (password **sin espacios**) |
+
+### J.3 `${{RAILWAY_PUBLIC_DOMAIN}}` y pre-deploy
+
+**Problema observado:** con `preDeployCommand` + `migrate` usando `production`, Django exige `DJANGO_ALLOWED_HOSTS`. Si la variable es `${{RAILWAY_PUBLIC_DOMAIN}}`, en la fase **pre-deploy** puede llegar **vacía** (el dominio aún no está disponible en ese momento).
+
+**Solución en el repo (desde jun/2026):** [`railway.toml`](../railway.toml) ejecuta `migrate` en **startCommand**, junto a Gunicorn, cuando las variables de runtime ya están expandidas.
+
+**Alternativa manual:** tras **Generate Domain**, usar valores **literales**:
+
+```ini
+DJANGO_ALLOWED_HOSTS=codas-railway-production.up.railway.app
+CSRF_TRUSTED_ORIGINS=https://codas-railway-production.up.railway.app
+```
+
+**No recomendado:** `DJANGO_ALLOWED_HOSTS=*` (atajo de la IA Railway; inseguro en producción).
+
+### J.4 Orden recomendado en Railway
+
+```mermaid
+flowchart LR
+  PG[Add_PostgreSQL] --> REF[Add_Reference_DATABASE_URL]
+  REF --> DOM[Generate_Domain]
+  DOM --> VARS[Variables_secretos_SMTP_hosts]
+  VARS --> DEPLOY[Deploy]
+  DEPLOY --> SU[createsuperuser]
+```
+
+1. PostgreSQL activo  
+2. Referencia `DATABASE_URL` en Web  
+3. **Generate Domain**  
+4. Variables completas (hosts literales o `${{RAILWAY_PUBLIC_DOMAIN}}` con migrate en start)  
+5. **Deploy** (no confiar en un deploy anterior sin variables)  
+6. Pull del último `railway.toml` (migrate en start)  
+7. `createsuperuser` + smoke test  
+
+### J.5 Asistente IA de Railway
+
+Útil para: enlazar Postgres, generar `LICENSE_SECRET_KEY`, revisar diagnóstico.  
+Verificar siempre: no dejar `ALLOWED_HOSTS=*`, password Gmail sin espacios, y **Deploy** tras cambios staged.
+
+### J.6 Otros errores ya corregidos en el repo
+
+| Error | Solución |
+|-------|----------|
+| `npm: not found` en build | Sin npm en build; Tailwind versionado en Git |
+| `collectstatic` + `local.py` / sin BD | `DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build` en build |
 
 ---
 
@@ -274,7 +375,7 @@ Por defecto el disco del contenedor es **efímero**; `media/` se pierde al redep
 | I.2 | `npm run build:css:min` si hubo cambios CSS | [ ] |
 | I.3 | `git commit` + `git push` a rama conectada | [ ] |
 | I.4 | Railway redeploy automático | [ ] |
-| I.5 | Verificar logs: `migrate` en pre-deploy | [ ] |
+| I.5 | Verificar logs: `migrate` en **start** + Gunicorn | [ ] |
 | I.6 | Smoke test rápido en producción | [ ] |
 
 ---
@@ -306,8 +407,8 @@ flowchart TD
 
 | # | Tarea | OK |
 |---|--------|-----|
-| 1 | Repo: A.1–A.5 ✓ — falta `git push` (A.7.3) | [ ] |
-| 2 | Repo: CSS compilado + push Git (A.7.3) | [ ] |
+| 1 | Repo en GitHub + `railway.toml` actualizado (migrate en start) | [ ] |
+| 2 | Repo: CSS compilado en Git | [ ] |
 | 3 | Railway: proyecto + repo conectado | [ ] |
 | 4 | Railway: PostgreSQL + `DATABASE_URL` referenciada | [ ] |
 | 5 | Railway: variables Django, secretos, SMTP (sin EMAIL_BACKEND) | [ ] |
@@ -318,4 +419,4 @@ flowchart TD
 
 ---
 
-*Última revisión: jun/2026 — A.1–A.5 aplicados (`railway.toml`, Tailwind build, empaquetado deploy).*
+*Última revisión: jun/2026 — lecciones deploy Codas_Railway (Postgres, pre-deploy, migrate en start).*

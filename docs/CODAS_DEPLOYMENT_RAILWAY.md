@@ -158,13 +158,15 @@ Crear en la raíz del repo [`railway.toml`](../railway.toml):
 
 ```toml
 [build]
-builder = "nixpacks"
 buildCommand = "pip install -r requirements.txt && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput"
 
 [deploy]
-startCommand = "python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
-restartPolicyType = "on_failure"
+# migrate en start: ${{RAILWAY_PUBLIC_DOMAIN}} no se expande en pre-deploy.
+startCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
+restartPolicyType = "ON_FAILURE"
 ```
+
+Checklist operativo e incidencias reales: **[CODAS_DEPLOYMENT_RAILWAY_CHECKLIST.md](CODAS_DEPLOYMENT_RAILWAY_CHECKLIST.md)** § J.
 
 Si el CSS ya está en Git y no quieres Node en el build:
 
@@ -202,17 +204,17 @@ En el servicio Web → **Variables** (no usar el `.env` local):
 |----------|--------|
 | `DJANGO_SETTINGS_MODULE` | `codas.settings.production` |
 | `DJANGO_SECRET_KEY` | (generar clave segura) |
-| `DJANGO_ALLOWED_HOSTS` | `tu-proyecto.up.railway.app` |
-| `LICENSE_SECRET_KEY` | (generar clave segura) |
-| `DATABASE_URL` | Referencia `${{Postgres.DATABASE_URL}}` (nombre según servicio) |
+| `DJANGO_ALLOWED_HOSTS` | Dominio **literal** tras Generate Domain (recomendado) o `${{RAILWAY_PUBLIC_DOMAIN}}` |
+| `CSRF_TRUSTED_ORIGINS` | `https://tu-dominio.up.railway.app` |
+| `DATABASE_URL` | **Add Reference** → Postgres → `${{Postgres.DATABASE_URL}}` |
 | `EMAIL_DELIVERY` | `smtp` |
 | `EMAIL_HOST` | p. ej. `smtp.gmail.com` |
 | `EMAIL_PORT` | `587` |
 | `EMAIL_USE_TLS` | `True` |
 | `EMAIL_HOST_USER` | … |
-| `EMAIL_HOST_PASSWORD` | … |
+| `EMAIL_HOST_PASSWORD` | Contraseña de aplicación Gmail **sin espacios** |
 | `DEFAULT_FROM_EMAIL` | … |
-| `CSRF_TRUSTED_ORIGINS` | `https://tu-proyecto.up.railway.app` (cuando esté en settings) |
+| `LICENSE_SECRET_KEY` | (generar clave segura) |
 
 | Paso | OK |
 |------|-----|
@@ -229,7 +231,7 @@ En el servicio Web → **Variables** (no usar el `.env` local):
 | Fase | Comando orientativo |
 |------|---------------------|
 | **Build** | `pip install … && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput` |
-| **Start** | `python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT` |
+| **Start** | `DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput && gunicorn …` |
 
 | Paso | OK |
 |------|-----|
@@ -317,6 +319,22 @@ Errores frecuentes:
 | `ImproperlyConfigured` SMTP | Variables `EMAIL_*` incompletas |
 | Estáticos 404 | Sin WhiteNoise / sin `collectstatic` |
 | BD no conecta | `DATABASE_URL` no referenciada al servicio Postgres |
+| `DJANGO_ALLOWED_HOSTS es obligatorio` en pre-deploy | `${{RAILWAY_PUBLIC_DOMAIN}}` vacío en pre-deploy; usar dominio literal o `migrate` en start (ver checklist § J) |
+| IA sugiere `ALLOWED_HOSTS=*` | No usar en producción; poner dominio literal |
+
+---
+
+## Incidencias reales (Codas_Railway)
+
+Resumen del primer deploy documentado en **[CODAS_DEPLOYMENT_RAILWAY_CHECKLIST.md](CODAS_DEPLOYMENT_RAILWAY_CHECKLIST.md)** § J:
+
+1. **PostgreSQL:** servicio aparte + `DATABASE_URL=${{Postgres.DATABASE_URL}}` vía **Add Reference** en el Web.
+2. **Secretos:** `DJANGO_SECRET_KEY`, `LICENSE_SECRET_KEY`, SMTP completo.
+3. **Pre-deploy vs dominio:** `${{RAILWAY_PUBLIC_DOMAIN}}` no se expande en pre-deploy → `migrate` movido a **startCommand** en [`railway.toml`](../railway.toml).
+4. **Dominio:** **Generate Domain** y copiar hostname a `DJANGO_ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` (más fiable que `*`).
+5. **Deploy staged:** tras cambiar variables, pulsar **Deploy** (deploys anteriores no las tenían).
+
+---
 
 ---
 

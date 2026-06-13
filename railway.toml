@@ -7,6 +7,6 @@
 buildCommand = "pip install -r requirements.txt && DJANGO_SETTINGS_MODULE=codas.settings.collectstatic_build python manage.py collectstatic --noinput"
 
 [deploy]
-preDeployCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput"
-startCommand = "gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
+# migrate en start (no preDeploy): ${{RAILWAY_PUBLIC_DOMAIN}} no se expande en pre-deploy.
+startCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
 restartPolicyType = "ON_FAILURE"
