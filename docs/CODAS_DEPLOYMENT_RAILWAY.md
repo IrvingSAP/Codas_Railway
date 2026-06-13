@@ -159,7 +159,7 @@ Crear en la raíz del repo [`railway.toml`](../railway.toml):
 ```toml
 [build]
 builder = "nixpacks"
-buildCommand = "pip install -r requirements.txt && npm ci && npm run build:css:min && python manage.py collectstatic --noinput"
+buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
 
 [deploy]
 startCommand = "python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT"
@@ -228,7 +228,7 @@ En el servicio Web → **Variables** (no usar el `.env` local):
 
 | Fase | Comando orientativo |
 |------|---------------------|
-| **Build** | `pip install -r requirements.txt && npm ci && npm run build:css:min && python manage.py collectstatic --noinput` |
+| **Build** | `pip install -r requirements.txt && python manage.py collectstatic --noinput` |
 | **Start** | `python manage.py migrate --noinput && gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT` |
 
 | Paso | OK |

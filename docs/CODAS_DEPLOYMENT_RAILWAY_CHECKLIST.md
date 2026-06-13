@@ -66,13 +66,13 @@ Según [guía Django de Railway](https://docs.railway.com/guides/django): `STATI
 
 ### A.4 Tailwind (CSS)
 
-Estrategia **A + B**: CSS compilado en Git y recompilado en el build de Railway ([`railway.toml`](../railway.toml)).
+Estrategia **A (Git)**: CSS compilado en local y versionado; el build de Railway **no** usa npm (Railpack Python no trae Node por defecto).
 
 | # | Tarea | Comando / archivo | OK |
 |---|--------|-------------------|-----|
 | A.4.1 | Compilar CSS antes del deploy | `npm run build:css:min` | [x] |
 | A.4.2 | **Opción A:** versionar [`static/css/tailwind.css`](../static/css/tailwind.css) en Git | commit | [x] |
-| A.4.3 | **Opción B:** compilar en build de Railway (Node en Railpack) | [`railway.toml`](../railway.toml) `buildCommand` | [x] |
+| A.4.3 | **Opción B:** compilar en build Railway (requiere Node; no usado) | — | N/A |
 
 ### A.5 Configuración Railway en el repo
 
@@ -80,7 +80,7 @@ Estrategia **A + B**: CSS compilado en Git y recompilado en el build de Railway 
 
 | # | Tarea | OK |
 |---|--------|-----|
-| A.5.1 | `buildCommand`: pip + npm + `collectstatic --noinput` | [x] |
+| A.5.1 | `buildCommand`: pip + `collectstatic --noinput` (sin npm) | [x] |
 | A.5.2 | `preDeployCommand`: `python manage.py migrate --noinput` | [x] |
 | A.5.3 | `startCommand`: `gunicorn codas.wsgi:application --bind 0.0.0.0:$PORT` | [x] |
 
@@ -88,7 +88,7 @@ Plantilla orientativa:
 
 ```toml
 [build]
-buildCommand = "pip install -r requirements.txt && npm ci && npm run build:css:min && python manage.py collectstatic --noinput"
+buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
 
 [deploy]
 preDeployCommand = "python manage.py migrate --noinput"
