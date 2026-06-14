@@ -18,25 +18,61 @@ Control operativo paso a paso para desplegar CODAS en [Railway](https://railway.
 
 ---
 
+## Desarrollo local sin push / Auto Deploy off
+
+Política acordada: **no hacer `git commit` ni `git push` salvo petición explícita**. Los cambios pueden quedarse solo en la máquina local hasta que decidas publicar en GitHub.
+
+| Ámbito | Qué hacer |
+|--------|-----------|
+| **Git local** | Trabajar con normalidad; **no** ejecutar `git push` hasta que quieras subir a GitHub |
+| **Asistente / Cursor** | Pedir cambios en código o docs; indicar *«sin commit ni push»* si no quieres publicar |
+| **Railway** | Servicio **Codas_Railway** → **Settings** → **Deploy** (o **Source**) → desactivar **Auto Deploy** / *Deploy on push* | [ ] |
+| **Redeploy manual** | Cuando subas a GitHub más adelante: push a la rama conectada → **Deploy** en Railway (si Auto Deploy sigue off) |
+
+```mermaid
+flowchart LR
+  Local[Cambios_en_PC] -->|solo_si_lo_pides| GitHub[GitHub]
+  GitHub -->|Auto_Deploy_ON| Railway[Railway]
+  GitHub -->|Auto_Deploy_OFF| Manual[Deploy_manual_Railway]
+```
+
+**Nota:** desactivar Auto Deploy evita que Railway redepliegue al hacer push; no impide que tú subas commits a GitHub cuando quieras.
+
+---
+
 ## Registro de despliegue
 
 | Campo | Valor |
 |-------|--------|
-| Cuenta Railway | |
-| Proyecto | |
-| Servicio Web | |
-| Servicio PostgreSQL | |
-| URL pública | `https://____________.up.railway.app` |
-| Repositorio / rama | |
-| Commit desplegado | |
+| Cuenta Railway | (tu cuenta) |
+| Proyecto | Codas_Railway |
+| Servicio Web | **Codas_Railway** |
+| Servicio PostgreSQL | **Postgres** |
+| URL pública | `https://____________.up.railway.app` *(completar tras Generate Domain)* |
+| Repositorio / rama | `IrvingSAP/Codas_Railway` / `main` |
+| Commit desplegado | *(último deploy exitoso)* |
 | Fecha primer deploy | |
-| Volumen `media/` (sí/no) | |
+| Volumen `media/` (sí/no) | no |
+
+### Estado del checklist (jun/2026)
+
+Leyenda: `[x]` hecho · `[ ]` pendiente · `[~]` hecho pero **revisar** · `N/A` no aplica
+
+| Bloque | Estado |
+|--------|--------|
+| **A** — Repo CODAS | Completado en repo |
+| **B** — Cuenta y proyecto | Completado |
+| **C** — PostgreSQL | Completado (referencia `DATABASE_URL`) |
+| **D** — Variables | Completado (revisar `EMAIL_HOST_PASSWORD` sin espacios y hosts ≠ `*`) |
+| **E** — Build / dominio | En curso (build OK; deploy/start pendiente de verde) |
+| **F** — Media | Pendiente (demo sin volumen) |
+| **G–H** — Go-live | Pendiente |
 
 ---
 
 ## Parte A — Actualizar el sistema CODAS (repositorio)
 
-Completar **antes** del primer deploy. **A.1–A.5** completados en repo; pendiente push (A.7.3) y pasos Railway (B–H).
+Completar **antes** del primer deploy. **A.1–A.5** completados en repo; pasos Railway (B–H) según necesidad. Ver § *Desarrollo local sin push*.
 
 ### A.1 Dependencias Python
 
@@ -95,16 +131,16 @@ startCommand = "DJANGO_SETTINGS_MODULE=codas.settings.production python manage.p
 restartPolicyType = "ON_FAILURE"
 ```
 
-> Railway ejecuta `preDeployCommand` **antes** del arranque; no tiene acceso a volúmenes en esa fase ([volumes](https://docs.railway.com/guides/volumes)). Las migraciones van ahí; `createsuperuser` es manual (CLI).
+> Las migraciones van en **startCommand** (ver § J.3); `createsuperuser` es manual (CLI).
 
 ### A.6 Lo que **no** cambiar / no commitear
 
 | # | Regla | OK |
 |---|--------|-----|
-| A.6.1 | **No** commitear `.env` con secretos | [ ] |
-| A.6.2 | **No** definir `EMAIL_BACKEND` en producción (lo asigna [`codas/settings/_email.py`](../codas/settings/_email.py)) | [ ] |
-| A.6.3 | Mantener `DJANGO_SETTINGS_MODULE=codas.settings.production` en Railway, no en código | [ ] |
-| A.6.4 | PostgreSQL obligatorio; **no** usar SQLite | [ ] |
+| A.6.1 | **No** commitear `.env` con secretos | [x] |
+| A.6.2 | **No** definir `EMAIL_BACKEND` en producción (lo asigna [`codas/settings/_email.py`](../codas/settings/_email.py)) | [x] |
+| A.6.3 | Mantener `DJANGO_SETTINGS_MODULE=codas.settings.production` en Railway, no en código | [x] |
+| A.6.4 | PostgreSQL obligatorio; **no** usar SQLite | [x] |
 
 ### A.7 Verificación local antes de push
 
@@ -112,7 +148,7 @@ restartPolicyType = "ON_FAILURE"
 |---|--------|---------|-----|
 | A.7.1 | Tests de email/settings | `python manage.py test apps.core.tests.test_email_settings apps.core.tests.test_production_settings` | [x] |
 | A.7.2 | `collectstatic` local de prueba | variables producción + `python manage.py collectstatic --noinput --settings=codas.settings.production` | [x] |
-| A.7.3 | Commit + push a la rama que desplegará Railway | `git push` | [ ] |
+| A.7.3 | Commit + push a GitHub **solo cuando lo pidas** | `git push origin main` | [x] *(hecho una vez; repo conectado)* |
 
 ---
 
@@ -120,11 +156,11 @@ restartPolicyType = "ON_FAILURE"
 
 | # | Paso (panel [railway.app](https://railway.app)) | Doc Railway | OK |
 |---|------------------------------------------------|-------------|-----|
-| B.1 | Crear cuenta / iniciar sesión | [Quick start](https://docs.railway.com/) | [ ] |
-| B.2 | **New Project** | | [ ] |
-| B.3 | **Deploy from GitHub repo** → autorizar GitHub → elegir repo CODAS | [guides/django](https://docs.railway.com/guides/django) | [ ] |
-| B.4 | Seleccionar rama de deploy (`main`) | | [ ] |
-| B.5 | Renombrar servicio a `codas-web` (opcional, claridad) | | [ ] |
+| B.1 | Crear cuenta / iniciar sesión | [Quick start](https://docs.railway.com/) | [x] |
+| B.2 | **New Project** | | [x] |
+| B.3 | **Deploy from GitHub repo** → `IrvingSAP/Codas_Railway` | [guides/django](https://docs.railway.com/guides/django) | [x] |
+| B.4 | Rama de deploy `main` | | [x] |
+| B.5 | Renombrar servicio a `codas-web` (opcional) | Servicio actual: **Codas_Railway** | N/A |
 
 ---
 
@@ -132,9 +168,9 @@ restartPolicyType = "ON_FAILURE"
 
 | # | Paso | Doc Railway | OK |
 |---|------|-------------|-----|
-| C.1 | En el canvas: **Create** → **Database** → **Add PostgreSQL** | [guides/postgresql](https://docs.railway.com/guides/postgresql) | [ ] |
-| C.2 | Esperar deploy del servicio Postgres (estado activo) | | [ ] |
-| C.3 | En servicio **Web** → **Variables** → referenciar `DATABASE_URL` | [guides/variables](https://docs.railway.com/guides/variables) | [ ] |
+| C.1 | En el canvas: **Create** → **Database** → **Add PostgreSQL** | [guides/postgresql](https://docs.railway.com/guides/postgresql) | [x] |
+| C.2 | Esperar deploy del servicio Postgres (estado activo) | | [x] |
+| C.3 | En servicio **Codas_Railway** → **Variables** → referenciar `DATABASE_URL` | [guides/variables](https://docs.railway.com/guides/variables) | [x] |
 
 Valor de referencia (ajustar nombre del servicio Postgres):
 
@@ -158,33 +194,48 @@ En **Variables** del servicio Web. Usar **Raw Editor** o **New Variable**. Los c
 
 | Variable | Valor | Sellada | OK |
 |----------|--------|---------|-----|
-| `DJANGO_SETTINGS_MODULE` | `codas.settings.production` | No | [ ] |
-| `DJANGO_SECRET_KEY` | Clave aleatoria larga | **Sí** | [ ] |
-| `LICENSE_SECRET_KEY` | Clave HMAC suscripciones | **Sí** | [ ] |
-| `DJANGO_ALLOWED_HOSTS` | Dominio **literal** (recomendado) o `${{RAILWAY_PUBLIC_DOMAIN}}` | No | [ ] |
-| `CSRF_TRUSTED_ORIGINS` | `https://tu-dominio.up.railway.app` o `https://${{RAILWAY_PUBLIC_DOMAIN}}` | No | [ ] |
+| `DJANGO_SETTINGS_MODULE` | `codas.settings.production` | No | [x] |
+| `DJANGO_SECRET_KEY` | Clave aleatoria larga | **Sí** | [x] |
+| `LICENSE_SECRET_KEY` | Clave HMAC suscripciones | **Sí** | [x] |
+| `DJANGO_ALLOWED_HOSTS` | `${{RAILWAY_PUBLIC_DOMAIN}}` o literal; **no** dejar `*` | No | [~] |
+| `CSRF_TRUSTED_ORIGINS` | `https://${{RAILWAY_PUBLIC_DOMAIN}}` o literal | No | [~] |
 
 ### D.2 Base de datos
 
 | Variable | Valor | OK |
 |----------|--------|-----|
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` | [ ] |
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` | [x] |
 
-### D.3 Correo SMTP (obligatorio en producción)
+### D.3 Correo (obligatorio en producción)
+
+**Railway Free/Hobby:** SMTP saliente bloqueado → usar **Resend** (API HTTPS).  
+**SMTP Gmail:** conservado en código para Railway Pro, PythonAnywhere u otros hosts; `EMAIL_DELIVERY=smtp`.
+
+#### Opción A — Resend (recomendada en Railway Free)
 
 | Variable | Valor ejemplo | Sellada | OK |
 |----------|---------------|---------|-----|
-| `EMAIL_DELIVERY` | `smtp` | No | [ ] |
-| `EMAIL_HOST` | `smtp.gmail.com` | No | [ ] |
-| `EMAIL_PORT` | `587` | No | [ ] |
-| `EMAIL_USE_TLS` | `True` | No | [ ] |
-| `EMAIL_HOST_USER` | cuenta Gmail | No | [ ] |
-| `EMAIL_HOST_PASSWORD` | contraseña de aplicación (sin espacios) | **Sí** | [ ] |
-| `DEFAULT_FROM_EMAIL` | mismo que `EMAIL_HOST_USER` | No | [ ] |
+| `EMAIL_DELIVERY` | `resend` o `auto` | No | [ ] |
+| `RESEND_API_KEY` | `re_...` (dashboard Resend) | **Sí** | [ ] |
+| `DEFAULT_FROM_EMAIL` | `CODAS <onboarding@resend.dev>` (prueba) o remitente de dominio verificado | No | [ ] |
+
+Cuenta y API key: [resend.com](https://resend.com/docs/introduction). En producción, verificar dominio en Resend.
+
+#### Opción B — SMTP legacy (Railway Pro o sin bloqueo SMTP)
+
+| Variable | Valor ejemplo | Sellada | OK |
+|----------|---------------|---------|-----|
+| `EMAIL_DELIVERY` | `smtp` | No | [x] |
+| `EMAIL_HOST` | `smtp.gmail.com` | No | [x] |
+| `EMAIL_PORT` | `587` | No | [x] |
+| `EMAIL_USE_TLS` | `True` | No | [x] |
+| `EMAIL_HOST_USER` | `sistemaasociados@gmail.com` | No | [x] |
+| `EMAIL_HOST_PASSWORD` | sin espacios | **Sí** | [~] |
+| `DEFAULT_FROM_EMAIL` | `sistemaasociados@gmail.com` | No | [x] |
 
 **No** definir `EMAIL_BACKEND` — lo asigna `_email.py`.
 
-**Plantilla Raw Editor (proyecto Codas_Railway — ajustar nombres):**
+**Plantilla Raw Editor (Resend — Railway Free):**
 
 ```ini
 DJANGO_SETTINGS_MODULE=codas.settings.production
@@ -193,6 +244,14 @@ LICENSE_SECRET_KEY=...
 DJANGO_ALLOWED_HOSTS=tu-servicio.up.railway.app
 CSRF_TRUSTED_ORIGINS=https://tu-servicio.up.railway.app
 DATABASE_URL=${{Postgres.DATABASE_URL}}
+EMAIL_DELIVERY=resend
+RESEND_API_KEY=re_...
+DEFAULT_FROM_EMAIL=CODAS <onboarding@resend.dev>
+```
+
+**Plantilla SMTP legacy (Railway Pro / otros PaaS):**
+
+```ini
 EMAIL_DELIVERY=smtp
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -202,16 +261,12 @@ EMAIL_HOST_PASSWORD=sin-espacios
 DEFAULT_FROM_EMAIL=...
 ```
 
-> `DATABASE_URL`: usar **Add Reference** al servicio PostgreSQL (nombre típico `Postgres`).  
-> `EMAIL_HOST_PASSWORD`: contraseña de aplicación Gmail **sin espacios**.  
-> Tras **Generate Domain**, copiar el hostname a `DJANGO_ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` (más fiable que solo referencias en el primer deploy).
-
 ### D.4 Aplicar variables
 
 | # | Paso | OK |
 |---|------|-----|
-| D.4.1 | Revisar diff de variables staged | [ ] |
-| D.4.2 | **Deploy** del servicio Web para aplicar variables | [ ] |
+| D.4.1 | Revisar diff de variables staged | [x] |
+| D.4.2 | **Deploy** del servicio Web para aplicar variables | [x] *(varios intentos; ver § E)* |
 
 ---
 
@@ -219,21 +274,21 @@ DEFAULT_FROM_EMAIL=...
 
 | # | Paso | Doc Railway | OK |
 |---|------|-------------|-----|
-| E.1 | Confirmar `railway.toml` en repo (o comandos en Settings → Deploy) | [config-as-code](https://docs.railway.com/reference/config-as-code) | [ ] |
-| E.2 | **Settings** → comprobar **Root Directory** (vacío si `manage.py` está en raíz) | | [ ] |
-| E.3 | **Settings** → **Networking** → **Generate Domain** | [public-networking](https://docs.railway.com/guides/public-networking) | [ ] |
-| E.4 | Copiar URL `https://….up.railway.app` al registro de despliegue | | [ ] |
-| E.5 | Si `DJANGO_ALLOWED_HOSTS` era fijo, actualizarlo con el dominio generado | | [ ] |
-| E.6 | **Deploy** (o push a Git si CI conectado) | | [ ] |
+| E.1 | Confirmar `railway.toml` en repo (`migrate` en start) | [config-as-code](https://docs.railway.com/reference/config-as-code) | [x] |
+| E.2 | **Root Directory** vacío (`manage.py` en raíz) | | [x] |
+| E.3 | **Networking** → **Generate Domain** | [public-networking](https://docs.railway.com/guides/public-networking) | [x] |
+| E.4 | Copiar URL al registro de despliegue | | [ ] |
+| E.5 | Sustituir `ALLOWED_HOSTS=*` por dominio literal si aplica | | [ ] |
+| E.6 | **Deploy** en verde (servicio online) | | [ ] |
 
 ### E.1 Revisar logs de build
 
 | # | Comprobar en Deploy Logs | OK |
 |---|------------------------|-----|
-| E.1.1 | `pip install -r requirements.txt` sin error | [ ] |
-| E.1.2 | `npm run build:css:min` (si aplica) | [ ] |
-| E.1.3 | `collectstatic` copió archivos a `staticfiles/` | [ ] |
-| E.1.4 | `startCommand`: `migrate` + Gunicorn (no preDeploy) | [ ] |
+| E.1.1 | `pip install -r requirements.txt` sin error | [x] |
+| E.1.2 | `npm run build:css:min` (no aplica en build) | N/A |
+| E.1.3 | `collectstatic` copió archivos a `staticfiles/` | [x] |
+| E.1.4 | `startCommand`: `migrate` + Gunicorn | [ ] |
 | E.1.5 | Gunicorn enlazado a `$PORT` | [ ] |
 
 ---
@@ -244,7 +299,7 @@ Por defecto el disco del contenedor es **efímero**; `media/` se pierde al redep
 
 | # | Estrategia | Paso | OK |
 |---|------------|------|-----|
-| F.1 | **Demo sin logos** | No hacer nada | [ ] |
+| F.1 | **Demo sin logos** | No hacer nada | [x] |
 | F.2 | **Persistir logos** | Servicio Web → **Volumes** → montar en `/app/media` | [guides/volumes](https://docs.railway.com/guides/volumes) | [ ] |
 | F.3 | Si imagen no-root | `RAILWAY_RUN_UID=0` (Railway lo indica para permisos de volumen) | [ ] |
 
@@ -396,9 +451,9 @@ flowchart TD
 | Fase | Bloque | Ítems críticos |
 |------|--------|----------------|
 | 1 | **A** — Repo | gunicorn, whitenoise, STATIC_ROOT, railway.toml, CSS |
-| 2 | **B–C** — Railway | GitHub, Postgres, `DATABASE_URL` referenciada |
-| 3 | **D** — Variables | Secretos, SMTP, hosts, CSRF |
-| 4 | **E** — Deploy | Dominio público, logs verdes |
+| 2 | **B–C** — Railway | GitHub, Postgres, `DATABASE_URL` referenciada | Completado |
+| 3 | **D** — Variables | Secretos, SMTP, hosts, CSRF | Completado (revisar `[~]`) |
+| 4 | **E** — Deploy | Dominio, logs verdes, migrate en start | En curso |
 | 5 | **G–H** — Go-live | superuser, smoke test |
 
 ---
@@ -407,16 +462,17 @@ flowchart TD
 
 | # | Tarea | OK |
 |---|--------|-----|
-| 1 | Repo en GitHub + `railway.toml` actualizado (migrate en start) | [ ] |
-| 2 | Repo: CSS compilado en Git | [ ] |
-| 3 | Railway: proyecto + repo conectado | [ ] |
-| 4 | Railway: PostgreSQL + `DATABASE_URL` referenciada | [ ] |
-| 5 | Railway: variables Django, secretos, SMTP (sin EMAIL_BACKEND) | [ ] |
-| 6 | Railway: dominio público generado | [ ] |
+| 1 | Repo en GitHub + `railway.toml` (migrate en start) | [x] |
+| 2 | Repo: CSS compilado en Git | [x] |
+| 3 | Railway: proyecto + repo conectado | [x] |
+| 4 | Railway: PostgreSQL + `DATABASE_URL` referenciada | [x] |
+| 5 | Railway: variables Django, secretos, SMTP | [~] |
+| 6 | Railway: dominio público generado | [x] |
 | 7 | Deploy verde: build + migrate + gunicorn | [ ] |
 | 8 | `createsuperuser` + smoke test | [ ] |
-| 9 | (Opcional) volumen `/app/media` | [ ] |
+| 9 | Auto Deploy off (opcional) | [ ] |
+| 10 | (Opcional) volumen `/app/media` | [ ] |
 
 ---
 
-*Última revisión: jun/2026 — lecciones deploy Codas_Railway (Postgres, pre-deploy, migrate en start).*
+*Última revisión: jun/2026 — B–D completados en Codas_Railway; E–H pendientes. `[~]` = revisar hosts y password Gmail.*

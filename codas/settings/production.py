@@ -18,7 +18,7 @@ MIDDLEWARE = [
 
 globals().update(build_https_settings())
 
-# Correo: EMAIL_BACKEND lo asigna solo _email.py (no definir EMAIL_BACKEND en .env).
+# Correo: Resend (HTTPS) o SMTP; EMAIL_BACKEND lo asigna _email.py (no definir en .env).
 globals().update(build_email_settings(require_smtp=True))
 
 validate_production()  # noqa: F405

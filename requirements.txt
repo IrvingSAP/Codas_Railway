@@ -10,3 +10,4 @@ pyotp>=2.9,<3
 qrcode>=7.4,<9
 gunicorn>=22.0,<24
 whitenoise>=6.6,<7
+resend>=2.0,<3
