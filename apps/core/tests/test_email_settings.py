@@ -8,7 +8,7 @@ from unittest import mock
 from django.core.exceptions import ImproperlyConfigured
 from django.test import SimpleTestCase, override_settings
 
-from apps.core.services.email_delivery import send_codas_mail
+from apps.core.services.email_delivery import email_delivery_user_message, send_codas_mail
 from codas.settings._email import (
     CONSOLE_EMAIL_BACKEND,
     EMAIL_DELIVERY_RESEND,
@@ -133,3 +133,19 @@ class SendCodasMailTests(SimpleTestCase):
         self.assertEqual(params["from"], "CODAS <onboarding@resend.dev>")
         self.assertEqual(params["to"], ["dest@test.com"])
         self.assertEqual(params["text"], "Su código es: 123456")
+
+    def test_resend_sandbox_user_message(self) -> None:
+        from resend.exceptions import ResendError
+
+        exc = ResendError(
+            code=403,
+            error_type="validation_error",
+            message=(
+                "You can only send testing emails to your own email address. "
+                "To send emails to other recipients, please verify a domain."
+            ),
+            suggested_action="Verify domain",
+        )
+        msg = email_delivery_user_message(exc)
+        self.assertIn("modo prueba", msg)
+        self.assertIn("resend.com/domains", msg)

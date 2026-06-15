@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
+from apps.core.services.email_delivery import email_delivery_user_message
 from apps.security.services.actualizar_2fa import process_security_actualizar_2fa_step
 from apps.security.services.email_confirmation import (
     confirm_email_on_profile,
@@ -60,7 +61,6 @@ def security_login(request: HttpRequest) -> HttpResponse:
     if request.method != "POST":
         return render(request, "security/security_login.html", {})
 
-    print('entro a process_security_login_step')
     result = process_security_login_step(request)
     errors = result.get("errors") or []
     redirect_url = result.get("redirect_url")
@@ -121,16 +121,21 @@ def security_email_code(request: HttpRequest) -> HttpResponse:
         return redirect("security:security_totp_setup")
 
     if request.method == "GET":
+        email_sent = True
         if should_issue_fresh_email_code(profile):
             code = issue_new_email_code(profile)
             try:
                 send_email_confirmation(user=user, code=code)
-            except Exception:
-                messages.error(
-                    request,
-                    "No se pudo enviar el correo. Compruebe la configuración SMTP o reintente.",
-                )
-        return render(request, "security/security_email_code.html", {"email": user.email})
+            except Exception as exc:
+                email_sent = False
+                messages.error(request, email_delivery_user_message(exc))
+        else:
+            email_sent = bool((profile.email_confirm_code or "").strip())
+        return render(
+            request,
+            "security/security_email_code.html",
+            {"email": user.email, "email_sent": email_sent},
+        )
 
     if request.POST.get("action") == "cancelar":
         clear_security_flow(request)
@@ -138,12 +143,18 @@ def security_email_code(request: HttpRequest) -> HttpResponse:
 
     if request.POST.get("action") == "reenviar":
         code = issue_new_email_code(profile)
+        email_sent = True
         try:
             send_email_confirmation(user=user, code=code)
             messages.info(request, "Se envió un nuevo código al correo.")
-        except Exception:
-            messages.error(request, "No se pudo reenviar el correo. Intente más tarde.")
-        return render(request, "security/security_email_code.html", {"email": user.email})
+        except Exception as exc:
+            email_sent = False
+            messages.error(request, email_delivery_user_message(exc))
+        return render(
+            request,
+            "security/security_email_code.html",
+            {"email": user.email, "email_sent": email_sent},
+        )
 
     submitted = (request.POST.get("email_code") or "").strip()
     ok, reason = verify_submitted_email_code(profile, submitted)
